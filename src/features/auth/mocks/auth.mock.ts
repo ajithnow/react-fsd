@@ -180,7 +180,7 @@ export const authHandler = [
       createdAt: new Date().toISOString()
     }
 
-    users.push(newUser) // Add new user to the mock database
+    users.push(newUser)
 
     // Generate tokens for the newly registered user
     const { accessToken, refreshToken } = generateTokens()
