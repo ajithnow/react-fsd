@@ -1,7 +1,6 @@
-
-import { useNavigate } from '@tanstack/react-router';
-import { useAuthStore } from '../stores/auth.store';
-import { useLoginMutation } from '../queries/login.query';
+import { useNavigate } from "@tanstack/react-router";
+import { useAuthStore } from "../stores/auth.store";
+import { useLoginMutation } from "../queries/login.query";
 
 export const useLoginManager = () => {
   const setUser = useAuthStore((s) => s.setUser);
@@ -15,9 +14,9 @@ export const useLoginManager = () => {
   }) => {
     const { username, password } = credentials;
     const { token } = await login({ username, password });
-    localStorage.setItem('authToken', token);
+    localStorage.setItem("authToken", token);
     setUser({ id: 1, name: username, email: `${username}@demo.com` });
-    navigate({ to: '/dashboard' });
+    navigate({ to: "/dashboard" });
   };
 
   return {

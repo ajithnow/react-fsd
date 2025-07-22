@@ -1,5 +1,13 @@
 import type { GenerateResourcesOptions } from "../models/common.model";
 
+/**
+ * This function is used to generate localization resources for the application.
+ * @param modules
+ * @param supportedLanguages
+ * @param features
+ * @returns resources, supportedLanguages, features
+ *
+ */
 export const generateResources = ({
   modules,
   supportedLanguages,
