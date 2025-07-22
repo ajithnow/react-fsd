@@ -1,0 +1,12 @@
+{
+  "login": {
+    "title": "Login to your account",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "loginButton": "Login",
+    "loadingButton": "Logging In...",
+    "usernameRequired": "Username is required",
+    "passwordRequired": "Password is required",
+    "loginFailedError": "Login failed. Please check your credentials."
+  }
+}
