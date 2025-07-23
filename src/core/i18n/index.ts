@@ -1,27 +1,23 @@
-import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
+import i18n from "i18next";
+import { initReactI18next } from "react-i18next";
+import LanguageDetector from "i18next-browser-languagedetector";
 
-import authEn from '../../features/auth/locales/en.json'; 
+import locales from "@/features/locales";
 
-const resources = {
-  en: {
-    auth: authEn,
-  },
-};
+const { features, resources } = locales;
 
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
-    debug: process.env.NODE_ENV === 'development',
+    fallbackLng: "en",
+    debug: process.env.NODE_ENV === "development",
     interpolation: {
       escapeValue: false,
     },
-    ns: ['common', 'auth', 'dashboard'],
-    defaultNS: 'common',
+    ns: features,
+    defaultNS: "common",
     react: {
       useSuspense: true,
     },

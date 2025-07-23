@@ -1,5 +1,5 @@
-import { authHandler } from './auth.mock'
+import { authHandler } from "./auth.mock";
 
-export const authHandlers = [
-  ...authHandler
-]
+const authHandlers = [...authHandler];
+
+export default authHandlers;
