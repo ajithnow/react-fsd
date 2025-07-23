@@ -54,6 +54,7 @@ const config: Config = {
     '!src/**/**/stores/**',
     '!src/**/*.d.{js,ts}',
     '!src/features/*.ts',
+    '!docs',
   ],
 };
 
