@@ -13,12 +13,11 @@ async function enableMocking() {
   const { worker } = await import('./core/mock/browser.ts')
   
   return worker.start({
-    onUnhandledRequest: 'warn', // Warn about unhandled requests
-    quiet: false, // Set to true to reduce console logs
+    onUnhandledRequest: 'warn',
+    quiet: false, 
   })
 }
 
-// Start the app after MSW is ready
 enableMocking().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>

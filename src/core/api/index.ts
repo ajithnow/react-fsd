@@ -1,51 +1,62 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000, // Request timeout in milliseconds
   headers: {
     'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
 });
 
 apiClient.interceptors.request.use(
-  (config) => {
-
-    const token = localStorage.getItem('authToken'); 
+  config => {
+    const token = localStorage.getItem('authToken');
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error instanceof Error ? error : new Error(error.message || 'Request failed'));
+  error => {
+    return Promise.reject(
+      error instanceof Error
+        ? error
+        : new Error(error.message || 'Request failed')
+    );
   }
 );
 
 apiClient.interceptors.response.use(
-  (response) => {
+  response => {
     return response;
   },
-  async (error) => {
+  async error => {
     const originalRequest = error.config;
 
     // Example: Handle 401 Unauthorized (e.g., redirect to login or refresh token)
-    if (error.response && error.response.status === 401 && !originalRequest._retry) {
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !originalRequest._retry
+    ) {
       originalRequest._retry = true; // Mark request as retried to prevent infinite loops
 
       // --- TOKEN REFRESH LOGIC (if applicable) ---
       try {
         const refreshToken = localStorage.getItem('refreshToken');
         if (refreshToken) {
-          const refreshResponse = await axios.post(`${API_BASE_URL}/auth/refresh-token`, { refreshToken });
+          const refreshResponse = await axios.post(
+            `${API_BASE_URL}/auth/refresh-token`,
+            { refreshToken }
+          );
           const newAccessToken = refreshResponse.data.accessToken;
           localStorage.setItem('authToken', newAccessToken); // Store new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return apiClient(originalRequest); 
+          return apiClient(originalRequest);
         }
       } catch (refreshError) {
         console.error('Token refresh failed:', refreshError);
@@ -57,14 +68,18 @@ apiClient.interceptors.response.use(
       // For now, just logging and rejecting the error
       console.error('API Error:', error.response.status, error.response.data);
       // You might want to trigger a global error notification here or dispatch a logout action
-    if (error.response.status === 401 && !originalRequest._retry) {
+      if (error.response.status === 401 && !originalRequest._retry) {
         // For example, if no refresh token or refresh failed, force logout
         // EventBus.dispatch('logout'); // Custom event bus or global state update
         // history.push('/login');
       }
     }
 
-    return Promise.reject(error instanceof Error ? error : new Error(error.message || 'An error occurred'));
+    return Promise.reject(
+      error instanceof Error
+        ? error
+        : new Error(error.message || 'An error occurred')
+    );
   }
 );
 

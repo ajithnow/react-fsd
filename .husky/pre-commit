@@ -2,3 +2,7 @@
 . "$(dirname "$0")/_/husky.sh"
 
 npx lint-staged
+
+# Run full test suite with coverage
+echo "í·ª Running full test suite with coverage..."
+npm run test:coverage
