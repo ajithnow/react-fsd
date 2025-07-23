@@ -6,8 +6,12 @@ import { LoginForm } from '../loginForm';
 // Mock react-i18next
 const mockT = jest.fn((key: string) => {
   const translations: Record<string, string> = {
-    'login.usernameRequired': 'Username is required',
-    'login.passwordRequired': 'Password is required',
+    'login.usernameLabel': 'Username',
+    'login.passwordLabel': 'Password',
+    'login.usernamePlaceholder': 'Enter your username',
+    'login.passwordPlaceholder': '••••••••',
+    'login.loginButton': 'Login',
+    'login.loadingButton': 'Logging in...',
   };
   return translations[key] || key;
 });
@@ -18,17 +22,15 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-// Mock the auth schema
+// Mock the auth schema hook
 jest.mock('../../../schema/auth.schema', () => ({
-  createLoginSchema: jest.fn((t) => {
-    // Call the translation function when schema is created
-    t('login.usernameRequired');
-    t('login.passwordRequired');
-    return {
+  __esModule: true,
+  default: jest.fn(() => ({
+    login: {
       parse: jest.fn(),
       safeParse: jest.fn(),
-    };
-  }),
+    }
+  })),
 }));
 
 // Mock zodResolver
@@ -87,18 +89,13 @@ jest.mock('@/lib/shadcn/components/ui/form', () => ({
   ),
   FormField: ({ name, render }: { 
     name: string; 
-    render: (props: { field: { 
-      name: string; 
-      value: string; 
-      onChange: (e: React.ChangeEvent<HTMLInputElement> | string) => void; 
-      onBlur: () => void 
-    }}) => React.ReactNode 
+    render: (props: { field: { name: string; value: string; onChange: (e: unknown) => void; onBlur: () => void } }) => React.ReactNode 
   }) => {
     const field = {
       name,
       value: formState[name as keyof typeof formState] || '',
-      onChange: (e: React.ChangeEvent<HTMLInputElement> | string) => {
-        const value = typeof e === 'string' ? e : e.target?.value || '';
+      onChange: (e: unknown) => {
+        const value = typeof e === 'string' ? e : (e as { target?: { value?: string } })?.target?.value || '';
         formState[name as keyof typeof formState] = value;
       },
       onBlur: jest.fn(),
@@ -118,27 +115,21 @@ jest.mock('@/lib/shadcn/components/ui/form', () => ({
 }));
 
 jest.mock('@/lib/shadcn/components/ui/input', () => ({
-  Input: React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement> & { value?: string; onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void }>((props, ref) => {
-    // Get the current value from formState if available
-    const currentValue = formState[props.name as keyof typeof formState] || props.value || '';
-    
-    return (
-      <input 
-        ref={ref} 
-        data-testid={`input-${props.name}`} 
-        {...props} 
-        value={currentValue}
-        onChange={(e) => {
-          // Update the form state
-          if (props.name) {
-            formState[props.name as keyof typeof formState] = e.target.value;
-          }
-          // Call the original onChange if it exists
-          props.onChange?.(e);
-        }}
-      />
-    );
-  }),
+  Input: React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>((props, ref) => (
+    <input 
+      ref={ref} 
+      data-testid={`input-${props.name}`} 
+      {...props}
+      onChange={(e) => {
+        // Update the form state for testing
+        if (props.name && props.name in formState) {
+          formState[props.name as keyof typeof formState] = e.target.value;
+        }
+        // Call the original onChange if it exists
+        props.onChange?.(e);
+      }}
+    />
+  )),
 }));
 
 jest.mock('@/lib/shadcn/components/ui/button', () => ({
@@ -250,7 +241,7 @@ describe('LoginForm', () => {
     });
   });
 
-  it('should handle input changes correctly', () => {
+  it('should update form state when inputs change', () => {
     render(<LoginForm {...defaultProps} />);
 
     const usernameInput = screen.getByTestId('input-username');
@@ -259,51 +250,54 @@ describe('LoginForm', () => {
     fireEvent.change(usernameInput, { target: { value: 'john' } });
     fireEvent.change(passwordInput, { target: { value: 'secret' } });
 
-    // Check that the form state has been updated (internal state)
+    // Verify that our mock form state is updated
     expect(formState.username).toBe('john');
     expect(formState.password).toBe('secret');
   });
 
-  it('should call translation function for validation messages', () => {
-    // Clear previous calls
+  it('should call translation function for UI labels', () => {
     mockT.mockClear();
     
     render(<LoginForm {...defaultProps} />);
 
-    // The translation function should be called when the schema is created
-    // This happens during useForm initialization
-    expect(mockT).toHaveBeenCalledWith('login.usernameRequired');
-    expect(mockT).toHaveBeenCalledWith('login.passwordRequired');
+    // Translation function should be called for UI labels
+    expect(mockT).toHaveBeenCalledWith('login.usernameLabel');
+    expect(mockT).toHaveBeenCalledWith('login.passwordLabel');
+    expect(mockT).toHaveBeenCalledWith('login.usernamePlaceholder');
+    expect(mockT).toHaveBeenCalledWith('login.passwordPlaceholder');
+    expect(mockT).toHaveBeenCalledWith('login.loginButton');
   });
 
-  it('should maintain form state during loading', () => {
+  it('should preserve form state when loading state changes', () => {
     const { rerender } = render(<LoginForm {...defaultProps} />);
 
     const usernameInput = screen.getByTestId('input-username');
     fireEvent.change(usernameInput, { target: { value: 'testuser' } });
 
-    // Check that form state is updated
+    // Verify form state is updated
     expect(formState.username).toBe('testuser');
 
+    // Re-render with loading state
     rerender(<LoginForm {...defaultProps} isLoading={true} />);
 
     const updatedUsernameInput = screen.getByTestId('input-username');
     expect(updatedUsernameInput).toBeDisabled();
-    // Form state should be maintained
+    // Form state should persist
     expect(formState.username).toBe('testuser');
   });
 
-  it('should handle form submission with keyboard (Enter key)', async () => {
+  it('should submit form when Enter key is pressed', async () => {
     render(<LoginForm {...defaultProps} />);
 
     const usernameInput = screen.getByTestId('input-username');
     const passwordInput = screen.getByTestId('input-password');
     const submitButton = screen.getByTestId('submit-button');
 
+    // Fill in the form
     fireEvent.change(usernameInput, { target: { value: 'testuser' } });
     fireEvent.change(passwordInput, { target: { value: 'password123' } });
 
-    // Simulate form submission via Enter key on form or button
+    // Submit the form (simulating Enter key behavior)
     fireEvent.click(submitButton);
 
     await waitFor(() => {
@@ -352,15 +346,14 @@ describe('LoginForm', () => {
     expect(passwordInput).toHaveAttribute('type', 'password');
   });
 
-  it('should integrate properly with useForm hook', () => {
+  it('should work with react-hook-form integration', () => {
     render(<LoginForm {...defaultProps} />);
 
     const usernameInput = screen.getByTestId('input-username');
     const passwordInput = screen.getByTestId('input-password');
 
+    // Test form field integration
     fireEvent.change(usernameInput, { target: { value: 'newtest' } });
-
-    // Check that form state is updated
     expect(formState.username).toBe('newtest');
 
     fireEvent.change(passwordInput, { target: { value: 'pass' } });

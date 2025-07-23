@@ -2,7 +2,9 @@
   "login": {
     "title": "Login to your account",
     "usernameLabel": "Username",
+    "usernamePlaceholder": "Enter your username",
     "passwordLabel": "Password",
+    "passwordPlaceholder": "••••••••",
     "loginButton": "Login",
     "loadingButton": "Logging In...",
     "usernameRequired": "Username is required",

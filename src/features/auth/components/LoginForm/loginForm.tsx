@@ -12,12 +12,13 @@ import {
 import { Input } from '@/lib/shadcn/components/ui/input';
 import { Button } from '@/lib/shadcn/components/ui/button';
 import type { LoginFormProps, LoginFormValues } from '../../models/auth.model';
+import useAuthSchema from '../../schema/auth.schema';
 import { useTranslation } from 'react-i18next';
-import { createLoginSchema } from '../../schema/auth.schema';
 
 export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => {
-  const { t } = useTranslation("auth");
-  const loginSchema = createLoginSchema(t);
+  const {t} = useTranslation('auth');
+  const { login: loginSchema } = useAuthSchema(t);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -41,10 +42,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
           name="username"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Username</FormLabel>
+              <FormLabel>{t('login.usernameLabel')}</FormLabel>
               <FormControl>
                 <Input
-                  placeholder="Enter your username"
+                  placeholder={t('login.usernamePlaceholder')}
                   autoComplete="username"
                   disabled={isLoading}
                   {...field}
@@ -60,11 +61,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('login.passwordLabel')}</FormLabel>
               <FormControl>
                 <Input
                   type="password"
-                  placeholder="••••••••"
+                  placeholder={t('login.passwordPlaceholder')}
                   autoComplete="current-password"
                   disabled={isLoading}
                   {...field}
@@ -76,7 +77,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
         />
 
         <Button type="submit" disabled={isLoading} className="w-full">
-          {isLoading ? 'Logging in...' : 'Login'}
+          {isLoading ? t('login.loadingButton') : t('login.loginButton')}
         </Button>
       </form>
     </Form>

@@ -1,3 +1,3 @@
-import { LoginForm } from './LoginForm/loginForm';
+import { LoginForm } from './loginForm/loginForm';
 
 export { LoginForm };
