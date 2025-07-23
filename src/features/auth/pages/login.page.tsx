@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLoginManager } from '../managers/login.manager';
-import { LoginForm } from '../components/loginForm/loginForm';
+import { LoginForm } from '../components';
 
 export const LoginPage: React.FC = () => {
   const { handleLogin, isLoading, error } = useLoginManager();
