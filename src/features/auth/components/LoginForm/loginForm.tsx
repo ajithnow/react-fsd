@@ -131,7 +131,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
                     type="button"
                     variant="default"
                     size="lg"
-                    className="text-muted-foreground"
+                    disabled={true}
                   >
                     {t('login.forgotPassword', 'Forgot your password?')}
                   </Button>
