@@ -7,10 +7,7 @@ export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
-    plugins: [
-      react(),
-      tailwindcss(),
-    ],
+    plugins: [react(), tailwindcss()],
     server: {
       port: 3000,
       open: true,
@@ -18,11 +15,11 @@ export default defineConfig(({ mode }) => {
     resolve: {
       alias: {
         '@': path.resolve(__dirname, './src'),
-        'components': path.resolve(__dirname, './src/components'),
-        'features': path.resolve(__dirname, './src/features'),
-        'core': path.resolve(__dirname, './src/core'),
-        'assets': path.resolve(__dirname, './src/assets'),
-        'utils': path.resolve(__dirname, './src/utils'),
+        components: path.resolve(__dirname, './src/components'),
+        features: path.resolve(__dirname, './src/features'),
+        core: path.resolve(__dirname, './src/core'),
+        assets: path.resolve(__dirname, './src/assets'),
+        utils: path.resolve(__dirname, './src/utils'),
       },
     },
     css: {
@@ -49,16 +46,19 @@ export default defineConfig(({ mode }) => {
       rollupOptions: {
         input: {
           main: 'src/main.tsx',
-          auth: 'src/features/auth/routes/auth.routes.ts',
-          dashboard: 'src/features/dashboard/routes/dashboard.routes.ts',
+          auth: 'src/features/auth/routes',
         },
       },
     },
     define: {
       'process.env': {
-        API_BASE_URL: JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:3000/api'),
+        API_BASE_URL: JSON.stringify(
+          env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+        ),
         NODE_ENV: JSON.stringify(env.MODE || 'development'),
-        REACT_APP_API_BASE_URL: JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:3000/api'),
+        REACT_APP_API_BASE_URL: JSON.stringify(
+          env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+        ),
       },
     },
     test: {
