@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "enabled": true,
+    "features": {
+      "login": true,
+      "register": true,
+      "passwordReset": true
+    }
+  }
+}

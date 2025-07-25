@@ -1,29 +1,34 @@
 import type { Config } from 'jest';
 
 const config: Config = {
-  preset: 'ts-jest/presets/default-esm',
+  preset: 'ts-jest',
   testEnvironment: 'jsdom',
-  extensionsToTreatAsEsm: ['.ts', '.tsx'],
-  setupFilesAfterEnv: ['@testing-library/jest-dom'],
+  setupFilesAfterEnv: [
+    '@testing-library/jest-dom',
+    '<rootDir>/src/test-setup.ts',
+    '<rootDir>/src/test-types.d.ts',
+  ],
   testMatch: ['**/__tests__/**/*.test.(ts|tsx)'],
   transform: {
     '^.+\\.tsx?$': [
       'ts-jest',
       {
-        useESM: true,
         tsconfig: {
           target: 'ES2022',
-          module: 'ESNext',
-          moduleResolution: 'bundler',
-          verbatimModuleSyntax: false,
+          module: 'ES2022',
+          moduleResolution: 'node',
+          allowSyntheticDefaultImports: true,
+          esModuleInterop: true,
           jsx: 'react-jsx',
+          lib: ['ES2022', 'DOM', 'DOM.Iterable'],
+          types: ['jest', '@testing-library/jest-dom', 'node'],
+          skipLibCheck: true,
         },
       },
     ],
   },
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^(\\.{1,2}/.*)\\.js$': '$1',
   },
   coverageThreshold: {
     global: {
@@ -34,11 +39,12 @@ const config: Config = {
     },
   },
   collectCoverageFrom: [
+    'src/**/*.{js,ts,tsx}',
     '!src/**/*.d.ts',
     '!src/**/*.test.{js,ts,tsx}',
-    'src/**/*.{js,ts,tsx}',
     '!src/*.tsx',
-    '!src/**/*.test.{js,ts,tsx}',
+    '!src/features/*.{js,ts,tsx}',
+    '!src/**/*.demo.{js,ts,tsx}',
     '!src/lib/**',
     '!src/core/**',
     '!src/**/**/constants/**',
@@ -52,10 +58,8 @@ const config: Config = {
     '!src/**/**/locales/**',
     '!src/**/**/queries/**',
     '!src/**/**/stores/**',
-    '!src/**/*.d.{js,ts}',
-    '!src/features/*.ts',
     '!docs',
-    '!src/features/**/index.ts',
+    '!**/index.{ts,tsx}',
   ],
 };
 

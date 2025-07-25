@@ -54,12 +54,15 @@ describe('AuthLayout', () => {
 
     // Check main container has full height and flex layout
     const mainContainer = container.firstChild as HTMLElement;
-    expect(mainContainer).toHaveClass('min-h-screen', 'flex');
+    expect(mainContainer).toHaveClass('min-h-screen');
+    expect(mainContainer).toHaveClass('flex');
 
     // Check branding section has correct classes (hidden on mobile, shown on large screens)
     const brandingSection = container.querySelector('.hidden.lg\\:flex');
     expect(brandingSection).toBeInTheDocument();
-    expect(brandingSection).toHaveClass('lg:w-1/2', 'bg-primary', 'text-primary-foreground');
+    expect(brandingSection).toHaveClass('lg:w-1/2');
+    expect(brandingSection).toHaveClass('bg-primary');
+    expect(brandingSection).toHaveClass('text-primary-foreground');
 
     // Check content section has correct flex classes
     const contentSection = container.querySelector('.flex-1.flex.items-center.justify-center');
@@ -74,7 +77,8 @@ describe('AuthLayout', () => {
     );
 
     const contentContainer = screen.getByTestId('auth-content').parentElement;
-    expect(contentContainer).toHaveClass('w-full', 'max-w-md');
+    expect(contentContainer).toHaveClass('w-full');
+    expect(contentContainer).toHaveClass('max-w-md');
   });
 
   it('should handle multiple children correctly', () => {
@@ -104,7 +108,8 @@ describe('AuthLayout', () => {
     
     // Check that the main structure is present
     const mainContainer = container.firstChild as HTMLElement;
-    expect(mainContainer).toHaveClass('min-h-screen', 'flex');
+    expect(mainContainer).toHaveClass('min-h-screen');
+    expect(mainContainer).toHaveClass('flex');
   });
 
   it('should have proper responsive design classes', () => {

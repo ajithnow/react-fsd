@@ -1,15 +1,11 @@
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "../../../core/router";
-import { AuthGuard } from "@/features/auth/guards";
+import { HomeComponent } from "../components/HomeComponent";
 
 const homeRoute = createRoute({
   path: '/',
   getParentRoute: () => rootRoute,
-  component: () => (
-    <AuthGuard>
-      <div>Test Home Page</div>
-    </AuthGuard>
-  ),
+  component: HomeComponent,
 });
 
 const homeRoutes = [homeRoute];

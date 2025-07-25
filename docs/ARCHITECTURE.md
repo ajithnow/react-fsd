@@ -23,26 +23,6 @@ This document describes the implemented FSD architecture with focus on layouts, 
 
 **Purpose**: Framework-agnostic foundational logic and app-level concerns
 
-````text
-core/
-├── api/                  # API client configuration
-│   └── index.ts         # Axios setup, interceptors
-├── components/          # App-level components
-├── i18n/               # Internationalization setup
-│   └── index.ts        # i18next configuration
-├── layouts/            # Application layout wrappers
-│   ├── GlobalLayout.tsx # Global app concerns (providers, analytics)
-│   ├── LayoutWrapper.tsx # Layout composition
-│   └── index.ts
-├── mock/               # MSW configuration
-│   └── browser.ts      # Service worker setup
-├── models/             # Core type definitions
-│   └── layout.model.ts # Layout interfaces
-└── router/             # Router configuration
-    └── index.tsx       # TanStack Router setup
-
-**Key Principle**: No business logic, only foundational services.
-
 ### 🚀 **Features Layer** - Business Logic
 
 **Purpose**: Self-contained business features with their own guards, layouts, and logic
@@ -74,13 +54,13 @@ features/
 ├── locales.ts           # Locale aggregation
 ├── mocks.ts             # Mock aggregation
 └── routes.ts            # Route aggregation
-````
+```
 
 ### 🤝 **Shared Layer** - Common Resources
 
 **Purpose**: Reusable utilities and types used across features
 
-```
+```text
 shared/
 ├── models/
 │   └── common.model.ts   # Guard interfaces, common types
@@ -157,65 +137,7 @@ const homeRoute = createRoute({
 - ✅ Easier testing and maintenance
 - ✅ Ready for analytics/monitoring integration
 
-graph TD
-subgraph "Application Architecture"
-subgraph "Features Layer (Business Logic)"
-F1[👤 Auth Feature]
-F2[📊 Dashboard Feature]
-F3[⚙️ Settings Feature]
-F4[🔍 Search Feature]
-end
-
-        subgraph "Shared Layer (Common Resources)"
-            S1[🤝 Shared Components]
-            S2[🛠️ Shared Utils]
-            S3[📝 Shared Models]
-            S4[💾 Shared Stores]
-        end
-
-        subgraph "Core Layer (App Infrastructure)"
-            C1[🌐 Router]
-            C2[🔗 API Client]
-            C3[🌍 i18n]
-            C4[🧪 MSW Config]
-        end
-
-        subgraph "Lib Layer (External Adaptations)"
-            L1[🎨 ShadCN UI]
-            L2[📚 Utils]
-            L3[🎭 Theme]
-        end
-    end
-
-    %% Dependencies (downward only)
-    F1 --> S1
-    F1 --> S2
-    F1 --> S3
-    F2 --> S1
-    F2 --> S4
-    F3 --> S2
-    F4 --> S1
-
-    F1 --> C1
-    F2 --> C2
-    F3 --> C3
-
-    S1 --> L1
-    S2 --> L2
-    C1 --> L1
-
-    %% Styling
-    classDef featureLayer fill:#e1f5fe,stroke:#0288d1,stroke-width:2px
-    classDef sharedLayer fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px
-    classDef coreLayer fill:#e8f5e8,stroke:#2e7d32,stroke-width:2px
-    classDef libLayer fill:#fff3e0,stroke:#f57c00,stroke-width:2px
-
-    class F1,F2,F3,F4 featureLayer
-    class S1,S2,S3,S4 sharedLayer
-    class C1,C2,C3,C4 coreLayer
-    class L1,L2,L3 libLayer
-
-````
+````text
 
 ## Feature Internal Structure
 
