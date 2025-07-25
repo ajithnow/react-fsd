@@ -76,3 +76,7 @@ Thumbs.db
 # yarn.lock
 # pnpm-lock.yaml
 
+#linting
+.eslintcache
+.stylelintcache
+
