@@ -1,55 +1,58 @@
 import { FeatureFlags } from '../models/featureFlags.model';
-import defaultFlags from '../../config/featureFlags.json';
 
-// Environment variable getter that works in both Vite and Jest
 const getViteEnvVar = (key: string): string | undefined => {
-  // In Jest/Node environment, use process.env
+  // Node.js/Jest environment
   if (typeof process !== 'undefined' && process.env) {
     return process.env[key];
   }
-  
-  // In Vite/browser environment, try to access import.meta.env
-  // This will be replaced by a mock in test environment
-  if (typeof window !== 'undefined' && 'import' in globalThis) {
+
+  // Browser/Vite environment - check if import.meta exists
+  if (typeof window !== 'undefined' && typeof globalThis !== 'undefined') {
     try {
-      // @ts-expect-error - We know this might not exist in all environments
-      return globalThis.import.meta.env[key];
+      // Use globalThis to access import.meta safely
+      const globalWithImport = globalThis as typeof globalThis & {
+        import?: { meta?: { env?: Record<string, string> } };
+      };
+
+      if (globalWithImport.import?.meta?.env) {
+        return globalWithImport.import.meta.env[key];
+      }
+
+      // Fallback: try accessing via string key to avoid TypeScript issues
+      const globalAny = globalThis as Record<string, unknown>;
+      const importObj = globalAny['import'] as
+        | { meta?: { env?: Record<string, string> } }
+        | undefined;
+      return importObj?.meta?.env?.[key];
     } catch {
-      return undefined;
+      // Silent fail in case of any access errors
     }
   }
-  
+
   return undefined;
 };
 
 export const loadFeatureFlags = (): FeatureFlags => {
-  try {
-    let flags = JSON.parse(JSON.stringify(defaultFlags)) as FeatureFlags;
-    const envFlags = getViteEnvVar('VITE_FEATURE_FLAGS');
-    if (envFlags) {
-      const parsedEnvFlags = JSON.parse(envFlags);
-      flags = { ...flags, ...parsedEnvFlags } as FeatureFlags;
-    }
-
-    console.log('Feature flags loaded:', flags);
-    return flags;
-  } catch (error) {
-    console.warn('Failed to load feature flags from environment, using defaults:', error);
-    return defaultFlags as FeatureFlags;
-  }
+  const envFlagsRaw = getViteEnvVar('VITE_FEATURE_FLAGS');
+  return JSON.parse(envFlagsRaw ?? '{}') as FeatureFlags;
 };
 
 export const getFlag = <T = boolean>(flags: FeatureFlags, path: string): T => {
-  const keys = path.split('.');
-  let current: unknown = flags;
-  
-  for (const key of keys) {
-    current = (current as Record<string, unknown>)?.[key];
-    if (current === undefined) {
-      console.warn(`Feature flag not found: ${path}`);
-      return false as T;
-    }
+  const value = getNestedValue(flags, path);
+  if (value === undefined) {
+    console.warn(`Feature flag not found: ${path}`);
+    return false as T;
   }
-  
-  return current as T;
+  return value as T;
+};
+
+const getNestedValue = (
+  obj: Record<string, unknown>,
+  path: string
+): unknown => {
+  return path.split('.').reduce((acc: unknown, key) => {
+    return acc && typeof acc === 'object' && key in acc
+      ? (acc as Record<string, unknown>)[key]
+      : undefined;
+  }, obj);
 };

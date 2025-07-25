@@ -643,25 +643,18 @@ docker-compose up -d
 
 ### Feature Flags
 
-```typescript
-// core/feature-flags/index.ts
-interface FeatureFlags {
-  NEW_DASHBOARD: boolean;
-  EXPERIMENTAL_AUTH: boolean;
-}
+This application includes a comprehensive feature flag system for runtime feature toggling.
 
-export const featureFlags: FeatureFlags = {
-  NEW_DASHBOARD: env.APP_ENV !== 'production',
-  EXPERIMENTAL_AUTH: false,
-};
+For detailed configuration and usage instructions, see the [Feature Flags Guide](./FEATURE-FLAGS.md).
 
-// Usage in components
-export const DashboardPage = () => {
-  if (featureFlags.NEW_DASHBOARD) {
-    return <NewDashboard />;
-  }
-  return <LegacyDashboard />;
-};
+**Quick Environment Setup:**
+
+```bash
+# Production environment variables
+VITE_FEATURE_FLAGS='{"auth":{"enabled":true,"features":{"login":true,"register":false}}}'
+
+# Development environment variables
+VITE_FEATURE_FLAGS='{"auth":{"enabled":true,"features":{"login":true,"register":true,"socialLogin":true}}}'
 ```
 
 This deployment guide provides comprehensive coverage for deploying your Feature-Sliced Design application across various platforms while maintaining security, performance, and reliability standards.

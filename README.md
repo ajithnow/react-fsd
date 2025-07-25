@@ -18,6 +18,7 @@
 - 🔄 **TanStack Query** - Powerful data fetching and caching
 - 🗺️ **TanStack Router** - Type-safe routing
 - 🐻 **Zustand** - Lightweight state management
+- 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
 - 🧪 **Jest + RTL** - Comprehensive testing setup
 - 🌍 **i18next** - Internationalization support
 - 🎭 **MSW** - API mocking for development and testing
@@ -328,6 +329,7 @@ export const useUsers = () => {
 
 - 📖 **[Architecture Guide](./docs/ARCHITECTURE.md)** - Detailed FSD architecture
 - 🛠️ **[Development Guide](./docs/DEVELOPMENT.md)** - Feature development process
+- 🚩 **[Feature Flags Guide](./docs/FEATURE-FLAGS.md)** - Feature flag system usage
 - 🧪 **[Testing Guide](./docs/TESTING.md)** - Testing strategies and examples
 - 🚀 **[Deployment Guide](./docs/DEPLOYMENT.md)** - Deploy to various platforms
 - 🤝 **[Contributing Guide](./docs/CONTRIBUTING.md)** - How to contribute

@@ -659,3 +659,175 @@ describe('Feature', () => {
 ```
 
 This completes the comprehensive guide for adding new features to your FSD architecture. Each new feature should follow this exact pattern for consistency and maintainability.
+
+## Feature Flags
+
+Feature flags provide a powerful way to control feature availability without code deployments. This system supports environment-based configuration, runtime toggling, and nested flag structures.
+
+### Basic Usage
+
+```typescript
+import { useFeatureFlag } from '@/core/featureFlags';
+
+export const MyComponent = () => {
+  const isNewFeatureEnabled = useFeatureFlag('features.newDashboard');
+
+  if (!isNewFeatureEnabled) {
+    return <LegacyDashboard />;
+  }
+
+  return <NewDashboard />;
+};
+```
+
+### Configuration
+
+Feature flags are configured in `src/config/featureFlags.json`:
+
+```json
+{
+  "auth": {
+    "enabled": true,
+    "features": {
+      "login": true,
+      "register": true,
+      "socialLogin": false
+    }
+  },
+  "dashboard": {
+    "enabled": true,
+    "features": {
+      "analytics": false,
+      "newUI": true
+    }
+  }
+}
+```
+
+### Environment Overrides
+
+Override flags using environment variables:
+
+```bash
+# .env.local
+VITE_FEATURE_FLAGS='{"auth":{"enabled":false},"dashboard":{"features":{"analytics":true}}}'
+```
+
+### Component Usage
+
+#### Using the Hook
+
+```typescript
+import { useFeatureFlag } from '@/core/featureFlags';
+
+export const PaymentPage = () => {
+  const isPaymentEnabled = useFeatureFlag('payment.enabled');
+  const isStripeEnabled = useFeatureFlag('payment.providers.stripe');
+
+  if (!isPaymentEnabled) {
+    return <ComingSoon feature="payments" />;
+  }
+
+  return (
+    <div>
+      <PaymentForm>
+        {isStripeEnabled && <StripeProvider />}
+      </PaymentForm>
+    </div>
+  );
+};
+```
+
+#### Using the FeatureToggle Component
+
+```typescript
+import { FeatureToggle } from '@/shared/components';
+
+export const HomePage = () => {
+  return (
+    <div>
+      <h1>Welcome</h1>
+
+      <FeatureToggle flagPath="home.features.dashboard">
+        <Dashboard />
+      </FeatureToggle>
+
+      <FeatureToggle
+        flagPath="home.features.analytics"
+        fallback={<div>Analytics coming soon!</div>}
+      >
+        <Analytics />
+      </FeatureToggle>
+    </div>
+  );
+};
+```
+
+### Route Guards
+
+Protect routes based on feature availability:
+
+```typescript
+import { getFeatureFlag } from '@/core/featureFlags';
+
+export const createFeatureGuard = (flagPath: string) => {
+  return () => {
+    const isEnabled = getFeatureFlag(flagPath);
+
+    if (!isEnabled) {
+      throw redirect('/feature-disabled');
+    }
+
+    return null;
+  };
+};
+
+// In route configuration
+{
+  path: '/admin',
+  element: <AdminPanel />,
+  loader: createFeatureGuard('admin.enabled'),
+}
+```
+
+### Testing with Feature Flags
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { useFeatureFlag } from '@/core/featureFlags';
+
+// Mock the hook
+jest.mock('@/core/featureFlags', () => ({
+  useFeatureFlag: jest.fn(),
+}));
+
+describe('FeatureComponent', () => {
+  it('should render new feature when enabled', () => {
+    (useFeatureFlag as jest.Mock).mockReturnValue(true);
+
+    render(<FeatureComponent />);
+
+    expect(screen.getByText('New Feature')).toBeInTheDocument();
+  });
+
+  it('should render fallback when disabled', () => {
+    (useFeatureFlag as jest.Mock).mockReturnValue(false);
+
+    render(<FeatureComponent />);
+
+    expect(screen.getByText('Coming Soon')).toBeInTheDocument();
+  });
+});
+```
+
+### Feature Flag Best Practices
+
+1. **Use descriptive names**: `auth.features.socialLogin` instead of `flag1`
+2. **Keep flags temporary**: Remove them after full rollout
+3. **Document purpose**: Add comments explaining the flag's purpose
+4. **Test both states**: Always test enabled and disabled states
+5. **Limit nesting**: Keep flag paths shallow (max 3 levels)
+
+For detailed documentation, see [Feature Flags Guide](./FEATURE-FLAGS.md).
+
+---

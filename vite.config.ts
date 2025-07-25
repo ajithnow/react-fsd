@@ -59,6 +59,7 @@ export default defineConfig(({ mode }) => {
         REACT_APP_API_BASE_URL: JSON.stringify(
           env.VITE_API_BASE_URL || 'http://localhost:3000/api'
         ),
+        VITE_FEATURE_FLAGS: env.VITE_FEATURE_FLAGS || {},
       },
     },
     test: {
