@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { isAuthenticated } from '../utils/auth.utils';
-import type { AuthGuardProps } from '../../../shared/models/common.model';
+import type { AuthGuardProps } from '../models/guards.model';
 
 export const AuthGuard: React.FC<AuthGuardProps> = ({ 
   children, 

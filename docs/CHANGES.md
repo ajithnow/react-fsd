@@ -76,12 +76,33 @@ This document summarizes the key architectural changes and updates made to the R
 
 **Rationale**: GlobalLayout should handle app-level concerns, not visual layout decisions.
 
-### 3. Types Moved to Shared
+### 3. Types Architecture Decision ✅
 
-**Before**: `core/guards/types.ts`  
-**After**: `shared/models/common.model.ts`
+**Completed**: Auth-specific guard types moved to proper FSD location
 
-**Rationale**: Type definitions are shared resources, not core infrastructure.
+**Implementation**:
+
+```typescript
+// ✅ features/auth/models/guards.model.ts - Feature owns its types
+export interface AuthGuardProps extends BaseGuardProps {
+  redirectTo?: string; // Auth-specific behavior
+}
+
+export interface GuestGuardProps extends BaseGuardProps {
+  redirectTo?: string; // Auth-specific behavior
+}
+
+// ✅ shared/models/common.model.ts - Only generic utilities remain
+export interface GenerateGuardsOptions { /* truly generic */ }
+export type GuardStructure { /* reusable across features */ }
+```
+
+**Benefits Achieved**:
+
+- **Feature Ownership**: Auth feature owns auth-specific guard types
+- **Shared Layer Purity**: Shared contains only truly reusable abstractions
+- **Clean Dependencies**: No feature-specific pollution in shared layer
+- **FSD Compliance**: Proper layer separation maintained
 
 ### 4. Import Patterns Updated
 
@@ -130,3 +151,16 @@ The simplified GlobalLayout is now ready for:
 - Global state providers
 - Performance monitoring
 - Theme management
+
+## 📋 Pending FSD Improvements
+
+### ✅ Type Organization Completed
+
+**Completed Action Items**:
+
+1. ✅ Moved `AuthGuardProps`, `GuestGuardProps` to `features/auth/models/guards.model.ts`
+2. ✅ Cleaned up shared layer to contain only generic utilities
+3. ✅ Updated imports in guard components
+4. ✅ Applied pattern: **Feature types live in feature models**
+
+**FSD Compliance Achieved**: Shared layer now contains only types that are genuinely reusable across multiple features, not business-specific interfaces.

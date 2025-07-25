@@ -5,7 +5,7 @@ import { HomeGuard } from '../HomeGuard';
 describe('HomeGuard', () => {
   it('should render children when access is allowed (default)', () => {
     render(
-      <HomeGuard>
+      <HomeGuard canAccess={true}>
         <div>Home Content</div>
       </HomeGuard>
     );
@@ -37,7 +37,7 @@ describe('HomeGuard', () => {
   it('should have proper type checking', () => {
     // This test ensures the component accepts the correct props
     const TestComponent = () => (
-      <HomeGuard>
+      <HomeGuard canAccess={true}>
         <div>Test</div>
       </HomeGuard>
     );

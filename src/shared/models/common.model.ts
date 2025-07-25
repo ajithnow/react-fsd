@@ -22,19 +22,3 @@ export type GuardStructure = {
   }>;
 };
 
-// Guard component props interfaces
-export interface GuardProps {
-  children: React.ReactNode;
-  fallback?: React.ReactNode;
-  redirectTo?: string;
-}
-
-// Auth-specific guard props
-export interface AuthGuardProps extends GuardProps {
-  redirectTo?: string; // Where to redirect when not authenticated
-}
-
-// Guest-specific guard props
-export interface GuestGuardProps extends GuardProps {
-  redirectTo?: string; // Where to redirect when authenticated
-}
