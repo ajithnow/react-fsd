@@ -127,7 +127,7 @@ if (!env.API_BASE_URL) {
   },
   "functions": {
     "app/api/*.ts": {
-      "runtime": "nodejs18.x"
+      "runtime": "nodejs20.x"
     }
   }
 }
@@ -154,7 +154,7 @@ vercel --prod
   command = "npm run build"
 
 [build.environment]
-  NODE_VERSION = "18"
+  NODE_VERSION = "20"
 
 [[redirects]]
   from = "/*"
@@ -205,7 +205,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
           cache: 'npm'
 
       - name: Install dependencies
@@ -244,7 +244,7 @@ export default defineConfig({
 
 ```dockerfile
 # Build stage
-FROM node:18-alpine as builder
+FROM node:20-alpine as builder
 
 WORKDIR /app
 
@@ -365,7 +365,7 @@ on:
     branches: [main]
 
 env:
-  NODE_VERSION: '18'
+  NODE_VERSION: '20'
 
 jobs:
   test:

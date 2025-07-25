@@ -2,7 +2,20 @@
 
 ## Current Implementation Status
 
-This document describes the implemented FSD architecture with focus on layouts, guards, and authentication patterns.
+This document describes the implemented FSD architecture with focus on layouts, guards, authentication patterns, and modern React practices.
+
+## Technology Stack
+
+- **Node.js** 20+ (LTS)
+- **React** 19+ with modern features
+- **TypeScript** 5.8+ with strict configuration
+- **Vite** 7+ for build tooling
+- **TailwindCSS** 4+ for styling
+- **TanStack Router** for type-safe routing
+- **TanStack Query** for server state management
+- **Zustand** for client state management
+- **Jest** + **React Testing Library** for testing
+- **MSW** for API mocking
 
 ## Architecture Layers
 
@@ -10,19 +23,23 @@ This document describes the implemented FSD architecture with focus on layouts, 
 
 **Purpose**: Framework-agnostic foundational logic and app-level concerns
 
-```
+````text
 core/
-├── auth/
-│   ├── auth.utils.ts     # Token management utilities
+├── api/                  # API client configuration
+│   └── index.ts         # Axios setup, interceptors
+├── components/          # App-level components
+├── i18n/               # Internationalization setup
+│   └── index.ts        # i18next configuration
+├── layouts/            # Application layout wrappers
+│   ├── GlobalLayout.tsx # Global app concerns (providers, analytics)
+│   ├── LayoutWrapper.tsx # Layout composition
 │   └── index.ts
-├── layouts/
-│   ├── GlobalLayout.tsx  # Global concerns (analytics, providers)
-│   ├── AuthLayout.tsx    # Auth-specific visual layout
-│   └── index.ts
-├── router/
-│   └── index.tsx         # TanStack Router configuration
-└── index.ts
-```
+├── mock/               # MSW configuration
+│   └── browser.ts      # Service worker setup
+├── models/             # Core type definitions
+│   └── layout.model.ts # Layout interfaces
+└── router/             # Router configuration
+    └── index.tsx       # TanStack Router setup
 
 **Key Principle**: No business logic, only foundational services.
 
@@ -30,21 +47,34 @@ core/
 
 **Purpose**: Self-contained business features with their own guards, layouts, and logic
 
-```
+```text
 features/
-├── auth/
-│   ├── guards/           # AuthGuard, GuestGuard
-│   ├── layouts/          # Auth-specific layouts
-│   ├── managers/         # Business logic
-│   ├── pages/            # Auth pages
-│   ├── routes/           # Route definitions
-│   └── services/         # API services
-├── home/
-│   ├── routes/           # Home routes
-│   └── ...
-├── guards.tsx           # Cross-feature guard aggregation
-└── configs.ts           # Feature configuration
-```
+├── auth/                # Authentication feature
+│   ├── components/      # Login forms, auth UI
+│   ├── constants/       # Auth-related constants
+│   ├── guards/          # AuthGuard, GuestGuard
+│   ├── layouts/         # AuthLayout for auth pages
+│   ├── locales/         # Auth translations
+│   ├── managers/        # Auth business logic
+│   ├── mocks/           # MSW handlers for auth
+│   ├── models/          # Auth types and interfaces
+│   ├── pages/           # Login, Register pages
+│   ├── queries/         # TanStack Query hooks
+│   ├── routes/          # Auth route definitions
+│   ├── schema/          # Validation schemas
+│   ├── services/        # Auth API services
+│   ├── stores/          # Auth state management
+│   └── utils/           # Auth utilities
+├── home/                # Home feature
+│   ├── constants/       # Home constants
+│   ├── guards/          # Home-specific guards
+│   └── routes/          # Home routes
+├── configs.ts           # Feature configuration aggregation
+├── guards.tsx           # Cross-feature guard utilities
+├── locales.ts           # Locale aggregation
+├── mocks.ts             # Mock aggregation
+└── routes.ts            # Route aggregation
+````
 
 ### 🤝 **Shared Layer** - Common Resources
 
@@ -423,3 +453,78 @@ flowchart TD
     class Plan,Review decision
     class Mocks,Locales parallel
 ```
+
+## Build & Configuration Architecture
+
+### Modern Toolchain Setup
+
+This project uses a modern, optimized toolchain designed for performance and developer experience:
+
+#### Build Configuration (Vite 7+)
+
+```typescript
+// vite.config.ts - Modern build setup
+export default defineConfig({
+  plugins: [
+    react(), // React support with Fast Refresh
+    tailwindcss(), // TailwindCSS 4+ integration
+  ],
+  server: {
+    port: 3000, // Consistent dev server port
+    open: true, // Auto-open browser
+  },
+  resolve: {
+    alias: {
+      // Path mapping for clean imports
+      '@': path.resolve(__dirname, './src'),
+      components: path.resolve(__dirname, './src/components'),
+      features: path.resolve(__dirname, './src/features'),
+      core: path.resolve(__dirname, './src/core'),
+    },
+  },
+});
+```
+
+#### TypeScript Configuration (5.8+)
+
+```json
+// tsconfig.json - Strict TypeScript setup
+{
+  "compilerOptions": {
+    "target": "ES2022", // Modern JavaScript target
+    "lib": ["ES2022", "DOM"], // Modern APIs
+    "module": "ESNext", // ESM modules
+    "moduleResolution": "bundler", // Vite-optimized resolution
+    "strict": true, // Strict type checking
+    "noUnusedLocals": true, // Enforce clean code
+    "jsx": "react-jsx" // Modern JSX transform
+  }
+}
+```
+
+#### Package Configuration
+
+```json
+// package.json - Node 20+ requirement
+{
+  "type": "module", // ESM-first approach
+  "engines": {
+    "node": ">=20.0.0", // Node 20+ requirement
+    "npm": ">=10.0.0" // npm 10+ requirement
+  }
+}
+```
+
+### Testing Architecture
+
+- **Jest 30+** - Modern testing framework
+- **React Testing Library 16+** - Component testing
+- **MSW 2+** - API mocking
+- **80% coverage** - Quality threshold
+
+### Code Quality Pipeline
+
+- **ESLint 9+** - Modern linting with flat config
+- **Prettier 3+** - Code formatting
+- **Husky** - Git hooks
+- **TypeScript strict mode** - Type safety

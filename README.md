@@ -59,8 +59,8 @@ graph TD
 
 ### Prerequisites
 
-- **Node.js** 18+
-- **npm** 9+
+- **Node.js** 20+
+- **npm** 10+
 - **Git**
 
 ### Installation
@@ -84,21 +84,20 @@ npm run dev
 ```bash
 # Development
 npm run dev          # Start dev server with HMR
-npm run build        # Build for production
+npm run build        # Build for production (TypeScript + Vite)
 npm run preview      # Preview production build
 
 # Code Quality
 npm run lint         # Run ESLint
-npm run lint:fix     # Fix linting issues
-npm run type-check   # TypeScript compilation check
+npm run prepare      # Setup Husky git hooks
 
 # Testing
 npm test             # Run tests in watch mode
 npm run test:ci      # Run tests in CI mode
 npm run test:coverage # Run tests with coverage report
 
-# Utilities
-npm run clean        # Clean build artifacts
+# Development Tools
+npm run storybook    # Start Storybook component documentation
 ```
 
 ## 📁 Project Structure

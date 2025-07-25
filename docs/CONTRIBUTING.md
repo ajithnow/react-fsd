@@ -18,10 +18,22 @@ Thank you for your interest in contributing to our Feature-Sliced Design React a
 
 ### Prerequisites
 
-- **Node.js**: Version 18 or higher
-- **npm**: Version 9 or higher
+- **Node.js**: Version 20 or higher (LTS recommended)
+- **npm**: Version 10 or higher
 - **Git**: Latest version
 - **VS Code**: Recommended IDE with suggested extensions
+
+### Node Version Management
+
+This project requires Node.js 20+. Use the included `.nvmrc` file:
+
+```bash
+# Using nvm (recommended)
+nvm use
+
+# Or install the specified version
+nvm install 20
+```
 
 ### Installation
 

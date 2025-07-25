@@ -1,5 +1,26 @@
 # 🚀 Development Guidelines
 
+## Prerequisites
+
+Before starting development, ensure you have:
+
+- **Node.js** 20+ (LTS recommended)
+- **npm** 10+
+- **Git** (latest version)
+- A code editor with TypeScript support (VS Code recommended)
+
+### Node Version Management
+
+This project uses Node.js 20+. Use `.nvmrc` for version consistency:
+
+```bash
+# Using nvm (recommended)
+nvm use
+
+# Or install the specified version
+nvm install
+```
+
 ## Adding a New Feature
 
 ### Step 1: Planning & Design

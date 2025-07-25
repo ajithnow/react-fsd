@@ -1,6 +1,46 @@
 # Architecture Changes Summary
 
-This document summarizes the key architectural changes made to follow FSD principles.
+This document summarizes the key architectural changes and updates made to the React FSD project.
+
+## 🔄 Recent Updates (2025)
+
+### Node.js Version Upgrade
+
+**Updated**: Node.js requirement from 18+ to **20+**
+
+- ✅ Added `engines` field in `package.json`
+- ✅ Created `.nvmrc` file for version consistency
+- ✅ Updated all documentation references
+- ✅ Updated CI/CD configurations (GitHub Actions, Docker, Netlify, Vercel)
+
+**Breaking Change**: Projects now require Node.js 20+ and npm 10+
+
+### Technology Stack Updates
+
+**Current Stack (2025)**:
+
+- **Node.js** 20+ (LTS)
+- **React** 19+ with modern features
+- **TypeScript** 5.8+ with strict configuration
+- **Vite** 7+ for ultra-fast builds
+- **TailwindCSS** 4+ with native CSS support
+- **Jest** 30+ for testing
+- **ESLint** 9+ with flat config
+
+### Build Configuration Improvements
+
+**Enhanced Vite Configuration**:
+
+- Modern ES2022 target
+- Optimized path aliasing
+- TailwindCSS 4+ integration
+- Fast Refresh with React
+
+**TypeScript Strict Mode**:
+
+- `strict: true` enabled
+- `noUnusedLocals` and `noUnusedParameters` enforced
+- Modern `bundler` module resolution
 
 ## 🔄 Key Changes Made
 
