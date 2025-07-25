@@ -1,0 +1,14 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+build/
+
+# Documentation files
+*.md
+docs/**/*.md
+
+# Configuration files that don't need linting
+*.config.js
+*.config.ts

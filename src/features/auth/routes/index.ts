@@ -1,3 +1,3 @@
-import authRoutes from "./auth.route";
+import authRoutes from './auth.route.tsx';
 
 export default [...authRoutes];

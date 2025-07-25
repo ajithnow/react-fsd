@@ -1,4 +1,4 @@
-import type { GenerateResourcesOptions } from "../models/common.model";
+import type { GenerateResourcesOptions } from '../models/common.model';
 
 /**
  * This function is used to generate localization resources for the application.

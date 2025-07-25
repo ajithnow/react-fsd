@@ -1,6 +1,7 @@
+import { createModuleRoutes } from '../../../shared/utils/route.utils';
 
-export const AUTH_ROUTES = {
-  LOGIN: "/login",
-  REGISTER: "/register",
-  FORGOT_PASSWORD: "/forgot-password",
-} as const
+export const AUTH_ROUTES = createModuleRoutes('auth', {
+  LOGIN: '/login',
+  REGISTER: '/register',
+  FORGOT_PASSWORD: '/forgot-password',
+} as const);

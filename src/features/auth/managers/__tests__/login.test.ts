@@ -15,8 +15,10 @@ jest.mock('../../stores/auth.store', () => ({
 }));
 
 const mockNavigate = jest.fn();
+const mockUseSearch = jest.fn().mockReturnValue({});
 jest.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
+  useSearch: () => mockUseSearch(),
 }));
 
 describe('useLoginManager', () => {
@@ -35,7 +37,7 @@ describe('useLoginManager', () => {
       });
     });
 
-    expect(localStorage.getItem('authToken')).toBe('fake-token');
+    expect(localStorage.getItem('auth_token')).toBe('fake-token');
 
     expect(mockSetUser).toHaveBeenCalledWith({
       id: 1,
@@ -43,7 +45,43 @@ describe('useLoginManager', () => {
       email: 'john@demo.com',
     });
 
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
+  });
+
+  it('should navigate to custom return URL when provided and not login page', async () => {
+    const mockSearchParams = { returnUrl: '/dashboard' };
+    (mockUseSearch as jest.Mock).mockReturnValue(mockSearchParams);
+
+    const { result } = renderHook(() => useLoginManager());
+
+    const user = {
+      username: 'testuser',
+      password: 'password123',
+    };
+
+    await act(async () => {
+      await result.current.handleLogin(user);
+    });
+
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/dashboard' });
+  });
+
+  it('should navigate to home when return URL is login page', async () => {
+    const mockSearchParams = { returnUrl: '/auth/login' };
+    (mockUseSearch as jest.Mock).mockReturnValue(mockSearchParams);
+
+    const { result } = renderHook(() => useLoginManager());
+
+    const user = {
+      username: 'testuser',
+      password: 'password123',
+    };
+
+    await act(async () => {
+      await result.current.handleLogin(user);
+    });
+
+    expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
   });
 
   it('should expose isLoading and error correctly', () => {

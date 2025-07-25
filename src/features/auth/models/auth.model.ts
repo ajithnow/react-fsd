@@ -1,8 +1,10 @@
-import type z from "zod";
-import type { AUTH_ROUTES } from "../constants/routes.constants";
-import type { createLoginSchema } from "../schema/auth.schema";
+import type z from 'zod';
+import type { AUTH_ROUTES } from '../constants/routes.constants';
+import type useAuthSchema from '../schema/auth.schema';
 
-export type LoginFormValues = z.infer<ReturnType<typeof createLoginSchema>>;
+export type LoginFormValues = z.infer<
+  ReturnType<typeof useAuthSchema>['login']
+>;
 
 export interface LoginFormProps {
   onSubmit: (credentials: LoginFormValues) => void;
@@ -18,4 +20,8 @@ export type AuthState = {
   logout: () => void;
 };
 
-export type AuthRoutes = typeof AUTH_ROUTES[keyof typeof AUTH_ROUTES];
+export type AuthRoutes = (typeof AUTH_ROUTES)[keyof typeof AUTH_ROUTES];
+
+export interface AuthLayoutProps {
+  children: React.ReactNode;
+}

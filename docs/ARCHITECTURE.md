@@ -1,18 +1,140 @@
 # 🏛️ Feature-Sliced Design (FSD) Architecture
 
+## Current Implementation Status
+
+This document describes the implemented FSD architecture with focus on layouts, guards, and authentication patterns.
+
 ## Architecture Layers
 
-This diagram illustrates the Feature-Sliced Design architecture with clear dependency flow and layer responsibilities.
+### 🎯 **Core Layer** - Application Infrastructure
 
-```mermaid
+**Purpose**: Framework-agnostic foundational logic and app-level concerns
+
+```
+core/
+├── auth/
+│   ├── auth.utils.ts     # Token management utilities
+│   └── index.ts
+├── layouts/
+│   ├── GlobalLayout.tsx  # Global concerns (analytics, providers)
+│   ├── AuthLayout.tsx    # Auth-specific visual layout
+│   └── index.ts
+├── router/
+│   └── index.tsx         # TanStack Router configuration
+└── index.ts
+```
+
+**Key Principle**: No business logic, only foundational services.
+
+### 🚀 **Features Layer** - Business Logic
+
+**Purpose**: Self-contained business features with their own guards, layouts, and logic
+
+```
+features/
+├── auth/
+│   ├── guards/           # AuthGuard, GuestGuard
+│   ├── layouts/          # Auth-specific layouts
+│   ├── managers/         # Business logic
+│   ├── pages/            # Auth pages
+│   ├── routes/           # Route definitions
+│   └── services/         # API services
+├── home/
+│   ├── routes/           # Home routes
+│   └── ...
+├── guards.tsx           # Cross-feature guard aggregation
+└── configs.ts           # Feature configuration
+```
+
+### 🤝 **Shared Layer** - Common Resources
+
+**Purpose**: Reusable utilities and types used across features
+
+```
+shared/
+├── models/
+│   └── common.model.ts   # Guard interfaces, common types
+├── utils/
+│   └── common.utils.ts   # generateGuards, generateResources
+└── pages/
+    └── HomePage/         # Shared page components
+```
+
+## 🛡️ Guard System Implementation
+
+### Architecture Philosophy
+
+Guards follow FSD principles by living within their respective features, with shared types in the shared layer.
+
+**Location Strategy**:
+
+- `features/auth/guards/` - Auth-specific guards (AuthGuard, GuestGuard)
+- `shared/models/common.model.ts` - Common guard interfaces
+- `features/guards.tsx` - Optional cross-feature aggregation
+
+### Usage Patterns
+
+#### Direct Feature Imports (Recommended)
+
+```typescript
+// Within auth feature
+import { GuestGuard } from '../guards';
+
+// Cross-feature usage
+import { AuthGuard } from '@/features/auth/guards';
+
+// Route implementation
+const homeRoute = createRoute({
+  component: () => (
+    <AuthGuard>
+      <HomePage />
+    </AuthGuard>
+  ),
+});
+```
+
+## 🎨 Layout System Implementation
+
+### Layout Hierarchy
+
+1. **GlobalLayout** - App-level concerns (analytics, providers, error boundaries)
+2. **AuthLayout** - Auth-specific visual structure (branding, forms)
+3. **Feature Layouts** - Feature-specific UI patterns
+
+### GlobalLayout Simplification
+
+**Philosophy**: GlobalLayout should handle global concerns, not visual layout.
+
+```typescript
+// Before: Mixed visual + global concerns
+<div className="min-h-screen">
+  <header>...</header>
+  <main>{children}</main>
+  <footer>...</footer>
+</div>
+
+// After: Pure global concerns
+<>
+  {/* TODO: Analytics, Error Boundaries, Providers */}
+  {children}
+</>
+```
+
+**Benefits**:
+
+- ✅ Separation of concerns
+- ✅ Visual layout flexibility per feature
+- ✅ Easier testing and maintenance
+- ✅ Ready for analytics/monitoring integration
+
 graph TD
-    subgraph "Application Architecture"
-        subgraph "Features Layer (Business Logic)"
-            F1[👤 Auth Feature]
-            F2[📊 Dashboard Feature]
-            F3[⚙️ Settings Feature]
-            F4[🔍 Search Feature]
-        end
+subgraph "Application Architecture"
+subgraph "Features Layer (Business Logic)"
+F1[👤 Auth Feature]
+F2[📊 Dashboard Feature]
+F3[⚙️ Settings Feature]
+F4[🔍 Search Feature]
+end
 
         subgraph "Shared Layer (Common Resources)"
             S1[🤝 Shared Components]
@@ -62,7 +184,8 @@ graph TD
     class S1,S2,S3,S4 sharedLayer
     class C1,C2,C3,C4 coreLayer
     class L1,L2,L3 libLayer
-```
+
+````
 
 ## Feature Internal Structure
 
@@ -126,7 +249,7 @@ graph TD
     class A6,A7,A8 dataLayer
     class A9,A10,A11 configLayer
     class A12,A13 devLayer
-```
+````
 
 ## Data Flow Architecture
 
