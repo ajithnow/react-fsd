@@ -1,6 +1,7 @@
 import { AuthGuard } from "../../auth/guards";
 import { FeatureToggle } from "../../../shared/components";
 import { FeatureFlagDemo } from "./FeatureFlag.demo";
+import { UserDataTableExample } from "../../../shared/components/DataTable/dataTable.demo";
 
 export const HomeComponent = () => {
   return (
@@ -53,6 +54,14 @@ export const HomeComponent = () => {
         </FeatureToggle>
         
         <FeatureFlagDemo />
+        
+        {/* DataTable Example */}
+        <div style={{ marginTop: '40px' }}>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px' }}>
+            DataTable Demo
+          </h2>
+          <UserDataTableExample />
+        </div>
       </div>
     </AuthGuard>
   );

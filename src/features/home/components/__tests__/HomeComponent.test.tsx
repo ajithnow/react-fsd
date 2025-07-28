@@ -39,6 +39,11 @@ jest.mock('../FeatureFlag.demo', () => ({
   FeatureFlagDemo: () => <div data-testid="feature-flag-demo">Feature Flag Demo</div>
 }));
 
+// Mock the UserDataTableExample component to prevent API calls
+jest.mock('../../../../shared/components/DataTable/dataTable.demo', () => ({
+  UserDataTableExample: () => <div data-testid="user-data-table-example">User Data Table Demo</div>
+}));
+
 // Get the mocked function
 const mockUseFeatureFlag = useFeatureFlag as jest.MockedFunction<typeof useFeatureFlag>;
 
@@ -178,5 +183,11 @@ describe('HomeComponent', () => {
     
     // But register disabled
     expect(screen.getByText('Registration is currently disabled')).toBeTruthy();
+  });
+
+  it('should render the UserDataTableExample component', () => {
+    render(<HomeComponent />);
+    
+    expect(screen.getByTestId('user-data-table-example')).toBeTruthy();
   });
 });
