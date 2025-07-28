@@ -5,3 +5,8 @@ export interface GuardProps {
   fallback?: React.ReactNode;
   redirectTo?: string;
 }
+
+export interface BaseGuardProps {
+  children: React.ReactNode;
+  fallback?: React.ReactNode;
+}

@@ -2,10 +2,8 @@ import React from 'react';
 import { useFeatureFlags, useFeatureFlag } from '../../../shared/utils/featureFlags';
 
 export const FeatureFlagDemo: React.FC = () => {
-  // Using the full hook
   const { getAllFlags, isEnabled } = useFeatureFlags();
-  
-  // Using individual flag hook
+
   const newUI = useFeatureFlag<boolean>('newUI');
   const buttonColor = useFeatureFlag<string>('experiments.buttonColor');
   
