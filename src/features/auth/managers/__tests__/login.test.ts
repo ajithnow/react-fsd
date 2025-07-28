@@ -1,4 +1,5 @@
-import { useLoginManager } from "../login.manager";
+import { AUTH_CONSTANTS } from '../../constants';
+import { useLoginManager } from '../login.manager';
 import { renderHook, act } from '@testing-library/react';
 
 jest.mock('../../queries/login.query', () => ({
@@ -11,7 +12,9 @@ jest.mock('../../queries/login.query', () => ({
 
 const mockSetUser = jest.fn();
 jest.mock('../../stores/auth.store', () => ({
-  useAuthStore: (fn: (state: { setUser: (user: unknown) => void }) => unknown) => fn({ setUser: mockSetUser }),
+  useAuthStore: (
+    fn: (state: { setUser: (user: unknown) => void }) => unknown
+  ) => fn({ setUser: mockSetUser }),
 }));
 
 const mockNavigate = jest.fn();
@@ -37,12 +40,13 @@ describe('useLoginManager', () => {
       });
     });
 
-    expect(localStorage.getItem('auth_token')).toBe('fake-token');
+    expect(localStorage.getItem(AUTH_CONSTANTS.ACCESS_TOKEN)).toBe(
+      'fake-token'
+    );
 
     expect(mockSetUser).toHaveBeenCalledWith({
       id: 1,
       name: 'john',
-      email: 'john@demo.com',
     });
 
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
@@ -50,7 +54,7 @@ describe('useLoginManager', () => {
 
   it('should navigate to custom return URL when provided and not login page', async () => {
     const mockSearchParams = { returnUrl: '/dashboard' };
-    (mockUseSearch as jest.Mock).mockReturnValue(mockSearchParams);
+    mockUseSearch.mockReturnValue(mockSearchParams);
 
     const { result } = renderHook(() => useLoginManager());
 
@@ -68,7 +72,7 @@ describe('useLoginManager', () => {
 
   it('should navigate to home when return URL is login page', async () => {
     const mockSearchParams = { returnUrl: '/auth/login' };
-    (mockUseSearch as jest.Mock).mockReturnValue(mockSearchParams);
+    mockUseSearch.mockReturnValue(mockSearchParams);
 
     const { result } = renderHook(() => useLoginManager());
 
@@ -91,4 +95,3 @@ describe('useLoginManager', () => {
     expect(result.current.error).toBeNull();
   });
 });
-

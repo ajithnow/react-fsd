@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { AuthGuard } from '../AuthGuard';
-import * as authUtils from '../../utils/auth.utils';
+import * as authUtils from '../../../features/auth/utils';
 
 // Mock the auth utils
-jest.mock('../../utils/auth.utils', () => ({
+jest.mock('../../../features/auth/utils', () => ({
   isAuthenticated: jest.fn(),
 }));
 

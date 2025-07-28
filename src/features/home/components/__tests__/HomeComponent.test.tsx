@@ -61,30 +61,6 @@ describe('HomeComponent', () => {
     expect(screen.getByTestId('auth-guard')).toBeTruthy();
   });
 
-  it('should display auth features status when enabled', () => {
-    mockUseFeatureFlag.mockImplementation((flag: string) => {
-      if (flag === 'auth.enabled') return true;
-      if (flag === 'auth.features.login') return true;
-      if (flag === 'auth.features.register') return false;
-      return false;
-    });
-    
-    render(<HomeComponent />);
-    
-    expect(screen.getByText('Auth Features Status:')).toBeTruthy();
-    expect(screen.getByText('Auth Module: ✅ Enabled')).toBeTruthy();
-    expect(screen.getByText('Login Feature: ✅ Enabled')).toBeTruthy();
-  });
-
-  it('should show disabled status when auth features are off', () => {
-    mockUseFeatureFlag.mockReturnValue(false);
-    
-    render(<HomeComponent />);
-    
-    expect(screen.getByText('Auth Module: ❌ Disabled')).toBeTruthy();
-    expect(screen.getByText('Login Feature: ❌ Disabled')).toBeTruthy();
-  });
-
   it('should render auth enabled message when auth is enabled', () => {
     mockUseFeatureFlag.mockImplementation((flag: string) => {
       if (flag === 'auth.enabled') return true;
@@ -93,7 +69,7 @@ describe('HomeComponent', () => {
     
     render(<HomeComponent />);
     
-    expect(screen.getByText('✨ Authentication Module is enabled!')).toBeTruthy();
+    expect(screen.getByText('Authentication Module is enabled!')).toBeTruthy();
   });
 
   it('should show login button when login feature is enabled', () => {
@@ -106,7 +82,7 @@ describe('HomeComponent', () => {
     
     render(<HomeComponent />);
     
-    expect(screen.getByText('🔐 Login Available')).toBeTruthy();
+    expect(screen.getByText('Login Available')).toBeTruthy();
   });
 
   it('should show login disabled message when login feature is disabled', () => {
@@ -132,7 +108,7 @@ describe('HomeComponent', () => {
     
     render(<HomeComponent />);
     
-    expect(screen.getByText('📝 Register Now')).toBeTruthy();
+    expect(screen.getByText('Register Now')).toBeTruthy();
   });
 
   it('should show register disabled message when register feature is disabled', () => {
@@ -179,8 +155,8 @@ describe('HomeComponent', () => {
     
     render(<HomeComponent />);
     
-    const loginButton = screen.getByText('🔐 Login Available');
-    const registerButton = screen.getByText('📝 Register Now');
+    const loginButton = screen.getByText('Login Available');
+    const registerButton = screen.getByText('Register Now');
     
     expect(loginButton.tagName).toBe('BUTTON');
     expect(registerButton.tagName).toBe('BUTTON');
@@ -197,8 +173,8 @@ describe('HomeComponent', () => {
     render(<HomeComponent />);
     
     // Auth enabled and login enabled
-    expect(screen.getByText('✨ Authentication Module is enabled!')).toBeTruthy();
-    expect(screen.getByText('🔐 Login Available')).toBeTruthy();
+    expect(screen.getByText('Authentication Module is enabled!')).toBeTruthy();
+    expect(screen.getByText('Login Available')).toBeTruthy();
     
     // But register disabled
     expect(screen.getByText('Registration is currently disabled')).toBeTruthy();

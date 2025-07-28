@@ -11,7 +11,7 @@ export interface LoginFormProps {
   isLoading: boolean;
 }
 
-export type User = { id: number; name: string; email: string };
+export type User = { id: number; name: string };
 
 export type AuthState = {
   user: User | null;

@@ -2,6 +2,8 @@ import { useNavigate, useSearch } from '@tanstack/react-router';
 import { useAuthStore } from '../stores/auth.store';
 import { useLoginMutation } from '../queries/login.query';
 import { authStorage } from '../utils';
+import { AUTH_ROUTES } from '../constants';
+import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 
 export const useLoginManager = () => {
   const setUser = useAuthStore(s => s.setUser);
@@ -19,7 +21,7 @@ export const useLoginManager = () => {
 
     // Use the centralized auth storage
     authStorage.setToken(token);
-    const user = { id: 1, name: username, email: `${username}@demo.com` };
+    const user = { id: 1, name: username };
     authStorage.setUser(user);
     setUser(user);
 
@@ -27,7 +29,9 @@ export const useLoginManager = () => {
     const returnUrl = (searchParams as Record<string, unknown>)
       ?.returnUrl as string;
     const destination =
-      returnUrl && returnUrl !== '/auth/login' ? returnUrl : '/';
+      returnUrl && returnUrl !== AUTH_ROUTES.LOGIN
+        ? returnUrl
+        : ROUTE_CONSTANTS.ROOT;
 
     navigate({ to: destination });
   };

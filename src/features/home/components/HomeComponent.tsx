@@ -1,12 +1,8 @@
 import { AuthGuard } from "../../auth/guards";
 import { FeatureToggle } from "../../../shared/components";
-import { useFeatureFlag } from "../../../shared/utils/featureFlags";
 import { FeatureFlagDemo } from "./FeatureFlag.demo";
 
 export const HomeComponent = () => {
-  const authEnabled = useFeatureFlag<boolean>('auth.enabled');
-  const loginEnabled = useFeatureFlag<boolean>('auth.features.login');
-  
   return (
     <AuthGuard>
       <div style={{ padding: '20px' }}>
@@ -14,15 +10,9 @@ export const HomeComponent = () => {
         
         <FeatureToggle feature="auth.enabled">
           <div style={{ border: '2px solid green', padding: '10px', margin: '10px 0' }}>
-            ✨ Authentication Module is enabled!
+             Authentication Module is enabled!
           </div>
-        </FeatureToggle>
-        
-        <div style={{ margin: '20px 0' }}>
-          <h3>Auth Features Status:</h3>
-          <p>Auth Module: {authEnabled ? '✅ Enabled' : '❌ Disabled'}</p>
-          <p>Login Feature: {loginEnabled ? '✅ Enabled' : '❌ Disabled'}</p>
-        </div>
+        </FeatureToggle>     
         
         <FeatureToggle 
           feature="auth.features.login" 
@@ -39,7 +29,7 @@ export const HomeComponent = () => {
               margin: '10px 0'
             }}
           >
-            🔐 Login Available
+            Login Available
           </button>
         </FeatureToggle>
         
@@ -58,7 +48,7 @@ export const HomeComponent = () => {
               margin: '10px 0'
             }}
           >
-            📝 Register Now
+            Register Now
           </button>
         </FeatureToggle>
         
