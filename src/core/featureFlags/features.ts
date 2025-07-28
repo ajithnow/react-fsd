@@ -25,7 +25,6 @@ export const useFeatureFlags = () => {
   };
 };
 
-// For standalone usage without React context
 export const getFeatureFlagValue = <T = boolean>(path: string): T => {
   const flags = loadFeatureFlags();
   return getFlag<T>(flags, path);

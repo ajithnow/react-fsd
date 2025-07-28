@@ -6,7 +6,7 @@ const API_BASE_URL =
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
-  timeout: 10000, // Request timeout in milliseconds
+  timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
     Accept: 'application/json',
@@ -89,15 +89,4 @@ apiClient.interceptors.response.use(
   }
 );
 
-// 5. Export the configured Axios instance
-// This is what your services will import and use.
 export default apiClient;
-
-// Optionally, you might export specific utility functions built on top of apiClient
-// export const setAuthToken = (token: string | null) => {
-//   if (token) {
-//     apiClient.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-//   } else {
-//     delete apiClient.defaults.headers.common['Authorization'];
-//   }
-// };
