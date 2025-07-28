@@ -1,5 +1,7 @@
 import { createModuleRoutes } from '../../../shared/utils/route.utils';
 
+export const ROUTE_PREFIX = '/auth/';
+
 export const AUTH_ROUTES = createModuleRoutes('auth', {
   LOGIN: '/login',
   REGISTER: '/register',
