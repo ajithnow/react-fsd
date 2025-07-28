@@ -6,7 +6,8 @@ const useLoginService = () => {
     password: string;
   }) => {
     const res = await apiClient.post('/auth/login', credentials);
-    const { token } = res.data;
+    const { data } = res.data;
+    const token = data.accessToken;
     return { token };
   };
   return {

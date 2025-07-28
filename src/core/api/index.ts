@@ -1,3 +1,4 @@
+import { FEATURE_CONSTANTS } from '@/features/constants';
 import axios from 'axios';
 
 const API_BASE_URL =
@@ -14,7 +15,7 @@ const apiClient = axios.create({
 
 apiClient.interceptors.request.use(
   config => {
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
 
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -47,14 +48,19 @@ apiClient.interceptors.response.use(
 
       // --- TOKEN REFRESH LOGIC (if applicable) ---
       try {
-        const refreshToken = localStorage.getItem('refreshToken');
+        const refreshToken = localStorage.getItem(
+          FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN
+        );
         if (refreshToken) {
           const refreshResponse = await axios.post(
             `${API_BASE_URL}/auth/refresh-token`,
             { refreshToken }
           );
           const newAccessToken = refreshResponse.data.accessToken;
-          localStorage.setItem('authToken', newAccessToken); // Store new token
+          localStorage.setItem(
+            FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN,
+            newAccessToken
+          ); // Store new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return apiClient(originalRequest);
         }
