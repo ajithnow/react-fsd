@@ -1,9 +1,35 @@
 import { AuthGuard } from "../../auth/guards";
 import { FeatureToggle } from "../../../shared/components";
-import { FeatureFlagDemo } from "./FeatureFlag.demo";
-import { UserDataTableExample } from "../../../shared/components/DataTable/dataTable.demo";
+import { useUsersManager } from "../managers/users.manager";
+import { UserDataTable } from "./UserDataTable";
+import { FilterValues } from "../../../shared/components/DataTable";
 
 export const HomeComponent = () => {
+  // Initialize filters from URL
+  const getInitialFilters = (): FilterValues => {
+    const params = new URLSearchParams(window.location.search);
+    const initialFilters: FilterValues = {};
+    const roleParam = params.get('role');
+    if (roleParam) initialFilters.role = roleParam.split(',');
+    const statusParam = params.get('status');
+    if (statusParam) initialFilters.status = statusParam;
+    const nameParam = params.get('name');
+    if (nameParam) initialFilters.name = nameParam;
+    return initialFilters;
+  };
+
+  // Use the users manager hook at page level
+  const {
+    users,
+    pagination,
+    loading,
+    currentFilters,
+    handlePageChange,
+    handlePageSizeChange,
+    handleSortChange,
+    handleFilterChange,
+  } = useUsersManager(getInitialFilters());
+
   return (
     <AuthGuard>
       <div style={{ padding: '20px' }}>
@@ -53,14 +79,19 @@ export const HomeComponent = () => {
           </button>
         </FeatureToggle>
         
-        <FeatureFlagDemo />
-        
-        {/* DataTable Example */}
+        {/* User Management DataTable */}
         <div style={{ marginTop: '40px' }}>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 'bold', marginBottom: '20px' }}>
-            DataTable Demo
-          </h2>
-          <UserDataTableExample />
+          <h2 className="text-2xl font-bold mb-6">User Management</h2>
+          <UserDataTable
+            users={users}
+            loading={loading}
+            pagination={pagination}
+            currentFilters={currentFilters}
+            onPageChange={handlePageChange}
+            onPageSizeChange={handlePageSizeChange}
+            onSortChange={handleSortChange}
+            onFilterChange={handleFilterChange}
+          />
         </div>
       </div>
     </AuthGuard>

@@ -5,12 +5,26 @@ A comprehensive, reusable data table component built on top of shadcn/ui that su
 - ✅ Server-side pagination
 - ✅ Sorting (ascending/descending/none)
 - ✅ Advanced filtering (text, select, multiselect, number, date, dateRange)
+- ✅ Debounced text inputs for performance optimization
 - ✅ URL-based filter persistence (filters survive page refresh)
 - ✅ Loading states
 - ✅ Custom cell rendering
 - ✅ Responsive design
 - ✅ TypeScript support
 - ✅ Comprehensive test coverage
+- ✅ Feature-Sliced Design (FSD) architecture integration
+
+## Architecture Integration
+
+This DataTable component is designed to work with Feature-Sliced Design (FSD) architecture:
+
+- **Shared Layer**: The DataTable component lives in `src/shared/components/DataTable`
+- **Features Layer**: Feature-specific implementations in `src/features/[feature]/components`
+- **Managers**: Business logic and state management in `src/features/[feature]/managers`
+- **Queries**: React Query hooks for data fetching in `src/features/[feature]/queries`
+- **Services**: API calls in `src/features/[feature]/services`
+
+See the example implementation in `src/features/home/components/UserDataTable/` for reference.
 
 ## Basic Usage
 
@@ -495,12 +509,25 @@ src/shared/components/DataTable/
 ├── DataTable.tsx               # Main component
 ├── DataTableFilters.tsx        # Filter controls with multiselect support
 ├── DataTablePagination.tsx     # Pagination controls
+├── DebouncedInput.tsx          # Universal debounced text input
 ├── types.ts                    # TypeScript definitions
-├── dataTable.demo.tsx          # Complete demo with URL sync
 ├── index.ts                    # Exports
 ├── README.md                   # This file
 └── __tests__/                  # Test files
     ├── DataTable.test.tsx
     ├── DataTableFilters.test.tsx
-    └── DataTablePagination.test.tsx
+    ├── DataTablePagination.test.tsx
+    └── DebouncedInput.test.tsx
+
+Example Implementation (Feature-Sliced Design):
+src/features/home/
+├── components/
+│   └── UserDataTable/
+│       └── UserDataTable.tsx   # Feature-specific DataTable implementation
+├── managers/
+│   └── users.manager.ts        # Business logic and state management
+├── queries/
+│   └── users.query.ts          # React Query hooks
+└── services/
+    └── users.service.ts        # API calls
 ```

@@ -1,7 +1,19 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { HomeComponent } from '../HomeComponent';
 import { useFeatureFlag } from '../../../../shared/utils/featureFlags';
+
+// Mock the users service
+jest.mock('../../services/users.service', () => ({
+  usersService: {
+    getUsers: jest.fn()
+  }
+}));
+
+// Get the mocked function
+const { usersService } = jest.requireMock('../../services/users.service');
+const mockGetUsers = usersService.getUsers;
 
 // Mock the auth guards
 jest.mock('../../../auth/guards', () => ({
@@ -34,34 +46,54 @@ jest.mock('../../../../shared/components', () => ({
   }
 }));
 
-// Mock the FeatureFlagDemo component
-jest.mock('../FeatureFlag.demo', () => ({
-  FeatureFlagDemo: () => <div data-testid="feature-flag-demo">Feature Flag Demo</div>
-}));
-
-// Mock the UserDataTableExample component to prevent API calls
-jest.mock('../../../../shared/components/DataTable/dataTable.demo', () => ({
-  UserDataTableExample: () => <div data-testid="user-data-table-example">User Data Table Demo</div>
-}));
-
 // Get the mocked function
 const mockUseFeatureFlag = useFeatureFlag as jest.MockedFunction<typeof useFeatureFlag>;
 
 describe('HomeComponent', () => {
+  let queryClient: QueryClient;
+
   beforeEach(() => {
     jest.clearAllMocks();
+    // Create a new QueryClient for each test
+    queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+    
     // Set default return values
     mockUseFeatureFlag.mockReturnValue(true);
+    
+    // Mock API response
+    mockGetUsers.mockResolvedValue({
+      data: [
+        { id: 1, name: 'John Doe', email: 'john@example.com', role: 'admin', status: 'active' },
+        { id: 2, name: 'Jane Smith', email: 'jane@example.com', role: 'user', status: 'inactive' }
+      ],
+      total: 2,
+      page: 1,
+      pageSize: 10
+    });
   });
 
+  const renderWithQueryClient = (component: React.ReactElement) => {
+    return render(
+      <QueryClientProvider client={queryClient}>
+        {component}
+      </QueryClientProvider>
+    );
+  };
+
   it('should render the home page title', () => {
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Home Page')).toBeTruthy();
   });
 
   it('should be wrapped in AuthGuard', () => {
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByTestId('auth-guard')).toBeTruthy();
   });
@@ -72,7 +104,7 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Authentication Module is enabled!')).toBeTruthy();
   });
@@ -85,7 +117,7 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Login Available')).toBeTruthy();
   });
@@ -98,7 +130,7 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Login feature is disabled')).toBeTruthy();
   });
@@ -111,7 +143,7 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Register Now')).toBeTruthy();
   });
@@ -124,26 +156,20 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByText('Registration is currently disabled')).toBeTruthy();
   });
 
-  it('should render FeatureFlagDemo component', () => {
-    render(<HomeComponent />);
-    
-    expect(screen.getByTestId('feature-flag-demo')).toBeTruthy();
-  });
-
   it('should call useFeatureFlag with correct auth flags', () => {
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(mockUseFeatureFlag).toHaveBeenCalledWith('auth.enabled');
     expect(mockUseFeatureFlag).toHaveBeenCalledWith('auth.features.login');
   });
 
   it('should render all feature toggles with correct feature flags', () => {
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     expect(screen.getByTestId('feature-toggle-auth.enabled')).toBeTruthy();
     expect(screen.getByTestId('feature-toggle-auth.features.login')).toBeTruthy();
@@ -158,7 +184,7 @@ describe('HomeComponent', () => {
       return true;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     const loginButton = screen.getByText('Login Available');
     const registerButton = screen.getByText('Register Now');
@@ -175,7 +201,7 @@ describe('HomeComponent', () => {
       return false;
     });
     
-    render(<HomeComponent />);
+    renderWithQueryClient(<HomeComponent />);
     
     // Auth enabled and login enabled
     expect(screen.getByText('Authentication Module is enabled!')).toBeTruthy();
@@ -185,9 +211,9 @@ describe('HomeComponent', () => {
     expect(screen.getByText('Registration is currently disabled')).toBeTruthy();
   });
 
-  it('should render the UserDataTableExample component', () => {
-    render(<HomeComponent />);
+  it('should render the UserDataTable component', () => {
+    renderWithQueryClient(<HomeComponent />);
     
-    expect(screen.getByTestId('user-data-table-example')).toBeTruthy();
+    expect(screen.getByTestId('user-data-table')).toBeTruthy();
   });
 });

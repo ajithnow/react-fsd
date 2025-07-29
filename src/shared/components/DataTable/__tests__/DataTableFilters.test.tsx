@@ -76,10 +76,8 @@ describe('DataTableFilters', () => {
     const input = screen.getByPlaceholderText('Search by name...');
     fireEvent.change(input, { target: { value: 'John' } });
 
-    // Debounce might delay this, so we may need to wait
-    // For now, assuming no debounce or a very short one
-    // If this fails, we'll need to use fake timers or waitFor
-    await new Promise(r => setTimeout(r, 400)); // wait for debounce
+    // Wait for debounce to complete (DebouncedInput has 500ms default delay)
+    await new Promise(r => setTimeout(r, 600)); // wait for debounce
     expect(mockOnFilterChange).toHaveBeenCalledWith({ name: 'John' });
   });
 
@@ -262,7 +260,7 @@ describe('DataTableFilters', () => {
     expect(screen.getByText('Name')).toBeInTheDocument();
   });
 
-  it('handles undefined values in filter cleanup', () => {
+  it('handles undefined values in filter cleanup', async () => {
     // Test that empty values trigger the cleanup logic
     render(
       <DataTableFilters
@@ -277,6 +275,9 @@ describe('DataTableFilters', () => {
     
     // Clear the value to trigger cleanup
     fireEvent.change(textInput, { target: { value: '' } });
+    
+    // Wait for debounce to complete
+    await new Promise(r => setTimeout(r, 600));
     expect(mockOnFilterChange).toHaveBeenCalledWith({});
   });
 

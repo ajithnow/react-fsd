@@ -11,6 +11,7 @@ import {
 import { FilterX } from 'lucide-react';
 import { DataTableFiltersProps, FilterValues } from './dataTable.model';
 import { MultiSelect } from '../../../lib/shadcn/components/ui/multiselect';
+import { DebouncedInput } from './DebouncedInput';
 
 export function DataTableFilters({
   filters,
@@ -79,11 +80,12 @@ export function DataTableFilters({
 
       case 'text':
         return (
-          <Input
+          <DebouncedInput
             placeholder={filter.placeholder || `Filter ${filter.label}`}
             value={value ? String(value) : ''}
-            onChange={(e) => handleFilterChange(filter.id, e.target.value)}
+            onChange={(newValue) => handleFilterChange(filter.id, newValue)}
             className="w-[180px]"
+            debounceMs={500}
           />
         );
 
