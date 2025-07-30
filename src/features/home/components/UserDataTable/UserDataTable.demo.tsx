@@ -1,5 +1,18 @@
 import { useMemo } from 'react';
 import { DataTable, DataTableColumn, PaginationInfo, SortConfig, FilterValues } from '../../../../shared/components/DataTable';
+import { PermissionGuard } from '../../../../core/rbac';
+import { PERMISSIONS } from '../../../../shared/utils/rbac.utils';
+import { DotsHorizontalIcon } from '@radix-ui/react-icons';
+import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
+import { Button } from '../../../../lib/shadcn/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuTrigger,
+} from "../../../../lib/shadcn/components/ui/dropdown-menu";
 
 interface User extends Record<string, unknown> {
   id: number;
@@ -34,6 +47,69 @@ function StatusBadge({ status }: { status: 'active' | 'inactive' }) {
     </span>
   );
 }
+function ActionsDropdown({ user }: { user: User }) {
+  const handleAction = (action: string) => {
+    switch (action) {
+      case 'edit':
+        alert(`Edit user: ${user.name}`);
+        break;
+      case 'delete':
+        alert(`Delete user: ${user.name}`);
+        break;
+      case 'view':
+        alert(`View user details: ${user.name}`);
+        break;
+      default:
+        break;
+    }
+  };
+
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant='ghost'
+          className='data-[state=open]:bg-muted flex h-8 w-8 p-0 transition-all duration-200 hover:scale-105'
+        >
+          <DotsHorizontalIcon className='h-4 w-4' />
+          <span className='sr-only'>Open menu</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align='end' className='w-[160px]'>
+        <DropdownMenuItem onClick={() => handleAction('view')}>
+          View
+          <DropdownMenuShortcut>
+            <IconEye size={16} />
+          </DropdownMenuShortcut>
+        </DropdownMenuItem>
+        <PermissionGuard 
+          permission={PERMISSIONS.USERS_UPDATE}
+        >
+          <DropdownMenuItem onClick={() => handleAction('edit')}>
+            Edit
+            <DropdownMenuShortcut>
+              <IconEdit size={16} />
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </PermissionGuard>
+        <PermissionGuard 
+          permission={PERMISSIONS.USERS_DELETE}
+        >
+        <DropdownMenuSeparator />
+          <DropdownMenuItem 
+            onClick={() => handleAction('delete')}
+            className='text-red-500!'
+          >
+            Delete
+            <DropdownMenuShortcut>
+              <IconTrash size={16} />
+            </DropdownMenuShortcut>
+          </DropdownMenuItem>
+        </PermissionGuard>
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
 
 export function UserDataTable({
   users,
@@ -45,6 +121,9 @@ export function UserDataTable({
   onSortChange,
   onFilterChange,
 }: UserDataTableProps) {
+  // Actions cell renderer with RBAC dropdown
+  const renderActionsCell = (user: User) => <ActionsDropdown user={user} />;
+
   // Status cell renderer
   const renderStatusCell = (user: User) => <StatusBadge status={user.status} />;
 
@@ -90,6 +169,12 @@ export function UserDataTable({
       header: 'Created At',
       accessor: (user) => new Date(user.createdAt).toLocaleDateString(),
       sortable: true,
+    },
+    {
+      id: 'actions',
+      header: 'Actions',
+      cell: renderActionsCell,
+      width: '150px',
     },
   ], []);
 

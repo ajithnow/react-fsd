@@ -47,6 +47,10 @@ describe('useLoginManager', () => {
     expect(mockSetUser).toHaveBeenCalledWith({
       id: 1,
       name: 'john',
+      email: 'john@example.com',
+      role: 'user',
+      status: 'active',
+      createdAt: expect.any(String)
     });
 
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });

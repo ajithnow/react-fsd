@@ -1,8 +1,10 @@
 import { AuthGuard } from "../../auth/guards";
-import { FeatureToggle } from "../../../shared/components";
-import { useUsersManager } from "../managers/users.manager";
+import { FeatureToggle, UserSelector } from "../../../shared/components";
+import { PermissionGuard } from "../../../core/rbac";
+import { useUsersManager } from "../managers/users.manager.demo";
 import { UserDataTable } from "./UserDataTable";
 import { FilterValues } from "../../../shared/components/DataTable";
+import { Link } from "@tanstack/react-router";
 
 export const HomeComponent = () => {
   // Initialize filters from URL
@@ -33,7 +35,20 @@ export const HomeComponent = () => {
   return (
     <AuthGuard>
       <div style={{ padding: '20px' }}>
-        <h1>Home Page</h1>
+        <div className="flex justify-between items-center mb-6">
+          <h1>Home Page</h1>
+          <Link 
+            to="/rbac-demo"
+            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors"
+          >
+            🔐 RBAC Demo
+          </Link>
+        </div>
+        
+        {/* User Selector for RBAC Demo */}
+        <div className="mb-6">
+          <UserSelector />
+        </div>
         
         <FeatureToggle feature="auth.enabled">
           <div style={{ border: '2px solid green', padding: '10px', margin: '10px 0' }}>
@@ -81,7 +96,24 @@ export const HomeComponent = () => {
         
         {/* User Management DataTable */}
         <div style={{ marginTop: '40px' }}>
-          <h2 className="text-2xl font-bold mb-6">User Management</h2>
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">User Management</h2>
+            <PermissionGuard 
+              permission="users:create"
+              fallback={
+                <div className="text-sm text-gray-500">
+                  ❌ No permission to create users
+                </div>
+              }
+            >
+              <button
+                onClick={() => alert('Create user functionality would go here')}
+                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+              >
+                ➕ Create User
+              </button>
+            </PermissionGuard>
+          </div>
           <UserDataTable
             users={users}
             loading={loading}
