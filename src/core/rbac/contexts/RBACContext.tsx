@@ -1,49 +1,21 @@
 // RBAC React Context Provider for providing authentication and permission state
 
 import React, { useMemo } from 'react';
-import { RBACProviderProps, User } from '../models/rbac.model';
-import { 
-  hasPermission, 
-  hasAnyPermission, 
-  hasAllPermissions, 
-  hasRole, 
-  hasAnyRole,
-  getAllPermissionsForUser 
-} from '../../../shared/utils/rbac.utils';
+import { RBACProviderProps } from '../models/rbac.model';
 import { RBACContext, RBACContextType } from './context';
 
 export const RBACProvider: React.FC<RBACProviderProps> = ({ 
   children, 
   user = null,
-  onUserChange 
 }) => {
   const contextValue: RBACContextType = useMemo(() => {
-    const permissions = user ? getAllPermissionsForUser(user) : [];
-    
+    const permissions = user?.permissions || [];
+
     return {
       user,
-      permissions,
-      
-      // Permission checking methods
-      hasPermission: (permission) => hasPermission(user, permission),
-      hasAnyPermission: (permissions) => hasAnyPermission(user, permissions),
-      hasAllPermissions: (permissions) => hasAllPermissions(user, permissions),
-      
-      // Role checking methods
-      hasRole: (role) => hasRole(user, role),
-      hasAnyRole: (roles) => hasAnyRole(user, roles),
-      
-      // User state management
-      setUser: (newUser: User | null) => {
-        onUserChange?.(newUser);
-      },
-      
-      // Utility methods
-      isAuthenticated: () => user !== null,
-      getUserRole: () => user?.role || null,
-      getUserPermissions: () => permissions,
+      permissions
     };
-  }, [user, onUserChange]);
+  }, [user]);
 
   return (
     <RBACContext.Provider value={contextValue}>

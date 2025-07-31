@@ -1,7 +1,15 @@
 import { useMemo } from 'react';
-import { DataTable, DataTableColumn, PaginationInfo, SortConfig, FilterValues, ActionsDropdown } from '../../../../shared/components';
+import {
+  DataTable,
+  DataTableColumn,
+  PaginationInfo,
+  SortConfig,
+  FilterValues,
+  ActionsDropdown,
+} from '../../../../shared/components';
 import { PERMISSIONS } from '../../../../shared/utils/rbac.utils';
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
+import { useRBAC } from '@/shared/hooks/useRBAC';
 
 interface User extends Record<string, unknown> {
   id: number;
@@ -36,50 +44,6 @@ function StatusBadge({ status }: { status: 'active' | 'inactive' }) {
     </span>
   );
 }
-function ActionsDropdownForUser({ user }: { user: User }) {
-  const handleAction = (action: string) => {
-    switch (action) {
-      case 'edit':
-        alert(`Edit user: ${user.name}`);
-        break;
-      case 'delete':
-        alert(`Delete user: ${user.name}`);
-        break;
-      case 'view':
-        alert(`View user details: ${user.name}`);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const actions = [
-    {
-      id: 'view',
-      label: 'View',
-      icon: <IconEye size={16} />,
-      onClick: () => handleAction('view'),
-    },
-    {
-      id: 'edit',
-      label: 'Edit',
-      icon: <IconEdit size={16} />,
-      permission: PERMISSIONS.USERS_UPDATE,
-      onClick: () => handleAction('edit'),
-    },
-    {
-      id: 'delete',
-      label: 'Delete',
-      icon: <IconTrash size={16} />,
-      permission: PERMISSIONS.USERS_DELETE,
-      variant: 'destructive' as const,
-      separator: true,
-      onClick: () => handleAction('delete'),
-    },
-  ];
-
-  return <ActionsDropdown actions={actions} aria-label={`Actions for ${user.name}`} />;
-}
 
 export function UserDataTable({
   users,
@@ -90,94 +54,156 @@ export function UserDataTable({
   onPageSizeChange,
   onSortChange,
   onFilterChange,
-}: UserDataTableProps) {
+}: Readonly<UserDataTableProps>) {
   // Actions cell renderer with RBAC dropdown
-  const renderActionsCell = (user: User) => <ActionsDropdownForUser user={user} />;
+  const renderActionsCell = (user: User) => (
+    <ActionsDropdownForUser user={user} />
+  );
+
+  const { hasPermission } = useRBAC();
+
+  function ActionsDropdownForUser({ user }: { user: User }) {
+    const handleAction = (action: string) => {
+      switch (action) {
+        case 'edit':
+          alert(`Edit user: ${user.name}`);
+          break;
+        case 'delete':
+          alert(`Delete user: ${user.name}`);
+          break;
+        case 'view':
+          alert(`View user details: ${user.name}`);
+          break;
+        default:
+          break;
+      }
+    };
+
+    const actions = [
+      {
+        id: 'view',
+        label: 'View',
+        icon: <IconEye size={16} />,
+        onClick: () => handleAction('view'),
+      },
+      {
+        id: 'edit',
+        label: 'Edit',
+        icon: <IconEdit size={16} />,
+        permission: PERMISSIONS.USERS_UPDATE,
+        onClick: () => handleAction('edit'),
+      },
+      {
+        id: 'delete',
+        label: 'Delete',
+        icon: <IconTrash size={16} />,
+        permission: PERMISSIONS.USERS_DELETE,
+        variant: 'destructive' as const,
+        separator: true,
+        onClick: () => handleAction('delete'),
+      },
+    ];
+
+    return (
+      <ActionsDropdown
+        actions={actions.filter(
+          action => !action.permission || hasPermission(action.permission)
+        )}
+        aria-label={`Actions for ${user.name}`}
+      />
+    );
+  }
 
   // Status cell renderer
   const renderStatusCell = (user: User) => <StatusBadge status={user.status} />;
 
   // Define table columns
-  const columns: DataTableColumn<User>[] = useMemo(() => [
-    {
-      id: 'id',
-      header: 'ID',
-      accessor: 'id',
-      sortable: true,
-      width: '80px',
-    },
-    {
-      id: 'name',
-      header: 'Name',
-      accessor: 'name',
-      sortable: true,
-      filterable: true,
-    },
-    {
-      id: 'email',
-      header: 'Email',
-      accessor: 'email',
-      sortable: true,
-      filterable: true,
-    },
-    {
-      id: 'role',
-      header: 'Role',
-      accessor: 'role',
-      sortable: true,
-      filterable: true,
-    },
-    {
-      id: 'status',
-      header: 'Status',
-      cell: renderStatusCell,
-      sortable: true,
-      filterable: true,
-    },
-    {
-      id: 'createdAt',
-      header: 'Created At',
-      accessor: (user) => new Date(user.createdAt).toLocaleDateString(),
-      sortable: true,
-    },
-    {
-      id: 'actions',
-      header: 'Actions',
-      cell: renderActionsCell,
-      width: '150px',
-    },
-  ], []);
+  const columns: DataTableColumn<User>[] = useMemo(
+    () => [
+      {
+        id: 'id',
+        header: 'ID',
+        accessor: 'id',
+        sortable: true,
+        width: '80px',
+      },
+      {
+        id: 'name',
+        header: 'Name',
+        accessor: 'name',
+        sortable: true,
+        filterable: true,
+      },
+      {
+        id: 'email',
+        header: 'Email',
+        accessor: 'email',
+        sortable: true,
+        filterable: true,
+      },
+      {
+        id: 'role',
+        header: 'Role',
+        accessor: 'role',
+        sortable: true,
+        filterable: true,
+      },
+      {
+        id: 'status',
+        header: 'Status',
+        cell: renderStatusCell,
+        sortable: true,
+        filterable: true,
+      },
+      {
+        id: 'createdAt',
+        header: 'Created At',
+        accessor: user => new Date(user.createdAt).toLocaleDateString(),
+        sortable: true,
+      },
+      {
+        id: 'actions',
+        header: 'Actions',
+        cell: renderActionsCell,
+        width: '150px',
+      },
+    ],
+    []
+  );
 
   // Define filter definitions
-  const filterDefs = useMemo(() => [
-    {
-      id: 'role',
-      label: 'Role',
-      type: 'multiselect' as const,
-      options: [
-        { label: 'Admin', value: 'admin' },
-        { label: 'User', value: 'user' },
-        { label: 'Manager', value: 'manager' },
-      ],
-      placeholder: 'Select roles',
-    },
-    {
-      id: 'status',
-      label: 'Status',
-      type: 'select' as const,
-      options: [
-        { label: 'Active', value: 'active' },
-        { label: 'Inactive', value: 'inactive' },
-      ],
-      placeholder: 'Select status',
-    },
-    {
-      id: 'name',
-      label: 'Name',
-      type: 'text' as const,
-      placeholder: 'Search by name...',
-    },
-  ], []);
+  const filterDefs = useMemo(
+    () => [
+      {
+        id: 'role',
+        label: 'Role',
+        type: 'multiselect' as const,
+        options: [
+          { label: 'Admin', value: 'admin' },
+          { label: 'User', value: 'user' },
+          { label: 'Manager', value: 'manager' },
+        ],
+        placeholder: 'Select roles',
+      },
+      {
+        id: 'status',
+        label: 'Status',
+        type: 'select' as const,
+        options: [
+          { label: 'Active', value: 'active' },
+          { label: 'Inactive', value: 'inactive' },
+        ],
+        placeholder: 'Select status',
+      },
+      {
+        id: 'name',
+        label: 'Name',
+        type: 'text' as const,
+        placeholder: 'Search by name...',
+      },
+    ],
+    []
+  );
 
   return (
     <div data-testid="user-data-table">

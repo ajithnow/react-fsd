@@ -1,10 +1,10 @@
 import { AuthGuard } from "../../auth/guards";
-import { FeatureToggle, UserSelector } from "../../../shared/components";
-import { PermissionGuard } from "../../../core/rbac";
-import { useUsersManager } from "../managers/users.manager.demo";
-import { UserDataTable } from "./UserDataTable";
-import { FilterValues } from "../../../shared/components/DataTable";
-import { Link } from "@tanstack/react-router";
+import { FeatureToggle, UserSelector } from '../../../shared/components';
+import { useUsersManager } from '../managers/users.manager.demo';
+import { FilterValues } from '../../../shared/components/DataTable';
+import { Link } from '@tanstack/react-router';
+import { PermissionGuard } from '@/shared/components/RBACGuards/RBACGuards';
+import { UserDataTable } from './UserDataTable';
 
 export const HomeComponent = () => {
   // Initialize filters from URL

@@ -4,17 +4,6 @@ import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
 import { ActionsDropdown } from '..';
 import { ActionItem } from '../actionDropdown.model';
 
-// Mock the RBAC module
-jest.mock('../../../../core/rbac', () => ({
-  PermissionGuard: ({ children, permission }: { children: React.ReactNode; permission?: string }) => {
-    // For testing permissions - simulate hiding certain actions
-    // You can customize this logic based on your test needs
-    if (permission === 'users:delete') {
-      return null; // Hide delete actions
-    }
-    return <>{children}</>;
-  },
-}));
 
 describe('ActionsDropdown', () => {
   const mockActions: ActionItem[] = [
@@ -28,14 +17,12 @@ describe('ActionsDropdown', () => {
       id: 'edit',
       label: 'Edit',
       icon: <IconEdit size={16} data-testid="edit-icon" />,
-      permission: 'users:update',
       onClick: jest.fn(),
     },
     {
       id: 'delete',
       label: 'Delete',
       icon: <IconTrash size={16} data-testid="delete-icon" />,
-      permission: 'users:delete',
       variant: 'destructive',
       separator: true,
       onClick: jest.fn(),
@@ -62,7 +49,7 @@ describe('ActionsDropdown', () => {
     });
     
     expect(screen.getByText('Edit')).toBeInTheDocument();
-    // Note: Delete action is hidden by PermissionGuard mock
+    expect(screen.getByText('Delete')).toBeInTheDocument();
   });
 
   it('calls onClick handler when action is clicked', async () => {
@@ -103,7 +90,7 @@ describe('ActionsDropdown', () => {
     });
     
     expect(screen.getByTestId('edit-icon')).toBeInTheDocument();
-    // Note: delete-icon is hidden by PermissionGuard mock
+    expect(screen.getByTestId('delete-icon')).toBeInTheDocument();
   });
 
   it('applies destructive styling to destructive actions', async () => {
@@ -152,41 +139,9 @@ describe('ActionsDropdown', () => {
     expect(triggerButton).toBeInTheDocument();
   });
 
-  it('filters actions based on permissions', async () => {
-    const user = userEvent.setup();
-    render(<ActionsDropdown actions={mockActions} />);
-    
-    const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
-    
-    await waitFor(() => {
-      expect(screen.getByText('View')).toBeInTheDocument();
-    });
-    
-    expect(screen.getByText('Edit')).toBeInTheDocument();
-    // The Delete action should be hidden by our mock PermissionGuard
-    expect(screen.queryByText('Delete')).not.toBeInTheDocument();
-  });
 
-  it('handles actions without permissions', async () => {
-    const user = userEvent.setup();
-    const actionsWithoutPermissions: ActionItem[] = [
-      {
-        id: 'public',
-        label: 'Public Action',
-        onClick: jest.fn(),
-      },
-    ];
 
-    render(<ActionsDropdown actions={actionsWithoutPermissions} />);
-    
-    const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
-    
-    await waitFor(() => {
-      expect(screen.getByText('Public Action')).toBeInTheDocument();
-    });
-  });
+
 
   it('renders separators when specified', async () => {
     const user = userEvent.setup();

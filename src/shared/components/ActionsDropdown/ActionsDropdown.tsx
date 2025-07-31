@@ -1,5 +1,4 @@
 import React from 'react';
-import { PermissionGuard } from '../../../core/rbac';
 import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { Button } from '../../../lib/shadcn/components/ui/button';
 import {
@@ -23,7 +22,7 @@ export const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   'aria-label': ariaLabel = 'Open actions menu',
 }) => {
   const renderAction = (action: ActionItem) => {
-    const actionItem = (
+    return (
       <React.Fragment key={action.id}>
         {action.separator && <DropdownMenuSeparator />}
         <DropdownMenuItem 
@@ -43,17 +42,6 @@ export const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
         </DropdownMenuItem>
       </React.Fragment>
     );
-
-    // If the action has a permission requirement, wrap it in PermissionGuard
-    if (action.permission) {
-      return (
-        <PermissionGuard key={action.id} permission={action.permission}>
-          {actionItem}
-        </PermissionGuard>
-      );
-    }
-
-    return actionItem;
   };
 
   const buttonSizeClasses = {
@@ -72,7 +60,7 @@ export const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
           className={`
             data-[state=open]:bg-muted 
             transition-all duration-200 hover:scale-105
-            ${buttonSizeClasses[buttonSize as keyof typeof buttonSizeClasses]}
+            ${buttonSizeClasses[buttonSize]}
             ${className}
           `}
           aria-label={ariaLabel}
