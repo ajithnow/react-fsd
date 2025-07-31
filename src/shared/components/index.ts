@@ -13,3 +13,5 @@ export type {
   FilterConfig,
   FilterValues,
 } from './DataTable';
+
+export { UserSelector } from './UserSelector/UserSelector.demo';

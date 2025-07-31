@@ -1,6 +1,6 @@
 import { createRoute } from "@tanstack/react-router";
 import { rootRoute } from "../../../core/router";
-import { HomeComponent } from "../components/HomeComponent";
+import { HomeComponent } from "../components/HomeComponent.demo";
 
 const homeRoute = createRoute({
   path: '/',

@@ -21,7 +21,14 @@ export const useLoginManager = () => {
 
     // Use the centralized auth storage
     authStorage.setToken(token);
-    const user = { id: 1, name: username };
+    const user = { 
+      id: 1, 
+      name: username,
+      email: `${username}@example.com`,
+      role: 'user' as const,
+      status: 'active' as const,
+      createdAt: new Date().toISOString()
+    };
     authStorage.setUser(user);
     setUser(user);
 

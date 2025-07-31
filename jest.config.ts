@@ -60,6 +60,7 @@ const config: Config = {
     '!src/**/**/stores/**',
     '!docs',
     '!**/index.{ts,tsx}',
+    '!src/*.{js,ts,tsx}',
   ],
 };
 
