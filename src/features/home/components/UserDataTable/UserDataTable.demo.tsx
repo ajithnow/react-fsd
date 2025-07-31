@@ -5,20 +5,10 @@ import {
   PaginationInfo,
   SortConfig,
   FilterValues,
-} from '../../../../shared/components/DataTable';
-import { PermissionGuard } from '../../../../core/rbac';
+  ActionsDropdown,
+} from '../../../../shared/components';
 import { PERMISSIONS } from '../../../../shared/utils/rbac.utils';
-import { DotsHorizontalIcon } from '@radix-ui/react-icons';
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
-import { Button } from '../../../../lib/shadcn/components/ui/button';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
-} from '../../../../lib/shadcn/components/ui/dropdown-menu';
 
 interface User extends Record<string, unknown> {
   id: number;
@@ -53,7 +43,7 @@ function StatusBadge({ status }: { status: 'active' | 'inactive' }) {
     </span>
   );
 }
-function ActionsDropdown({ user }: { user: User }) {
+function ActionsDropdownForUser({ user }: { user: User }) {
   const handleAction = (action: string) => {
     switch (action) {
       case 'edit':
@@ -70,46 +60,36 @@ function ActionsDropdown({ user }: { user: User }) {
     }
   };
 
+  const actions = [
+    {
+      id: 'view',
+      label: 'View',
+      icon: <IconEye size={16} />,
+      onClick: () => handleAction('view'),
+    },
+    {
+      id: 'edit',
+      label: 'Edit',
+      icon: <IconEdit size={16} />,
+      permission: PERMISSIONS.USERS_UPDATE,
+      onClick: () => handleAction('edit'),
+    },
+    {
+      id: 'delete',
+      label: 'Delete',
+      icon: <IconTrash size={16} />,
+      permission: PERMISSIONS.USERS_DELETE,
+      variant: 'destructive' as const,
+      separator: true,
+      onClick: () => handleAction('delete'),
+    },
+  ];
+
   return (
-    <DropdownMenu modal={false}>
-      <DropdownMenuTrigger asChild>
-        <Button
-          variant="ghost"
-          className="data-[state=open]:bg-muted flex h-8 w-8 p-0 transition-all duration-200 hover:scale-105"
-        >
-          <DotsHorizontalIcon className="h-4 w-4" />
-          <span className="sr-only">Open menu</span>
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem onClick={() => handleAction('view')}>
-          View
-          <DropdownMenuShortcut>
-            <IconEye size={16} />
-          </DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <PermissionGuard permission={PERMISSIONS.USERS_UPDATE}>
-          <DropdownMenuItem onClick={() => handleAction('edit')}>
-            Edit
-            <DropdownMenuShortcut>
-              <IconEdit size={16} />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </PermissionGuard>
-        <PermissionGuard permission={PERMISSIONS.USERS_DELETE}>
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={() => handleAction('delete')}
-            className="text-red-500!"
-          >
-            Delete
-            <DropdownMenuShortcut>
-              <IconTrash size={16} />
-            </DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </PermissionGuard>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <ActionsDropdown
+      actions={actions}
+      aria-label={`Actions for ${user.name}`}
+    />
   );
 }
 
@@ -124,7 +104,9 @@ export function UserDataTable({
   onFilterChange,
 }: UserDataTableProps) {
   // Actions cell renderer with RBAC dropdown
-  const renderActionsCell = (user: User) => <ActionsDropdown user={user} />;
+  const renderActionsCell = (user: User) => (
+    <ActionsDropdownForUser user={user} />
+  );
 
   // Status cell renderer
   const renderStatusCell = (user: User) => <StatusBadge status={user.status} />;

@@ -31,7 +31,7 @@ export function DataTable<T extends Record<string, unknown>>({
   className,
   emptyMessage = 'No data available',
   pageSizeOptions,
-}: DataTableProps<T>) {
+}: Readonly<DataTableProps<T>>) {
   const [currentSort, setCurrentSort] = useState<SortConfig | null>(initialSort || null);
   const [currentFilters, setCurrentFilters] = useState<FilterValues>(initialFilters);
   
@@ -165,7 +165,6 @@ export function DataTable<T extends Record<string, unknown>>({
             )}
             
             {!loading && data.length > 0 && data.map((item, index) => {
-              // Try to generate a unique key from the item data or fall back to index
               let itemKey: string;
               if ('id' in item && item.id) {
                 itemKey = String(item.id);

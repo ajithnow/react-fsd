@@ -15,3 +15,5 @@ export type {
 } from './DataTable';
 
 export { UserSelector } from './UserSelector/UserSelector.demo';
+
+export { ActionsDropdown } from './ActionsDropdown';
