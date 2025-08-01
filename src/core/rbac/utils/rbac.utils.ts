@@ -25,10 +25,14 @@ export const hasAnyPermission = (user: User | null, permissions: string[], userP
 /**
  * Check if a user has all of the specified permissions
  */
-export const hasAllPermissions = (user: User | null, permissions: string[], userPermissions?: string[]): boolean => {
+export const hasAllPermissions = (
+  user: User | null,
+  permissions: string[],
+  userPermissions?: string[]
+): boolean => {
   if (!user) return false;
-  if (permissions.length === 0) return true; // Having "all" of zero permissions is true
-  
+  if (!permissions.length) return true; // Having "all" of zero permissions is true
+
   const userPerms = userPermissions || user.permissions || [];
   return permissions.every(permission => userPerms.includes(permission));
 };
@@ -45,6 +49,6 @@ export const hasRole = (user: User | null, role: string): boolean => {
  * Check if a user has any of the specified roles
  */
 export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
-  if (!user || roles.length === 0) return false;
+  if (!user || !roles.length) return false;
   return roles.includes(user.role);
 };

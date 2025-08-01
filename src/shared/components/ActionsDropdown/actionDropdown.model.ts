@@ -2,7 +2,6 @@ export interface ActionItem {
   id: string;
   label: string;
   icon?: React.ReactNode;
-  permission?: string;
   variant?: 'default' | 'destructive';
   separator?: boolean; // Add separator before this item
   onClick: () => void;
