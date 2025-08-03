@@ -7,8 +7,12 @@ const useLoginService = () => {
   }) => {
     const res = await apiClient.post('/auth/login', credentials);
     const { data } = res.data;
-    const token = data.accessToken;
-    return { token };
+    return {
+      token: data.accessToken,
+      user: data.user,
+      refreshToken: data.refreshToken,
+      expiresIn: data.expiresIn,
+    };
   };
   return {
     login: async (credentials: { username: string; password: string }) => {

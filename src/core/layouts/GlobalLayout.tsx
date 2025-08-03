@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavigationProgress } from '@/shared/components';
 import type { GlobalLayoutProps } from '../models';
 
 export const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
@@ -9,9 +10,10 @@ export const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   // - Toast/notification providers
   // - Global state providers
   // - Performance monitoring
-  
+
   return (
     <>
+      <NavigationProgress color="#3b82f6" height={4} shadow={true} />
       {children}
     </>
   );

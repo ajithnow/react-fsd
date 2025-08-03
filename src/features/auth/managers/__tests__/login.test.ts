@@ -4,7 +4,15 @@ import { renderHook, act } from '@testing-library/react';
 
 jest.mock('../../queries/login.query', () => ({
   useLoginMutation: () => ({
-    mutateAsync: jest.fn().mockResolvedValue({ token: 'fake-token' }),
+    mutateAsync: jest.fn().mockResolvedValue({
+      token: 'fake-token',
+      user: {
+        id: 1,
+        name: 'john',
+        username: 'john',
+        role: 'user',
+      },
+    }),
     isPending: false,
     error: null,
   }),
@@ -47,10 +55,10 @@ describe('useLoginManager', () => {
     expect(mockSetUser).toHaveBeenCalledWith({
       id: 1,
       name: 'john',
-      email: 'john@example.com',
+      username: 'john',
       role: 'user',
+      email: 'john', // Since apiUser.username is 'john', email becomes 'john'
       status: 'active',
-      createdAt: expect.any(String)
     });
 
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });

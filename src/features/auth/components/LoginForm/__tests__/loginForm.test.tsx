@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LoginForm } from '../LoginForm';
+import { LoginForm } from '../loginForm';
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({
@@ -28,7 +28,7 @@ jest.mock('../../../schema/auth.schema', () => ({
     login: {
       parse: jest.fn(),
       safeParse: jest.fn(),
-    }
+    },
   })),
 }));
 
@@ -38,7 +38,7 @@ jest.mock('@hookform/resolvers/zod', () => ({
 }));
 
 // Mock react-hook-form
-const mockHandleSubmit = jest.fn((callback) => (e?: React.FormEvent) => {
+const mockHandleSubmit = jest.fn(callback => (e?: React.FormEvent) => {
   e?.preventDefault();
   callback({ username: 'testuser', password: 'password123' });
 });
@@ -53,7 +53,18 @@ jest.mock('react-hook-form', () => ({
 // Mock shadcn/ui components
 jest.mock('@/lib/shadcn/components/ui/form', () => ({
   Form: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormField: ({ render }: { render: (props: { field: { name: string; value: string; onChange: jest.Mock; onBlur: jest.Mock } }) => React.ReactNode }) => {
+  FormField: ({
+    render,
+  }: {
+    render: (props: {
+      field: {
+        name: string;
+        value: string;
+        onChange: jest.Mock;
+        onBlur: jest.Mock;
+      };
+    }) => React.ReactNode;
+  }) => {
     const field = {
       name: 'test',
       value: '',
@@ -62,22 +73,44 @@ jest.mock('@/lib/shadcn/components/ui/form', () => ({
     };
     return <div>{render({ field })}</div>;
   },
-  FormItem: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  FormLabel: ({ children }: { children: React.ReactNode }) => <label>{children}</label>,
-  FormControl: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+  FormItem: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  FormLabel: ({ children }: { children: React.ReactNode }) => (
+    <label>{children}</label>
+  ),
+  FormControl: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   FormMessage: () => <div />,
 }));
 
 jest.mock('@/lib/shadcn/components/ui/input', () => ({
-  Input: React.forwardRef<HTMLInputElement, React.InputHTMLAttributes<HTMLInputElement>>((props, ref) => (
-    <input ref={ref} data-testid={`input-${props.name || 'input'}`} {...props} />
+  Input: React.forwardRef<
+    HTMLInputElement,
+    React.InputHTMLAttributes<HTMLInputElement>
+  >((props, ref) => (
+    <input
+      ref={ref}
+      data-testid={`input-${props.name || 'input'}`}
+      {...props}
+    />
   )),
 }));
 
 jest.mock('@/lib/shadcn/components/ui/button', () => ({
-  Button: ({ children, type, ...props }: { children: React.ReactNode; type?: string } & React.ButtonHTMLAttributes<HTMLButtonElement>) => (
-    <button 
-      data-testid={type === 'submit' ? 'submit-button' : 'forgot-password-button'} 
+  Button: ({
+    children,
+    type,
+    ...props
+  }: {
+    children: React.ReactNode;
+    type?: string;
+  } & React.ButtonHTMLAttributes<HTMLButtonElement>) => (
+    <button
+      data-testid={
+        type === 'submit' ? 'submit-button' : 'forgot-password-button'
+      }
       type={type}
       {...props}
     >
@@ -88,10 +121,18 @@ jest.mock('@/lib/shadcn/components/ui/button', () => ({
 
 jest.mock('@/lib/shadcn/components/ui/card', () => ({
   Card: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CardContent: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CardDescription: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CardHeader: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
-  CardTitle: ({ children }: { children: React.ReactNode }) => <h1>{children}</h1>,
+  CardContent: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  CardDescription: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  CardHeader: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
+  CardTitle: ({ children }: { children: React.ReactNode }) => (
+    <h1>{children}</h1>
+  ),
 }));
 
 describe('LoginForm', () => {
@@ -107,7 +148,7 @@ describe('LoginForm', () => {
 
   it('should render login form', () => {
     render(<LoginForm {...defaultProps} />);
-    
+
     expect(screen.getByTestId('submit-button')).toBeInTheDocument();
   });
 
@@ -134,7 +175,7 @@ describe('LoginForm', () => {
 
   it('should use translation function', () => {
     render(<LoginForm {...defaultProps} />);
-    
+
     expect(mockT).toHaveBeenCalled();
   });
 
@@ -156,7 +197,7 @@ describe('LoginForm', () => {
 
     // Password input should now be type="text"
     expect(passwordInput).toHaveAttribute('type', 'text');
-    
+
     // Should now show EyeOff icon (password visible)
     expect(screen.getByTestId('eye-off-icon')).toBeInTheDocument();
     expect(screen.queryByTestId('eye-icon')).not.toBeInTheDocument();

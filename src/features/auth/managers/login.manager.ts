@@ -17,17 +17,16 @@ export const useLoginManager = () => {
     password: string;
   }) => {
     const { username, password } = credentials;
-    const { token } = await login({ username, password });
+    const { token, user: apiUser } = await login({ username, password });
 
     // Use the centralized auth storage
     authStorage.setToken(token);
-    const user = { 
-      id: 1, 
-      name: username,
-      email: `${username}@example.com`,
-      role: 'user' as const,
+
+    // Use the user data from API response and add email if not present
+    const user = {
+      ...apiUser,
+      email: apiUser.username || `${username}@example.com`, // Add email field for compatibility
       status: 'active' as const,
-      createdAt: new Date().toISOString()
     };
     authStorage.setUser(user);
     setUser(user);

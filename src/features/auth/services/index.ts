@@ -1,3 +1,4 @@
-import useLoginService  from "./login.service";
+import useLoginService from './login.service';
+import useLogoutService from './logout.service';
 
-export default { useLoginService };
+export default { useLoginService, useLogoutService };

@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
 import { ActionsDropdown } from '..';
@@ -41,7 +41,9 @@ describe('ActionsDropdown', () => {
     render(<ActionsDropdown actions={mockActions} />);
     
     const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
+    await act(async () => {
+      await user.click(triggerButton);
+    });
     
     // Wait for dropdown items to be visible
     await waitFor(() => {
@@ -66,14 +68,18 @@ describe('ActionsDropdown', () => {
     render(<ActionsDropdown actions={actions} />);
     
     const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
+    await act(async () => {
+      await user.click(triggerButton);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Test Action')).toBeInTheDocument();
     });
     
     const actionItem = screen.getByText('Test Action');
-    await user.click(actionItem);
+    await act(async () => {
+      await user.click(actionItem);
+    });
     
     expect(mockAction).toHaveBeenCalledTimes(1);
   });
@@ -83,7 +89,9 @@ describe('ActionsDropdown', () => {
     render(<ActionsDropdown actions={mockActions} />);
     
     const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
+    await act(async () => {
+      await user.click(triggerButton);
+    });
     
     await waitFor(() => {
       expect(screen.getByTestId('view-icon')).toBeInTheDocument();
@@ -108,7 +116,9 @@ describe('ActionsDropdown', () => {
     render(<ActionsDropdown actions={destructiveActions} />);
     
     const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
+    await act(async () => {
+      await user.click(triggerButton);
+    });
     
     await waitFor(() => {
       expect(screen.getByText('Destructive Action')).toBeInTheDocument();
@@ -162,14 +172,21 @@ describe('ActionsDropdown', () => {
     render(<ActionsDropdown actions={actionsWithSeparator} />);
     
     const triggerButton = screen.getByRole('button', { name: /open actions menu/i });
-    await user.click(triggerButton);
     
-    await waitFor(() => {
-      expect(screen.getByText('First Action')).toBeInTheDocument();
+    await act(async () => {
+      await user.click(triggerButton);
     });
     
-    // Check that a separator is rendered
-    const separators = document.querySelectorAll('[role="separator"]');
-    expect(separators.length).toBeGreaterThan(0);
+    // Wait for menu items to appear
+    await waitFor(() => {
+      expect(screen.getByText('First Action')).toBeInTheDocument();
+      expect(screen.getByText('Second Action')).toBeInTheDocument();
+    }, { timeout: 3000 });
+    
+    // Try to find separator using screen.getByRole
+    await waitFor(() => {
+      const separator = screen.getByRole('separator');
+      expect(separator).toBeInTheDocument();
+    }, { timeout: 2000 });
   });
 });

@@ -17,3 +17,20 @@ export type {
 export { UserSelector } from './UserSelector/UserSelector.demo';
 
 export { ActionsDropdown } from './ActionsDropdown';
+
+// Layout components and helpers
+export { AppLayout } from './AppLayout';
+export * from './AppLayout';
+export { AppSidebar } from './AppSidebar';
+export { TopBar } from './TopBar';
+export { TopLoader, ProgressBar } from './TopLoader';
+export { NavigationProgress } from './NavigationProgress';
+export { LanguageSwitcher } from './LanguageSwitcher';
+
+// Layout configuration helpers
+export {
+  createSidebarData,
+  createNavGroup,
+  createNavLink,
+  createNavCollapsible,
+} from './AppLayout/sidebarHelpers';

@@ -1,12 +1,11 @@
 import { render, screen } from '@testing-library/react';
 import { PermissionGuard, RoleGuard, ConditionalRender } from '../RBACGuards';
 
-// Mock useRBAC for all guards
 jest.mock('../../../hooks/useRBAC.ts', () => ({
   useRBAC: () => ({
     hasPermission: (perm: string) => perm === 'allowed',
     hasAnyPermission: (perms: string[]) => perms.includes('allowed'),
-    hasAllPermissions: (perms: string[]) => perms.every((p) => p === 'allowed'),
+    hasAllPermissions: (perms: string[]) => perms.every(p => p === 'allowed'),
     hasRole: (role: string) => role === 'admin',
     hasAnyRole: (roles: string[]) => roles.includes('admin'),
     isAuthenticated: () => true,

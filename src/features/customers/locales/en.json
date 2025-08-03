@@ -1,0 +1,42 @@
+{
+  "customers": {
+    "list": {
+      "title": "Customers",
+      "subtitle": "Manage and view all customers",
+      "createCustomer": "Create Customer",
+      "totalCustomers": "Total Customers",
+      "activeCustomers": "Active Customers",
+      "pendingOrders": "Pending Orders",
+      "monthlyRevenue": "Monthly Revenue",
+      "search": "Search customers...",
+      "exportData": "Export Data",
+      "filters": {
+        "all": "All",
+        "active": "Active",
+        "inactive": "Inactive",
+        "pending": "Pending"
+      }
+    },
+    "detail": {
+      "title": "Customer Details",
+      "personalInfo": "Personal Information",
+      "orderHistory": "Order History",
+      "paymentMethods": "Payment Methods",
+      "contactInfo": "Contact Information",
+      "edit": "Edit Customer",
+      "delete": "Delete Customer",
+      "viewOrders": "View Orders",
+      "sendEmail": "Send Email"
+    },
+    "form": {
+      "name": "Customer Name",
+      "email": "Email Address",
+      "phone": "Phone Number",
+      "company": "Company",
+      "status": "Status",
+      "save": "Save Customer",
+      "cancel": "Cancel",
+      "required": "This field is required"
+    }
+  }
+}

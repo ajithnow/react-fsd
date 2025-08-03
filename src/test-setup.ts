@@ -10,5 +10,20 @@ import '@testing-library/jest-dom';
 // Mock scrollIntoView for Radix UI components
 window.HTMLElement.prototype.scrollIntoView = jest.fn();
 
+// Mock matchMedia for all tests
+Object.defineProperty(window, 'matchMedia', {
+  writable: true,
+  value: jest.fn().mockImplementation(query => ({
+    matches: false,
+    media: query,
+    onchange: null,
+    addListener: jest.fn(), // Deprecated
+    removeListener: jest.fn(), // Deprecated
+    addEventListener: jest.fn(),
+    removeEventListener: jest.fn(),
+    dispatchEvent: jest.fn(),
+  })),
+});
+
 // Additional test utilities can go here
 export {};

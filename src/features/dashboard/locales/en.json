@@ -1,0 +1,32 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Welcome back! Here's an overview of your application.",
+    "stats": {
+      "totalUsers": "Total Users",
+      "revenue": "Revenue",
+      "analytics": "Analytics",
+      "growth": "Growth",
+      "fromLastMonth": "from last month"
+    },
+    "recentActivity": {
+      "title": "Recent Activity",
+      "subtitle": "You have 3 new notifications.",
+      "newUserRegistered": "New user registered",
+      "paymentCompleted": "Payment completed",
+      "systemUpdateAvailable": "System update available",
+      "timeAgo": {
+        "minutes": "{{count}} minutes ago",
+        "hour": "{{count}} hour ago"
+      }
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "subtitle": "Commonly used features",
+      "createNewUser": "Create new user",
+      "generateReport": "Generate report",
+      "viewAnalytics": "View analytics",
+      "manageSettings": "Manage settings"
+    }
+  }
+}

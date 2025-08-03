@@ -1,5 +1,5 @@
-export const supportedLanguages = ['en'];
-export const features = ['auth', 'home'];
+export const supportedLanguages = ['en', 'de'];
+export const features = ['auth', 'dashboard', 'home', 'customers'];
 
 const moduleConfig = {
   supportedLanguages,

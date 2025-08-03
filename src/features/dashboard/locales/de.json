@@ -1,0 +1,32 @@
+{
+  "dashboard": {
+    "title": "Dashboard",
+    "subtitle": "Willkommen zurück! Hier ist eine Übersicht Ihrer Anwendung.",
+    "stats": {
+      "totalUsers": "Gesamte Benutzer",
+      "revenue": "Umsatz",
+      "analytics": "Analytik",
+      "growth": "Wachstum",
+      "fromLastMonth": "vom letzten Monat"
+    },
+    "recentActivity": {
+      "title": "Letzte Aktivitäten",
+      "subtitle": "Sie haben 3 neue Benachrichtigungen.",
+      "newUserRegistered": "Neuer Benutzer registriert",
+      "paymentCompleted": "Zahlung abgeschlossen",
+      "systemUpdateAvailable": "System-Update verfügbar",
+      "timeAgo": {
+        "minutes": "vor {{count}} Minuten",
+        "hour": "vor {{count}} Stunde"
+      }
+    },
+    "quickActions": {
+      "title": "Schnellaktionen",
+      "subtitle": "Häufig verwendete Funktionen",
+      "createNewUser": "Neuen Benutzer erstellen",
+      "generateReport": "Bericht generieren",
+      "viewAnalytics": "Analytik anzeigen",
+      "manageSettings": "Einstellungen verwalten"
+    }
+  }
+}

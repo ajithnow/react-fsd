@@ -1,6 +1,6 @@
-import authHandlers from "./auth/mocks";
-import { usersHandler } from './home/mocks/users.mock';
+import authHandlers from './auth/mocks';
+import { customersHandlers } from './customers/mocks';
 
-const mocks = [...authHandlers, ...usersHandler];
+const mocks = [...authHandlers, ...customersHandlers];
 
 export default mocks;

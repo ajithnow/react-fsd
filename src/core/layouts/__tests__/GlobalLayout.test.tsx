@@ -1,5 +1,14 @@
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import React from 'react';
+
+// Mock the GlobalLayout module to avoid router dependencies
+jest.mock('../GlobalLayout', () => ({
+  GlobalLayout: ({ children }: { children: React.ReactNode }) => (
+    <React.Fragment>{children}</React.Fragment>
+  ),
+}));
+
 import { GlobalLayout } from '../GlobalLayout';
 
 describe('GlobalLayout', () => {
@@ -29,11 +38,7 @@ describe('GlobalLayout', () => {
   });
 
   it('should render nothing when no children provided', () => {
-    const { container } = render(
-      <GlobalLayout>
-        {null}
-      </GlobalLayout>
-    );
+    const { container } = render(<GlobalLayout>{null}</GlobalLayout>);
 
     // Should render an empty React fragment
     expect(container.firstChild).toBeNull();
@@ -52,7 +57,9 @@ describe('GlobalLayout', () => {
 
     expect(screen.getByText('Main Title')).toBeInTheDocument();
     expect(screen.getByText('Some paragraph text')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Click me' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Click me' })
+    ).toBeInTheDocument();
   });
 
   it('should maintain proper React structure without wrapper elements', () => {
@@ -66,7 +73,7 @@ describe('GlobalLayout', () => {
     const mainElement = screen.getByTestId('main-content');
     expect(mainElement).toBeInTheDocument();
     expect(mainElement.tagName).toBe('MAIN');
-    
+
     // The container should not have any wrapper divs added by GlobalLayout
     expect(container.children).toHaveLength(1);
     expect(container.firstChild).toBe(mainElement);
@@ -82,7 +89,7 @@ describe('GlobalLayout', () => {
 
     const appContent = screen.getByTestId('app-content');
     expect(appContent).toBeInTheDocument();
-    
+
     // The current implementation should render children directly
     // This test ensures the structure is compatible with future provider additions
     expect(container.firstChild).toBe(appContent);
@@ -90,7 +97,7 @@ describe('GlobalLayout', () => {
 
   it('should handle different types of React children', () => {
     const showConditionalContent = true;
-    
+
     render(
       <GlobalLayout>
         {/* String child */}

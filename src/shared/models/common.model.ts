@@ -7,7 +7,7 @@ export interface GenerateResourcesOptions {
 }
 
 export type LocaleStructure = {
-  [key: string]: Record<string, Record<string, string>>;
+  [key: string]: Record<string, string | Record<string, unknown>>;
 };
 
 export interface GenerateGuardsOptions {
@@ -21,4 +21,3 @@ export type GuardStructure = {
     [key: string]: unknown;
   }>;
 };
-
