@@ -2,13 +2,12 @@ import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 import path from 'path';
-import EnvironmentPlugin from 'vite-plugin-environment';
 
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '');
-
+  
   return {
-    plugins: [react(), tailwindcss(), EnvironmentPlugin('all')],
+    plugins: [react(), tailwindcss()],
     server: {
       port: 3000,
       open: true,
@@ -52,16 +51,13 @@ export default defineConfig(({ mode }) => {
       },
     },
     define: {
-      'process.env': {
-        API_BASE_URL: JSON.stringify(
-          env.VITE_API_BASE_URL || 'http://localhost:3000/api'
-        ),
-        NODE_ENV: JSON.stringify(env.MODE || 'development'),
-        REACT_APP_API_BASE_URL: JSON.stringify(
-          env.VITE_API_BASE_URL || 'http://localhost:3000/api'
-        ),
-        VITE_FEATURE_FLAGS: env.VITE_FEATURE_FLAGS || {},
-      },
+      __DEV__: JSON.stringify(mode === 'development'),
+      'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || mode),
+      'process.env.MODE': JSON.stringify(mode),
+      'process.env.VITE_API_BASE_URL': JSON.stringify(env.VITE_API_BASE_URL || 'http://localhost:3000/api'),
+      'process.env.VITE_FEATURE_FLAGS': JSON.stringify(env.VITE_FEATURE_FLAGS || '{}'),
+      'process.env.VITE_I18N_DEBUG': JSON.stringify(env.VITE_I18N_DEBUG || 'false'),
+      'process.env.VITE_MSW_ENABLED': JSON.stringify(env.VITE_MSW_ENABLED || 'false'),
     },
     test: {
       globals: true,

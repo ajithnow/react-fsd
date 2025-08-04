@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import { LoginForm } from '../loginForm';
+import { LoginForm } from '../LoginForm';
 
 // Mock lucide-react icons
 jest.mock('lucide-react', () => ({

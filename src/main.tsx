@@ -3,10 +3,11 @@ import { createRoot } from 'react-dom/client'
 import './styles/globals.css'
 import App from './App.tsx'
 import './core/i18n'
+import { ENV } from './core/utils/env.utils'
 
 // Function to enable mocking in development
 async function enableMocking() {
-  if (process.env.NODE_ENV !== 'development') {
+  if (!ENV.IS_DEV) {
     return
   }
 

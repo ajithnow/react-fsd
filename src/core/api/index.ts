@@ -1,10 +1,8 @@
 import { FEATURE_CONSTANTS } from '@/features/constants';
+import { ENV } from '@/core/utils/env.utils';
 import axios from 'axios';
 
-const API_BASE_URL =
-  process.env?.VITE_API_BASE_URL ||
-  process.env.VITE_API_BASE_URL ||
-  'http://localhost:3000/api';
+const API_BASE_URL = ENV.API_BASE_URL;
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,

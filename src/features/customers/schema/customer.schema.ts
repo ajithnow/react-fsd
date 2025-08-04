@@ -28,8 +28,6 @@ export const customerFormSchema = z.object({
     .optional(),
 });
 
-export type CustomerFormData = z.infer<typeof customerFormSchema>;
-
 // Additional schemas for other customer operations
 export const customerIdSchema = z.object({
   id: z.string().min(1, 'Customer ID is required'),

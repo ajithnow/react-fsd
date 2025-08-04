@@ -34,3 +34,8 @@ export {
   createNavLink,
   createNavCollapsible,
 } from './AppLayout/sidebarHelpers';
+
+// Alert Dialog components
+export { SharedAlertDialog } from "./AlertDialog/SharedAlertDialog";
+export type { SharedAlertDialogProps } from "./AlertDialog/SharedAlertDialog";
+export { useAlertDialog } from "./AlertDialog/useAlertDialog";

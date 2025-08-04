@@ -1,2 +1,2 @@
 export { CustomerForm } from './CustomerForm';
-export { type CustomerFormData } from '../schema';
+export { type CustomerFormData, type CustomerFormProps } from '../models';
