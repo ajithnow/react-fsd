@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   SidebarProvider,
   SidebarInset,
@@ -6,11 +5,15 @@ import {
 import { AppSidebar } from '../AppSidebar';
 import { TopBar } from '../TopBar';
 import { AppLayoutProps } from './appLayout.models';
+import { useDocumentTitle } from '@/shared/hooks/useDocumentTitle';
+import { useTranslation } from 'react-i18next';
 
-export const AppLayout: React.FC<AppLayoutProps> = ({
+export const AppLayout = ({
   children,
   sidebarData,
-}) => {
+}: AppLayoutProps) => {
+  const { t } = useTranslation('shared');
+  useDocumentTitle(`${t('titles.dashboard', 'Dashboards')} | ${t('appName', 'Admin Dashboard')}`);
   return (
     <SidebarProvider>
       <AppSidebar data={sidebarData} />

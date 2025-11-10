@@ -1,12 +1,14 @@
 import authRoute from './auth/routes';
 import dashboardRoute from './dashboard/routes';
-import customerRoutes from './customers/routes';
+import userRoutes from './users/routes';
+import settingsRoutes from './settings/routes/settings.route';
 import { appLayoutRoute, authLayoutRoute } from './layout';
 
 // App routes with layout
 const appRoutes = appLayoutRoute.addChildren([
   ...dashboardRoute,
-  ...customerRoutes,
+  ...userRoutes,
+  ...settingsRoutes
 ]);
 
 // Auth routes without app layout

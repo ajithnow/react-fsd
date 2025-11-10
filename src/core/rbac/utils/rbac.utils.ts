@@ -1,6 +1,6 @@
 import { 
   User
-} from '../models/rbac.model';
+} from '@/core';
 
 /**
  * Check if a user has a specific permission
@@ -42,7 +42,7 @@ export const hasAllPermissions = (
  */
 export const hasRole = (user: User | null, role: string): boolean => {
   if (!user) return false;
-  return user.role === role;
+  return user.Role === role;
 };
 
 /**
@@ -50,5 +50,5 @@ export const hasRole = (user: User | null, role: string): boolean => {
  */
 export const hasAnyRole = (user: User | null, roles: string[]): boolean => {
   if (!user || !roles.length) return false;
-  return roles.includes(user.role);
+  return roles.includes(user.Role);
 };

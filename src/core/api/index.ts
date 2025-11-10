@@ -3,90 +3,142 @@ import { ENV } from '@/core/utils/env.utils';
 import axios from 'axios';
 
 const API_BASE_URL = ENV.API_BASE_URL;
+const MOCK_API_BASE_URL = ENV.MOCK_API_BASE_URL;
 
-const apiClient = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 10000,
-  headers: {
-    'Content-Type': 'application/json',
-    Accept: 'application/json',
-  },
-});
+// Create the base API client factory
+const createApiClient = ({ isMock = false } = {}) => {
+  const client = axios.create({
+    baseURL: isMock ? MOCK_API_BASE_URL : API_BASE_URL, 
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+    },
+  });
 
-apiClient.interceptors.request.use(
-  config => {
-    const token = localStorage.getItem(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
+  // Request interceptor - Add auth token
+  client.interceptors.request.use(
+    config => {
+      const token = localStorage.getItem(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
 
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
+      return config;
+    },
+    error => {
+      return Promise.reject(
+        error instanceof Error
+          ? error
+          : new Error(error?.message || 'Request failed')
+      );
     }
-    return config;
-  },
-  error => {
-    return Promise.reject(
-      error instanceof Error
-        ? error
-        : new Error(error.message || 'Request failed')
-    );
-  }
-);
+  );
 
-apiClient.interceptors.response.use(
-  response => {
-    return response;
-  },
-  async error => {
-    const originalRequest = error.config;
+  // Response interceptor - Handle errors and token refresh
+  client.interceptors.response.use(
+    response => response,
+    async error => {
+      const originalRequest = error.config;
 
-    // Example: Handle 401 Unauthorized (e.g., redirect to login or refresh token)
-    if (
-      error.response &&
-      error.response.status === 401 &&
-      !originalRequest._retry
-    ) {
-      originalRequest._retry = true; // Mark request as retried to prevent infinite loops
+      // Handle 401 Unauthorized with token refresh
+      if (error.response?.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
 
-      // --- TOKEN REFRESH LOGIC (if applicable) ---
-      try {
-        const refreshToken = localStorage.getItem(
-          FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN
-        );
-        if (refreshToken) {
-          const refreshResponse = await axios.post(
-            `${API_BASE_URL}/auth/refresh-token`,
-            { refreshToken }
+        try {
+          const refreshToken = localStorage.getItem(
+            FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN
           );
-          const newAccessToken = refreshResponse.data.accessToken;
+
+          if (!refreshToken) {
+            throw new Error('No refresh token available');
+          }
+
+          // Use a separate axios instance to avoid interceptor loops
+          const refreshResponse = await axios.post(
+            `${API_BASE_URL}/api/portal-admin/refresh-token/refresh-token`,
+            { refreshToken },
+            {
+              headers: {
+                'Content-Type': 'application/json',
+              },
+            }
+          );
+
+          const newAccessToken = refreshResponse.data?.accessToken;
+
+          if (!newAccessToken) {
+            throw new Error('Invalid refresh response');
+          }
+
+          // Update stored token
           localStorage.setItem(
             FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN,
             newAccessToken
-          ); // Store new token
+          );
+
+          // Update the original request with new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-          return apiClient(originalRequest);
+
+          // Retry the original request
+          return client(originalRequest);
+        } catch (refreshError) {
+          console.error('Token refresh failed:', refreshError);
+
+          // Clear tokens and redirect to login
+          localStorage.removeItem(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
+          localStorage.removeItem(FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN);
+
+          // Redirect to login - you might want to use your router here
+          if (typeof window !== 'undefined') {
+            window.location.href = '/auth/login';
+          }
+
+          return Promise.reject(new Error('Authentication failed'));
         }
-      } catch (refreshError) {
-        console.error('Token refresh failed:', refreshError);
-        window.location.href = '/login';
       }
-      // --- END TOKEN REFRESH LOGIC ---
 
-      // If not refreshing token, or refresh failed, simply reject or redirect
-      // For now, just logging and rejecting the error
-      console.error('API Error:', error.response.status, error.response.data);
-      // You might want to trigger a global error notification here or dispatch a logout action
-      if (error.response.status === 401 && !originalRequest._retry) {
-        // For example, if no refresh token or refresh failed, force logout
-        // EventBus.dispatch('logout'); // Custom event bus or global state update
-        // history.push('/login');
+      // Handle other HTTP errors
+      if (error.response) {
+        const status = error.response.status;
+        const data = error.response.data;
+
+        console.error(`API Error ${status}:`, data);
+
+        // You can add more specific error handling here
+        switch (status) {
+          case 403:
+            console.error('Forbidden: Insufficient permissions');
+            break;
+          case 404:
+            console.error('Not found');
+            break;
+          case 500:
+            console.error('Internal server error');
+            break;
+          default:
+            console.error('HTTP error:', status);
+        }
+      } else if (error.request) {
+        // Network error
+        console.error('Network error - no response received');
+      } else {
+        console.error('Request setup error:', error.message);
       }
+
+      return Promise.reject(
+        error instanceof Error
+          ? error
+          : new Error(error?.data || 'An error occurred')
+      );
     }
+  );
 
-    return Promise.reject(
-      error instanceof Error
-        ? error
-        : new Error(error.message || 'An error occurred')
-    );
-  }
-);
+  return client;
+};
 
+// Create default instance
+const apiClient = createApiClient();
+
+// Export both the factory and default instance
+export { createApiClient };
 export default apiClient;

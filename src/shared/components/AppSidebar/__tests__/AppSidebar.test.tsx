@@ -134,14 +134,6 @@ describe('AppSidebar', () => {
     expect(screen.getByTestId('sidebar-rail')).toBeInTheDocument();
   });
 
-  it('should render the header with app branding', () => {
-    render(<AppSidebar />);
-
-    expect(screen.getByText('React FSD')).toBeInTheDocument();
-    expect(screen.getByText('Feature Sliced Design')).toBeInTheDocument();
-    expect(screen.getByTestId('command-icon')).toBeInTheDocument();
-  });
-
   it('should render with default data when no data prop is provided', () => {
     render(<AppSidebar />);
 

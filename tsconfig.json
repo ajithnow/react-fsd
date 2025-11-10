@@ -29,7 +29,8 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "esModuleInterop": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "isolatedModules": true
   },
   "esModuleIInterop": true,
   "plugins": ["babel-plugin-transform-import-meta"]

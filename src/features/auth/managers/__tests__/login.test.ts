@@ -10,7 +10,7 @@ jest.mock('../../queries/login.query', () => ({
         id: 1,
         name: 'john',
         username: 'john',
-        role: 'user',
+        role: 'NORMAL_USER',
       },
     }),
     isPending: false,
@@ -53,12 +53,12 @@ describe('useLoginManager', () => {
     );
 
     expect(mockSetUser).toHaveBeenCalledWith({
-      id: 1,
-      name: 'john',
-      username: 'john',
-      role: 'user',
-      email: 'john', // Since apiUser.username is 'john', email becomes 'john'
+      role: 'NORMAL_USER',
       status: 'active',
+      name:"john",
+      id:1,
+      username: "john",
+      email:undefined
     });
 
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });

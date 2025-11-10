@@ -1,0 +1,31 @@
+{
+  "title": "Settings",
+  "description": "Manage your account settings and set e-mail preferences.",
+
+  "profile": {
+    "title": "Profile",
+    "desc": "Update your first and last name, email, and view your role.",
+    "updateSuccess": "Profile updated successfully",
+    "form": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "role": "Role",
+      "updateButton": "Update profile",
+      "updating": "Updating..."
+    }
+  },
+
+  "account": {
+    "title": "Change Password",
+    "desc": "Update your password to keep your account secure.",
+    "form": {
+      "currentPassword": "Current Password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm New Password",
+      "changeButton": "Change Password",
+      "changing": "Changing Password..."
+    },
+    "passwordChangedSuccessfully": "Password changed successfully"
+  }
+}

@@ -1,0 +1,70 @@
+{
+  "titles": {
+    "auth": "Authentifizierung",
+    "dashboard": "Dashboard"
+  },
+  "auth": {
+    "logOut": "Abmelden",
+    "loggingOut": "Abmeldung..."
+  },
+  "appName": "Admin Dashboard",
+  "required": "{{fieldName}} ist erforderlich",
+  "role": "Rolle",
+  "save": "Speichern",
+  "validation.min": "{{fieldName}} muss mindestens {{min}} Zeichen enthalten.",
+  "validation.max": "{{fieldName}} darf maximal {{max}} Zeichen enthalten.",
+  "validation.allowedCharacters": "darf nur Buchstaben, Leerzeichen, Apostrophe, Punkte und Bindestriche enthalten",
+  "validation.email": "E-Mail ist erforderlich",
+  "validation.emailaddress": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+  "validation.email.maxLength": "E-Mail muss weniger als 100 Zeichen sein",
+  "validation.invalidCharacters": "enthält ungültige Zeichen",
+  "validation.postalCode": "Bitte geben Sie die gültige Postleitzahl ein",
+  "validation.password": "Das Passwort muss mindestens 8 Zeichen lang sein",
+  "validation.password.uppercase": "Muss einen Großbuchstaben enthalten",
+  "validation.password.lowercase": "Muss einen Kleinbuchstaben enthalten",
+  "validation.password.number": "Muss eine Zahl enthalten",
+  "validation.optional": "{{fieldName}} muss mindestens {{minLength}} Zeichen enthalten, wenn angegeben",
+  "dataTable": {
+    "noData": "Keine Daten verfügbar",
+    "loading": "Wird geladen...",
+    "selectAll": "Alle Zeilen auswählen",
+    "selectRow": "Zeile {{rowId}} auswählen",
+    "selectPlaceholder": "Wählen Sie {{label}}",
+    "filterPlaceholder": "Nach {{label}} filtern",
+    "filtersSingular": "{{count}} Filter aktiv",
+    "filtersPlural": "{{count}} Filter aktiv",
+    "clear": "Filter zurücksetzen",
+    "rowsPerPage": "Zeilen pro Seite",
+    "showing": "Zeige {{start}} bis {{end}} von {{total}} Einträgen",
+    "pageOf": "Seite {{page}} von {{totalPages}}",
+    "goToFirst": "Zur ersten Seite",
+    "goToPrevious": "Zur vorherigen Seite",
+    "goToNext": "Zur nächsten Seite",
+    "goToLast": "Zur letzten Seite"
+  },
+  "sidebar": {
+    "home": "Startseite",
+    "groups": {
+      "main": "Hauptmenü",
+      "administration": "Administration"
+    },
+    "user": {
+      "guest": "Gastbenutzer",
+      "unknown": "Unbekannter Benutzer"
+    },
+    "settings": {
+      "title": "Einstellungen",
+      "profile": "Profil",
+      "account": "Konto"
+    },
+    "admin": {
+      "userManagement": "Benutzerverwaltung"
+    },
+    "dashboard": {
+      "overview": "Übersicht",
+      "sales": "Verkäufe",
+      "traffic": "Verkehr",
+      "reports": "Berichte"
+    }
+  }
+}

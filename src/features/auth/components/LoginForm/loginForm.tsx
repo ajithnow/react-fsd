@@ -40,10 +40,10 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <div className=" flex items-center justify-center p-4">
       <Card className="w-full max-w-sm">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-2xl font-semibold tracking-tight">
+          <CardTitle className="text-xl font-semibold tracking-tight">
             {t('login.title', 'Welcome Back')}
           </CardTitle>
           <CardDescription>
@@ -62,9 +62,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
                 name="username"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      {t('login.usernameLabel')}
-                    </FormLabel>
+                    <FormLabel>{t('login.usernameLabel')}</FormLabel>
                     <FormControl>
                       <Input
                         placeholder={t('login.usernamePlaceholder')}
@@ -83,13 +81,11 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
                 name="password"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>
-                      {t('login.passwordLabel')}
-                    </FormLabel>
+                    <FormLabel>{t('login.passwordLabel')}</FormLabel>
                     <FormControl>
                       <div className="relative">
                         <Input
-                          type={showPassword ? "text" : "password"}
+                          type={showPassword ? 'text' : 'password'}
                           placeholder={t('login.passwordPlaceholder')}
                           autoComplete="current-password"
                           disabled={isLoading}
@@ -117,16 +113,14 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
               />
 
               <div className="space-y-4">
-                <Button 
-                  type="submit" 
-                  disabled={isLoading} 
-                  className="w-full"
-                >
-                  {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                <Button type="submit" disabled={isLoading} className="w-full">
+                  {isLoading && (
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  )}
                   {t('login.loginButton', 'Sign In')}
                 </Button>
 
-                <div className="text-center">
+                {/* <div className="text-center">
                   <Button
                     type="button"
                     variant="default"
@@ -135,7 +129,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
                   >
                     {t('login.forgotPassword', 'Forgot your password?')}
                   </Button>
-                </div>
+                </div> */}
               </div>
             </form>
           </Form>

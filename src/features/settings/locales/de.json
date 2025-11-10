@@ -1,0 +1,31 @@
+{
+  "title": "Einstellungen",
+  "description": "Verwalten Sie Ihre Konto-Einstellungen und E-Mail-Präferenzen.",
+
+  "profile": {
+    "title": "Profil",
+    "desc": "Aktualisieren Sie Ihren Vor- und Nachnamen, E-Mail und anzeigen Sie Ihre Rolle.",
+    "updateSuccess": "Profil erfolgreich aktualisiert",
+    "form": {
+      "firstName": "Vorname",
+      "lastName": "Nachname",
+      "email": "E-Mail",
+      "role": "Rolle",
+      "updateButton": "Profil aktualisieren",
+      "updating": "Aktualisiere..."
+    }
+  },
+
+  "account": {
+    "title": "Passwort ändern",
+    "desc": "Aktualisieren Sie Ihr Passwort, um Ihr Konto zu schützen.",
+    "form": {
+      "currentPassword": "Aktuelles Passwort",
+      "newPassword": "Neues Passwort",
+      "confirmPassword": "Neues Passwort bestätigen",
+      "changeButton": "Passwort ändern",
+      "changing": "Passwort wird geändert..."
+    },
+    "passwordChangedSuccessfully": "Passwort erfolgreich geändert"
+  }
+}

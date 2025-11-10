@@ -1,4 +1,5 @@
-import * as React from "react"
+import * as React from 'react';
+import { Loader2 } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -8,42 +9,46 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "../../../lib/shadcn/components/ui/alert-dialog"
+} from '../../../lib/shadcn/components/ui/alert-dialog';
 
 export interface SharedAlertDialogProps {
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  title?: string
-  description?: string
-  confirmText?: string
-  cancelText?: string
-  onConfirm?: () => void
-  onCancel?: () => void
-  variant?: "default" | "destructive"
-  children?: React.ReactNode
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  title?: string;
+  description?: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm?: () => void;
+  onCancel?: () => void;
+  variant?: 'default' | 'destructive';
+  children?: React.ReactNode;
+  confirmDisabled?: boolean;
+  showLoading?: boolean | null;
 }
 
 export function SharedAlertDialog({
   open,
   onOpenChange,
-  title = "Are you sure?",
+  title = 'Are you sure?',
   description,
-  confirmText = "Continue",
-  cancelText = "Cancel",
+  confirmText = 'Continue',
+  cancelText = 'Cancel',
   onConfirm,
   onCancel,
-  variant = "default",
+  variant = 'default',
   children,
+  confirmDisabled = false,
+  showLoading = false
 }: Readonly<SharedAlertDialogProps>) {
   const handleConfirm = () => {
-    onConfirm?.()
-    onOpenChange(false)
-  }
+    onConfirm?.();
+    onOpenChange(false);
+  };
 
   const handleCancel = () => {
-    onCancel?.()
-    onOpenChange(false)
-  }
+    onCancel?.();
+    onOpenChange(false);
+  };
 
   return (
     <AlertDialog open={open} onOpenChange={onOpenChange}>
@@ -54,25 +59,31 @@ export function SharedAlertDialog({
             <AlertDialogDescription>{description}</AlertDialogDescription>
           )}
         </AlertDialogHeader>
-        
+
         {children && <div className="py-4">{children}</div>}
-        
+
         <AlertDialogFooter>
-          <AlertDialogCancel onClick={handleCancel}>
+          <AlertDialogCancel onClick={handleCancel} disabled={!!showLoading}>
             {cancelText}
           </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleConfirm}
-            className={
-              variant === "destructive"
-                ? "bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            type="button"
+            disabled={confirmDisabled}
+             className={
+              variant === 'destructive'
+                ? 'bg-destructive text-white hover:bg-destructive/90 border-transparent'
                 : undefined
             }
           >
-            {confirmText}
+            {
+              showLoading
+                ? <Loader2 className="animate-spin" />
+                : <>{confirmText}</>
+            }
           </AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  )
+  );
 }

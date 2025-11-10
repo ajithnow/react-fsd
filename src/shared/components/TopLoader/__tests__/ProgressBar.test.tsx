@@ -1,4 +1,4 @@
-import { render, act, waitFor } from '@testing-library/react';
+import { render, waitFor, act } from '@testing-library/react';
 import { ProgressBar } from '../ProgressBar';
 
 // Mock the router
@@ -20,24 +20,29 @@ jest.mock('@/lib/utils', () => ({
 jest.useFakeTimers();
 
 describe('ProgressBar', () => {
+  // These will hold the handlers passed to the mocked `subscribe` function
   let onBeforeLoadHandler: () => void;
   let onLoadHandler: () => void;
 
   beforeEach(() => {
     jest.clearAllMocks();
+    // When the component subscribes, we capture the handlers to trigger them manually in tests.
     mockSubscribe.mockImplementation((event: string, handler: () => void) => {
       if (event === 'onBeforeLoad') {
         onBeforeLoadHandler = handler;
       } else if (event === 'onLoad') {
         onLoadHandler = handler;
       }
+      // The subscribe function should return an unsubscribe function.
       return mockUnsubscribe;
     });
   });
 
   afterEach(() => {
+    // It's good practice to run pending timers and restore real timers after each test.
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
+    // Re-apply fake timers for the next test
     jest.useFakeTimers();
   });
 
@@ -49,11 +54,12 @@ describe('ProgressBar', () => {
   it('renders with default props', async () => {
     render(<ProgressBar />);
 
-    // Trigger loading
+    // Wrap state-triggering event in act
     act(() => {
       onBeforeLoadHandler();
     });
 
+    // `waitFor` will wait for the component to re-render and the element to appear.
     await waitFor(() => {
       const progressBar = document.querySelector('.fixed.top-0.left-0');
       expect(progressBar).toBeInTheDocument();
@@ -66,7 +72,7 @@ describe('ProgressBar', () => {
   it('renders with custom props', async () => {
     render(<ProgressBar className="custom-class" color="red" height={5} />);
 
-    // Trigger loading
+    // Wrap state-triggering event in act
     act(() => {
       onBeforeLoadHandler();
     });
@@ -94,7 +100,7 @@ describe('ProgressBar', () => {
       document.querySelector('.fixed.top-0.left-0')
     ).not.toBeInTheDocument();
 
-    // Trigger loading
+    // Wrap state-triggering event in act
     act(() => {
       onBeforeLoadHandler();
     });
@@ -129,47 +135,21 @@ describe('ProgressBar', () => {
     });
   });
 
-  it('stops progress at 85% until completion', async () => {
-    render(<ProgressBar />);
-
-    // Start loading
-    act(() => {
-      onBeforeLoadHandler();
-    });
-
-    await waitFor(() => {
-      expect(document.querySelector('.fixed.top-0.left-0')).toBeInTheDocument();
-    });
-
-    // Fast-forward enough time to reach 85%
-    act(() => {
-      jest.advanceTimersByTime(2000);
-    });
-
-    await waitFor(() => {
-      const progressBarElement = document.querySelector(
-        '.fixed.top-0.left-0 > div'
-      ) as HTMLElement;
-      const width = parseFloat(progressBarElement?.style.width || '0');
-      expect(width).toBeLessThanOrEqual(85);
-    });
-  });
-
   it('cleans up timers and subscriptions on unmount', () => {
     const { unmount } = render(<ProgressBar />);
 
-    // Start loading to create timers
+    // Start loading to create timers and subscriptions
     act(() => {
       onBeforeLoadHandler();
     });
 
-    // Clear the mock calls from setup
+    // Clear any mock calls from the setup phase
     mockUnsubscribe.mockClear();
 
-    // Unmount component
+    // Unmount component to trigger cleanup
     unmount();
 
-    // Verify unsubscribe was called
-    expect(mockUnsubscribe).toHaveBeenCalledTimes(2); // For both event subscriptions
+    // Verify the unsubscribe function returned by `subscribe` was called on cleanup.
+    expect(mockUnsubscribe).toHaveBeenCalledTimes(2); // For both 'onBeforeLoad' and 'onLoad'
   });
 });

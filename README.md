@@ -397,7 +397,3 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - [Vite](https://vitejs.dev/) - Next generation frontend tooling
 
 ---
-
-### Built with ❤️ using Feature-Sliced Design
-
-For questions, issues, or contributions, please visit our [GitHub repository](https://github.com/your-org/react-fsd).

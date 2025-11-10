@@ -25,8 +25,8 @@ export const useRBAC = () => {
     hasAnyPermission: (perms: string[]) => sharedHasAnyPermission(user, perms),
     hasAllPermissions: (perms: string[]) =>
       sharedHasAllPermissions(user, perms),
-    hasRole: (role: string) => !!user && user.role === role,
-    hasAnyRole: (roles: string[]) => !!user && roles.includes(user.role),
+    hasRole: (role: string) => !!user && user.Role === role,
+    hasAnyRole: (roles: string[]) => !!user && roles.includes(user.Role),
     getRoleInfo,
     isRoleHigherThan,
     getMissingPermissions: (required: string[]) =>
