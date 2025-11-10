@@ -9,16 +9,17 @@ import {
   Home,
   BarChart3,
   Users,
-  Settings,
-  UserIcon,
   FileText,
+  Settings,
   Shield,
+  UserIcon,
   Bell,
-  CreditCard,
+  // Bell,
 } from 'lucide-react';
-import { useAuthStore } from '../../features/auth/stores/auth.store';
-import type { User } from '../../features/auth/models/auth.model';
-import { useRBAC } from './useRBAC';
+import { useAuthStore } from '@/features/auth/stores/auth.store.ts';
+import type { User } from '@/features/auth/models/auth.model.ts';
+import { useRBAC } from '@/shared';
+import { useTranslation } from 'react-i18next';
 
 // Extended user type with email for sidebar display
 type ExtendedUser = User & {
@@ -29,7 +30,7 @@ type ExtendedUser = User & {
 
 // Sidebar item structure
 type SidebarItem = {
-  label: string;
+  labelKey: string; // Translation key instead of hardcoded label
   link: string;
   icon?: React.ComponentType;
   permission?: string; // Base permission key (e.g., 'customers', 'admin', 'dashboard')
@@ -37,46 +38,52 @@ type SidebarItem = {
 };
 
 /**
- * Default sidebar configuration
+ * Default sidebar configuration with translation keys
  */
 const DEFAULT_SIDEBAR_CONFIG: SidebarItem[] = [
   {
-    label: 'Home',
+    labelKey: 'sidebar.home',
     link: '/',
     icon: Home,
   },
+
   {
-    label: 'Customers',
+    labelKey: 'sidebar.customers.title',
     link: '/customers',
     icon: Users,
     permission: 'customers',
   },
   {
-    label: 'Settings',
+    labelKey: 'sidebar.admin.userManagement',
+    link: '/users',
+    icon: Users,
+    permission: 'admin',
+  },
+
+  {
+    labelKey: 'Notifications',
+    link: '/notifications',
+    icon: Bell,
+    permission: 'admin',
+  },
+
+
+  {
+    labelKey: 'sidebar.settings.title',
     link: '/settings',
     icon: Settings,
     permission: 'settings',
     children: [
       {
-        label: 'Profile',
+        labelKey: 'sidebar.settings.profile',
         link: '/settings/profile',
         icon: UserIcon,
       },
+
       {
-        label: 'Security',
-        link: '/settings/security',
+        labelKey: 'sidebar.settings.account',
+        link: '/settings/account',
         icon: Shield,
-        permission: 'settings',
-      },
-      {
-        label: 'Notifications',
-        link: '/settings/notifications',
-        icon: Bell,
-      },
-      {
-        label: 'Billing',
-        link: '/settings/billing',
-        icon: CreditCard,
         permission: 'settings',
       },
     ],
@@ -84,48 +91,24 @@ const DEFAULT_SIDEBAR_CONFIG: SidebarItem[] = [
 ];
 
 /**
- * Admin-specific sidebar items
- */
-const ADMIN_SIDEBAR_ITEMS: SidebarItem[] = [
-  {
-    label: 'User Management',
-    link: '/admin/users',
-    icon: Users,
-    permission: 'admin',
-  },
-  {
-    label: 'System Logs',
-    link: '/admin/logs',
-    icon: FileText,
-    permission: 'admin',
-  },
-  {
-    label: 'Security',
-    link: '/admin/security',
-    icon: Shield,
-    permission: 'admin',
-  },
-];
-
-/**
- * Feature-specific sidebar configurations
+ * Feature-specific sidebar configurations with translation keys
  */
 const FEATURE_SIDEBAR_CONFIGS: Record<string, SidebarItem[]> = {
   customers: [
     {
-      label: 'All Customers',
+      labelKey: 'sidebar.customers.all',
       link: '/customers',
       icon: Users,
       permission: 'customers',
     },
     {
-      label: 'Add Customer',
+      labelKey: 'sidebar.customers.add',
       link: '/customers/create',
       icon: Users,
       permission: 'customers',
     },
     {
-      label: 'Customer Reports',
+      labelKey: 'sidebar.customers.reports',
       link: '/customers/reports',
       icon: BarChart3,
       permission: 'customers',
@@ -133,25 +116,25 @@ const FEATURE_SIDEBAR_CONFIGS: Record<string, SidebarItem[]> = {
   ],
   dashboard: [
     {
-      label: 'Overview',
+      labelKey: 'sidebar.dashboard.overview',
       link: '/dashboard',
       icon: BarChart3,
       permission: 'dashboard',
     },
     {
-      label: 'Sales',
+      labelKey: 'sidebar.dashboard.sales',
       link: '/dashboard/sales',
       icon: BarChart3,
       permission: 'dashboard',
     },
     {
-      label: 'Traffic',
+      labelKey: 'sidebar.dashboard.traffic',
       link: '/dashboard/traffic',
       icon: BarChart3,
       permission: 'dashboard',
     },
     {
-      label: 'Reports',
+      labelKey: 'sidebar.dashboard.reports',
       link: '/dashboard/reports',
       icon: FileText,
       permission: 'dashboard',
@@ -201,20 +184,23 @@ const filterSidebarItems = (
 /**
  * Convert sidebar items to the format expected by the sidebar helpers
  */
-const convertToSidebarFormat = (items: SidebarItem[]) => {
+const convertToSidebarFormat = (
+  items: SidebarItem[],
+  t: (key: string) => string
+) => {
   return items.map(item => {
     if (item.children && item.children.length > 0) {
       return createNavCollapsible(
-        item.label,
+        t(item.labelKey),
         item.children.map(child => ({
-          title: child.label,
+          title: t(child.labelKey),
           url: child.link,
           icon: child.icon,
         })),
         item.icon
       );
     } else {
-      return createNavLink(item.label, item.link, item.icon);
+      return createNavLink(t(item.labelKey), item.link, item.icon);
     }
   });
 };
@@ -227,11 +213,13 @@ export const useSidebarData = (options?: {
   feature?: string;
 }): SidebarData => {
   const { user, permissions } = useRBAC();
+  const { t } = useTranslation('shared');
 
   return getSidebarData({
     ...options,
     customUser: user as ExtendedUser | null,
     userPermissions: permissions,
+    translate: t,
   });
 };
 
@@ -250,18 +238,21 @@ const getCurrentUser = (): ExtendedUser | null => {
 /**
  * Create user data for sidebar from authenticated user
  */
-const createUserDataFromAuth = (authUser: ExtendedUser | null) => {
+const createUserDataFromAuth = (
+  authUser: ExtendedUser | null,
+  t: (key: string) => string
+) => {
   if (!authUser) {
     return {
-      name: 'Guest User',
+      name: t('sidebar.user.guest'),
       email: 'guest@example.com',
       avatar: '/avatars/default.jpg',
     };
   }
 
   return {
-    name: authUser.name || 'Unknown User',
-    email: authUser.email || authUser.name || 'user@example.com',
+    name: authUser.Name || t('sidebar.user.unknown'),
+    email: authUser.Email || authUser.Name || 'user@example.com',
     avatar: '/avatars/user.jpg', // Default avatar, could be extended with authUser.avatar
   };
 };
@@ -272,17 +263,18 @@ const createUserDataFromAuth = (authUser: ExtendedUser | null) => {
 const buildSidebarData = (
   items: SidebarItem[],
   authUser: ExtendedUser | null,
-  userPermissions: string[] = []
+  userPermissions: string[] = [],
+  t: (key: string) => string
 ): SidebarData => {
   // Filter items based on permissions
   const filteredItems = filterSidebarItems(items, userPermissions);
 
   // Convert to sidebar format
-  const navItems = convertToSidebarFormat(filteredItems);
+  const navItems = convertToSidebarFormat(filteredItems, t);
 
   return createSidebarData({
-    user: createUserDataFromAuth(authUser),
-    navGroups: [createNavGroup('Main', navItems)],
+    user: createUserDataFromAuth(authUser, t),
+    navGroups: [createNavGroup(t('sidebar.groups.main'), navItems)],
   });
 };
 
@@ -291,10 +283,17 @@ const buildSidebarData = (
  */
 export const getDefaultSidebarData = (
   customUser?: ExtendedUser | null,
-  userPermissions: string[] = []
+  userPermissions: string[] = [],
+  translate?: (key: string) => string
 ): SidebarData => {
+  const t = translate || ((key: string) => key); // Fallback if no translate function provided
   const authUser = customUser || getCurrentUser();
-  return buildSidebarData(DEFAULT_SIDEBAR_CONFIG, authUser, userPermissions);
+  return buildSidebarData(
+    [...DEFAULT_SIDEBAR_CONFIG],
+    authUser,
+    userPermissions,
+    t
+  );
 };
 
 /**
@@ -302,22 +301,14 @@ export const getDefaultSidebarData = (
  */
 export const getAdminSidebarData = (
   customUser?: ExtendedUser | null,
-  userPermissions: string[] = []
+  userPermissions: string[] = [],
+  translate?: (key: string) => string
 ): SidebarData => {
+  const t = translate || ((key: string) => key);
   const authUser = customUser || getCurrentUser();
-  const allItems = [...DEFAULT_SIDEBAR_CONFIG, ...ADMIN_SIDEBAR_ITEMS];
+  const allItems = [...DEFAULT_SIDEBAR_CONFIG];
 
-  const sidebarData = buildSidebarData(allItems, authUser, userPermissions);
-
-  // Add admin navigation as a separate group
-  const filteredAdminItems = filterSidebarItems(
-    ADMIN_SIDEBAR_ITEMS,
-    userPermissions
-  );
-  if (filteredAdminItems.length > 0) {
-    const adminNavItems = convertToSidebarFormat(filteredAdminItems);
-    sidebarData.navGroups.push(createNavGroup('Administration', adminNavItems));
-  }
+  const sidebarData = buildSidebarData(allItems, authUser, userPermissions, t);
 
   return sidebarData;
 };
@@ -328,13 +319,15 @@ export const getAdminSidebarData = (
 export const getFeatureSidebarData = (
   feature: string,
   customUser?: ExtendedUser | null,
-  userPermissions: string[] = []
+  userPermissions: string[] = [],
+  translate?: (key: string) => string
 ): SidebarData => {
+  const t = translate || ((key: string) => key);
   const authUser = customUser || getCurrentUser();
 
   const featureItems = FEATURE_SIDEBAR_CONFIGS[feature];
   if (!featureItems) {
-    return getDefaultSidebarData(authUser, userPermissions);
+    return getDefaultSidebarData(authUser, userPermissions, t);
   }
 
   // Use feature items as main navigation, keep some default items
@@ -343,7 +336,7 @@ export const getFeatureSidebarData = (
   );
 
   const allItems = [...featureItems, ...otherItems];
-  return buildSidebarData(allItems, authUser, userPermissions);
+  return buildSidebarData(allItems, authUser, userPermissions, t);
 };
 
 /**
@@ -354,25 +347,33 @@ export const getSidebarData = (options?: {
   feature?: string;
   customUser?: ExtendedUser | null;
   userPermissions?: string[];
+  translate?: (key: string) => string;
 }): SidebarData => {
-  const { userRole, feature, customUser, userPermissions = [] } = options || {};
+  const {
+    userRole,
+    feature,
+    customUser,
+    userPermissions = [],
+    translate,
+  } = options || {};
+  const t = translate || ((key: string) => key);
 
   // Get current authenticated user
   const authUser = customUser || getCurrentUser();
 
   // Determine user role from auth user if not explicitly provided
   const actualUserRole =
-    userRole || (authUser?.role === 'admin' ? 'admin' : 'user');
+    userRole || (authUser?.Role === 'admin' ? 'admin' : 'user');
 
   let sidebarData: SidebarData;
 
   // Prioritize feature-specific sidebar over role-based sidebar
   if (feature) {
-    sidebarData = getFeatureSidebarData(feature, authUser, userPermissions);
+    sidebarData = getFeatureSidebarData(feature, authUser, userPermissions, t);
   } else if (actualUserRole === 'admin') {
-    sidebarData = getAdminSidebarData(authUser, userPermissions);
+    sidebarData = getAdminSidebarData(authUser, userPermissions, t);
   } else {
-    sidebarData = getDefaultSidebarData(authUser, userPermissions);
+    sidebarData = getDefaultSidebarData(authUser, userPermissions, t);
   }
 
   return sidebarData;

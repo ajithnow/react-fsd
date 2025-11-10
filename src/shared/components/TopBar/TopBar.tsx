@@ -1,18 +1,8 @@
 import React from 'react';
 import { SidebarTrigger } from '@/lib/shadcn/components/ui/sidebar';
 import { Separator } from '@/lib/shadcn/components/ui/separator';
-import { Button } from '@/lib/shadcn/components/ui/button';
-import { Bell, Search, Settings, User } from 'lucide-react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '@/lib/shadcn/components/ui/dropdown-menu';
-import { Input } from '@/lib/shadcn/components/ui/input';
 import { LanguageSwitcher } from '../LanguageSwitcher';
+// import { NotificationSheet } from './NotificationSheet';
 
 export const TopBar: React.FC = () => {
   return (
@@ -20,13 +10,7 @@ export const TopBar: React.FC = () => {
       <SidebarTrigger className="-ml-1" />
       <Separator orientation="vertical" className="mr-2 h-4" />
 
-      {/* Search */}
-      <div className="flex flex-1 items-center gap-2">
-        <div className="relative max-w-sm">
-          <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-          <Input placeholder="Search..." className="pl-8" />
-        </div>
-      </div>
+      <div className="flex flex-1 items-center gap-2"></div>
 
       {/* Right side actions */}
       <div className="flex items-center gap-2">
@@ -34,33 +18,81 @@ export const TopBar: React.FC = () => {
         <LanguageSwitcher />
 
         {/* Notifications */}
-        <Button variant="ghost" size="icon" className="relative">
-          <Bell className="h-4 w-4" />
-          <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
-        </Button>
-
-        {/* Settings */}
-        <Button variant="ghost" size="icon">
-          <Settings className="h-4 w-4" />
-        </Button>
-
-        {/* User menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" size="icon">
-              <User className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Settings</DropdownMenuItem>
-            <DropdownMenuItem>Support</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Log out</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* <NotificationSheet
+          notifications={[
+            {
+              id: '1',
+              title: 'New user registered',
+              message: 'John Doe has joined your application',
+              time: '2 minutes ago',
+              read: false,
+            },
+            {
+              id: '2',
+              title: 'System update',
+              message: 'Your system has been updated successfully',
+              time: '1 hour ago',
+              read: true,
+            },
+            {
+              id: '3',
+              title: 'New comment on your post',
+              message: 'Alice commented on your post "Hello World"',
+              time: '3 hours ago',
+              read: false,
+            },
+            {
+              id: '4',
+              title: 'New order received',
+              message: 'You have received a new order from John Doe',
+              time: '1 day ago',
+              read: true,
+            },
+            {
+              id: '5',
+              title: 'New message received',
+              message: 'You have received a new message from Jane Smith',
+              time: '2 days ago',
+              read: false,
+            },
+            {
+              id: '6',
+              title: 'New user registered',
+              message: 'John Doe has joined your application',
+              time: '2 minutes ago',
+              read: false,
+            },
+            {
+              id: '7',
+              title: 'System update',
+              message: 'Your system has been updated successfully',
+              time: '1 hour ago',
+              read: true,
+            },
+            {
+              id: '8',
+              title: 'New comment on your post',
+              message: 'Alice commented on your post "Hello World"',
+              time: '3 hours ago',
+              read: false,
+            },
+            {
+              id: '9',
+              title: 'New order received',
+              message: 'You have received a new order from John Doe',
+              time: '1 day ago',
+              read: true,
+            },
+            {
+              id: '10',
+              title: 'New message received',
+              message: 'You have received a new message from Jane Smith',
+              time: '2 days ago',
+              read: false,
+            },
+          ]}
+          onSeeAll={() => console.log('Navigate to notifications page')}
+        /> */}
       </div>
     </header>
   );

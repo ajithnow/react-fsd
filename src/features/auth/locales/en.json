@@ -9,6 +9,12 @@
     "loadingButton": "Logging In...",
     "usernameRequired": "Username is required",
     "passwordRequired": "Password is required",
-    "loginFailedError": "Login failed. Please check your credentials."
+    "loginFailedError": "Login failed. Please check your credentials.",
+    "successLogin": "Login successful",
+    "pageTitle": "Login | Admin Dashboard",
+    "welcomeBack": "Welcome back",
+    "signInPrompt": "Sign in to your account to continue",
+    "welcomeText": "Admin Dashboard",
+    "welcomeSubText": "Manage your application and users."
   }
 }

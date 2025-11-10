@@ -1,17 +1,14 @@
 import React from 'react';
-import { Link } from '@tanstack/react-router';
 import {
   ChevronsUpDown,
   User as UserIcon,
-  CreditCard,
-  Bell,
+  //Bell,
   LogOut,
-  Sparkles,
 } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
+  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -25,6 +22,7 @@ import {
 } from '@/lib/shadcn/components/ui/sidebar';
 import { useLogoutManager } from '../../../features/auth/managers/logout.manager';
 import type { User } from './appSidebar.models';
+import { useTranslation } from 'react-i18next';
 
 interface NavUserProps {
   user: User;
@@ -33,6 +31,7 @@ interface NavUserProps {
 export const NavUser: React.FC<NavUserProps> = ({ user }) => {
   const { isMobile } = useSidebar();
   const { logoutUser, isPending } = useLogoutManager();
+  const { t } = useTranslation('shared');
 
   const handleLogout = async () => {
     try {
@@ -79,24 +78,11 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <Sparkles />
-                Upgrade to Pro
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator />
-            <DropdownMenuGroup>
+            {/* <DropdownMenuGroup>
               <DropdownMenuItem asChild>
                 <Link to="/settings/account">
                   <UserIcon />
-                  Account
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings">
-                  <CreditCard />
-                  Billing
+                  Profile
                 </Link>
               </DropdownMenuItem>
               <DropdownMenuItem asChild>
@@ -106,10 +92,10 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
                 </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
-            <DropdownMenuSeparator />
+            <DropdownMenuSeparator /> */}
             <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
               <LogOut />
-              {isPending ? 'Logging out...' : 'Log out'}
+              {isPending ? t('auth.loggingOut') : t('auth.logOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

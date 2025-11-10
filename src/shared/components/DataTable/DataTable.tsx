@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -7,6 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from '../../../lib/shadcn/components/ui/table';
+import { Checkbox } from '../../../lib/shadcn/components/ui/checkbox';
 import { Button } from '../../../lib/shadcn/components/ui/button';
 import { ArrowUpDown, ArrowUp, ArrowDown, Loader2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
@@ -29,19 +31,34 @@ export function DataTable<T extends Record<string, unknown>>({
   showPagination = true,
   showFilters = true,
   className,
-  emptyMessage = 'No data available',
+  emptyMessage = undefined,
   pageSizeOptions,
+  selectable = false,
+  selected = undefined,
+  onSelectionChange,
+  rowKey,
+  onRowClick,
+  rowClickable,
+  rowClassName
 }: Readonly<DataTableProps<T>>) {
-  const [currentSort, setCurrentSort] = useState<SortConfig | null>(initialSort || null);
-  const [currentFilters, setCurrentFilters] = useState<FilterValues>(initialFilters);
-  
+  const [currentSort, setCurrentSort] = useState<SortConfig | null>(
+    initialSort || null
+  );
+  const [currentFilters, setCurrentFilters] =
+    useState<FilterValues>(initialFilters);
+  const [internalSelected, setInternalSelected] = useState<string[]>(
+    selected ?? []
+  );
+
   // Use ref to track previous initialFilters to prevent infinite loops
   const prevInitialFiltersRef = useRef<FilterValues>(initialFilters);
-  
+
   // Sync filters when initialFilters prop changes (for URL persistence)
   useEffect(() => {
     // Only update if the filters actually changed (deep comparison)
-    const filtersChanged = JSON.stringify(prevInitialFiltersRef.current) !== JSON.stringify(initialFilters);
+    const filtersChanged =
+      JSON.stringify(prevInitialFiltersRef.current) !==
+      JSON.stringify(initialFilters);
     if (filtersChanged) {
       setCurrentFilters(initialFilters);
       prevInitialFiltersRef.current = initialFilters;
@@ -54,9 +71,16 @@ export function DataTable<T extends Record<string, unknown>>({
     }
   }, [currentFilters, onFilterChange]);
 
+  // Sync controlled selected prop
+  useEffect(() => {
+    if (selected !== undefined) {
+      setInternalSelected(selected);
+    }
+  }, [selected]);
+
   const handleSort = (field: string) => {
     let newSort: SortConfig | null;
-    
+
     if (!currentSort || currentSort.field !== field) {
       newSort = { field, direction: 'asc' };
     } else if (currentSort.direction === 'asc') {
@@ -64,7 +88,7 @@ export function DataTable<T extends Record<string, unknown>>({
     } else {
       newSort = null;
     }
-    
+
     setCurrentSort(newSort);
     onSortChange?.(newSort);
   };
@@ -77,11 +101,14 @@ export function DataTable<T extends Record<string, unknown>>({
     setCurrentFilters({});
   };
 
-  const getCellValue = (item: T, column: typeof columns[0]): React.ReactNode => {
+  const getCellValue = (
+    item: T,
+    column: (typeof columns)[0]
+  ): React.ReactNode => {
     if (column.cell) {
       return column.cell(item);
     }
-    
+
     if (column.accessor) {
       if (typeof column.accessor === 'function') {
         const value = column.accessor(item);
@@ -90,19 +117,62 @@ export function DataTable<T extends Record<string, unknown>>({
       const value = item[column.accessor];
       return value as React.ReactNode;
     }
-    
+
     return '';
+  };
+
+  const getRowId = (item: T, index: number) => {
+    if (rowKey) {
+      if (typeof rowKey === 'function') return rowKey(item as T);
+      const obj = item as unknown as Record<string, unknown>;
+      const val = obj[String(rowKey)];
+      return val != null ? String(val) : `row-${index}`;
+    }
+
+    const obj = item as unknown as Record<string, unknown>;
+    if ('id' in obj && obj.id) return String(obj.id);
+    if ('key' in obj && obj.key) return String(obj.key);
+    return `row-${index}`;
+  };
+
+  const isSelected = (id: string) => internalSelected.includes(id);
+
+  const toggleSelect = (id: string) => {
+    const next = isSelected(id)
+      ? internalSelected.filter(s => s !== id)
+      : [...internalSelected, id];
+    if (selected === undefined) setInternalSelected(next);
+    onSelectionChange?.(next);
+  };
+
+  const toggleSelectAll = () => {
+    if (internalSelected.length === data.length) {
+      if (selected === undefined) setInternalSelected([]);
+      onSelectionChange?.([]);
+    } else {
+      const allIds = data.map((d, i) => getRowId(d, i));
+      if (selected === undefined) setInternalSelected(allIds);
+      onSelectionChange?.(allIds);
+    }
   };
 
   const getSortIcon = (field: string) => {
     if (!currentSort || currentSort.field !== field) {
       return <ArrowUpDown className="ml-2 h-4 w-4" />;
     }
-    
-    return currentSort.direction === 'asc' 
-      ? <ArrowUp className="ml-2 h-4 w-4" />
-      : <ArrowDown className="ml-2 h-4 w-4" />;
+
+    return currentSort.direction === 'asc' ? (
+      <ArrowUp className="ml-2 h-4 w-4" />
+    ) : (
+      <ArrowDown className="ml-2 h-4 w-4" />
+    );
   };
+
+  const { t } = useTranslation('shared');
+
+  const resolvedEmptyMessage =
+    emptyMessage ?? t('dataTable.noData', { defaultValue: 'No data available' });
+  const loadingText = t('dataTable.loading', { defaultValue: 'Loading...' });
 
   return (
     <div className={cn('space-y-4', className)}>
@@ -114,12 +184,24 @@ export function DataTable<T extends Record<string, unknown>>({
           onClearFilters={handleClearFilters}
         />
       )}
-      
+
       <div className="rounded-md border">
         <Table>
           <TableHeader>
             <TableRow>
-              {columns.map((column) => (
+              {selectable && (
+                <TableHead>
+                  <Checkbox
+                    checked={
+                      data.length > 0 && internalSelected.length === data.length
+                    }
+                    onCheckedChange={() => toggleSelectAll()}
+                    aria-label={t('dataTable.selectAll', { defaultValue: 'Select all rows' })}
+                  />
+                </TableHead>
+              )}
+
+              {columns.map(column => (
                 <TableHead
                   key={column.id}
                   className={cn(
@@ -147,53 +229,83 @@ export function DataTable<T extends Record<string, unknown>>({
           <TableBody>
             {loading && (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
+                <TableCell
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                  className="h-24 text-center"
+                >
                   <div className="flex items-center justify-center">
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Loading...
+                    {loadingText}
                   </div>
                 </TableCell>
               </TableRow>
             )}
-            
+
             {!loading && data.length === 0 && (
               <TableRow>
-                <TableCell colSpan={columns.length} className="h-24 text-center">
-                  {emptyMessage}
+                <TableCell
+                  colSpan={columns.length + (selectable ? 1 : 0)}
+                  className="h-24 text-center"
+                >
+                  {resolvedEmptyMessage}
                 </TableCell>
               </TableRow>
             )}
-            
-            {!loading && data.length > 0 && data.map((item, index) => {
-              let itemKey: string;
-              if ('id' in item && item.id) {
-                itemKey = String(item.id);
-              } else if ('key' in item && item.key) {
-                itemKey = String(item.key);
-              } else {
-                itemKey = `row-${index}-${JSON.stringify(item).slice(0, 50)}`;
-              }
-              
-              return (
-                <TableRow key={itemKey}>
-                  {columns.map((column) => (
-                    <TableCell
-                      key={column.id}
-                      className={cn(
-                        column.align === 'center' && 'text-center',
-                        column.align === 'right' && 'text-right'
-                      )}
-                    >
-                      {getCellValue(item, column)}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              );
-            })}
+
+            {!loading &&
+              data.length > 0 &&
+              data.map((item, index) => {
+                let itemKey: string;
+                if ('id' in item && item.id) {
+                  itemKey = String(item.id);
+                } else if ('key' in item && item.key) {
+                  itemKey = String(item.key);
+                } else {
+                  itemKey = `row-${index}-${JSON.stringify(item).slice(0, 50)}`;
+                }
+
+                const rowId = getRowId(item, index);
+
+                return (
+                  <TableRow
+                    key={itemKey}
+                    className={cn(
+                      rowClickable === false ? 'cursor-default' : 'hover:cursor-pointer hover:bg-muted',
+                      typeof rowClassName === 'function' ? rowClassName(item) : undefined
+                    )}
+                  >
+                
+                  
+                
+                    {selectable && (
+                      <TableCell>
+                        <Checkbox
+                          checked={isSelected(rowId)}
+                          onCheckedChange={() => toggleSelect(rowId)}
+                          aria-label={t('dataTable.selectRow', { rowId, defaultValue: `Select row ${rowId}` })}
+                        />
+                      </TableCell>
+                    )}
+
+                    {columns.map(column => (
+                      <TableCell
+                        onClick={() => column.id !== 'actions' ? onRowClick?.(item) : undefined}
+                        key={column.id}
+                        className={cn(
+                          column.align === 'center' && 'text-center',
+                          column.align === 'right' && 'text-right'
+                        )}
+                      >
+                        {getCellValue(item, column)}
+                      </TableCell>
+                    ))}
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </div>
-      
+
       {showPagination && pagination && (
         <DataTablePagination
           pagination={pagination}

@@ -7,10 +7,9 @@ import { ENV } from './core/utils/env.utils'
 
 // Function to enable mocking in development
 async function enableMocking() {
-  if (!ENV.IS_DEV) {
-    return
+  if (!ENV.MSW_ENABLED) {
+    return;
   }
-
   const { worker } = await import('./core/mock/browser.ts')
   
   return worker.start({

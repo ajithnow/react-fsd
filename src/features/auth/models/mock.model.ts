@@ -39,8 +39,11 @@ export interface User {
   id: number;
   name: string;
   username: string;
-  role: 'admin' | 'user';
+  role: 'SUPER_ADMIN' | 'POWER_ADMIN' | 'NORMAL_USER'
   createdAt: string;
+  firstName: string;
+  lastName: string;
+  email: string;
 }
 
 export interface AuthResponse {

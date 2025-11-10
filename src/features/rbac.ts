@@ -2,41 +2,35 @@
 // This file aggregates permissions from all features and defines roles
 
 // Import feature-specific permissions
-import { AUTH_PERMISSIONS } from './auth/constants/permissions.constants';
-import { CUSTOMERS_PERMISSIONS } from './customers/constants/permissions.constants';
+import { AUTH_PERMISSIONS } from '@/features/auth/constants';
 import { DASHBOARD_PERMISSIONS } from './dashboard/constants/permissions.constants';
+import { USER_PERMISSIONS } from './users/constants';
 
 // Aggregate all permissions
 export const PERMISSIONS = {
   ...AUTH_PERMISSIONS,
-  ...CUSTOMERS_PERMISSIONS,
   ...DASHBOARD_PERMISSIONS,
+  ...USER_PERMISSIONS,
 } as const;
 
 // Define application roles
 export const ROLES = {
-  ADMIN: 'admin',
-  MANAGER: 'manager',
-  USER: 'user',
+  SUPER_ADMIN: 'SUPER_ADMIN',
+  POWER_ADMIN: 'POWER_ADMIN',
+  NORMAL_USER: 'NORMAL_USER',
 } as const;
 
 // Role-permission mapping
 export const ROLE_PERMISSIONS = {
-  [ROLES.ADMIN]: [
+  [ROLES.SUPER_ADMIN]: [
     // Admin has all permissions
     ...Object.values(PERMISSIONS),
   ],
 
-  [ROLES.MANAGER]: [
-    // Manager permissions - limited user management + content + customers + dashboard + settings
-    PERMISSIONS.USERS_READ,
-    PERMISSIONS.USERS_UPDATE,
+  [ROLES.POWER_ADMIN]: [
+    // Manager permissions - limited user management + content + dashboard + settings
     PERMISSIONS.PROFILE_READ,
     PERMISSIONS.PROFILE_UPDATE,
-    PERMISSIONS.CUSTOMERS_READ,
-    PERMISSIONS.CUSTOMERS_CREATE,
-    PERMISSIONS.CUSTOMERS_UPDATE,
-    PERMISSIONS.CUSTOMERS_REPORTS_VIEW,
     PERMISSIONS.DASHBOARD_VIEW,
     PERMISSIONS.DASHBOARD_ANALYTICS_VIEW,
     PERMISSIONS.DASHBOARD_SALES_VIEW,
@@ -44,14 +38,17 @@ export const ROLE_PERMISSIONS = {
     PERMISSIONS.DASHBOARD_REPORTS_VIEW,
     PERMISSIONS.SETTINGS_READ,
     PERMISSIONS.SETTINGS_UPDATE,
+    PERMISSIONS.USERS_READ,
+    PERMISSIONS.USERS_CREATE,
+    PERMISSIONS.USERS_UPDATE,
+    PERMISSIONS.USERS_DELETE,
   ],
 
-  [ROLES.USER]: [
+  [ROLES.NORMAL_USER]: [
     // Basic user permissions - profile + read content + basic dashboard + basic settings
     PERMISSIONS.PROFILE_READ,
     PERMISSIONS.PROFILE_UPDATE,
     PERMISSIONS.DASHBOARD_VIEW,
-    PERMISSIONS.CUSTOMERS_READ,
     PERMISSIONS.SETTINGS_READ,
   ],
 } as const;

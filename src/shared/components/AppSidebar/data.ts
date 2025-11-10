@@ -29,8 +29,8 @@ export const sidebarData: SidebarData = {
           icon: BarChart3,
         },
         {
-          title: 'Customers',
-          url: '/customers',
+          title: 'Users',
+          url: '/users',
           icon: Users,
         },
       ],

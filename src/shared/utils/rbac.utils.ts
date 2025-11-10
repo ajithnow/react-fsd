@@ -35,27 +35,36 @@ export const getAllPermissionsForRole = (role: Role): Permission[] => {
 
 // Utility to get all permissions for a user (role + user-specific)
 export const getAllPermissionsForUser = (user: User): Permission[] => {
-  const rolePermissions = getAllPermissionsForRole(user.role);
+  const rolePermissions = getAllPermissionsForRole(user.Role);
   const userSpecificPermissions = user.permissions || [];
-  
+
   // Combine role permissions with user-specific permissions (remove duplicates)
   return [...new Set([...rolePermissions, ...userSpecificPermissions])];
 };
 
 // Pre-configured permission checking functions
-export const hasPermission = (user: User | null, permission: Permission): boolean => {
+export const hasPermission = (
+  user: User | null,
+  permission: Permission
+): boolean => {
   if (!user) return false;
   const userPermissions = getAllPermissionsForUser(user);
   return coreHasPermission(user, permission, userPermissions);
 };
 
-export const hasAnyPermission = (user: User | null, permissions: Permission[]): boolean => {
+export const hasAnyPermission = (
+  user: User | null,
+  permissions: Permission[]
+): boolean => {
   if (!user) return false;
   const userPermissions = getAllPermissionsForUser(user);
   return coreHasAnyPermission(user, permissions, userPermissions);
 };
 
-export const hasAllPermissions = (user: User | null, permissions: Permission[]): boolean => {
+export const hasAllPermissions = (
+  user: User | null,
+  permissions: Permission[]
+): boolean => {
   if (!user) return false;
   const userPermissions = getAllPermissionsForUser(user);
   return coreHasAllPermissions(user, permissions, userPermissions);
@@ -68,31 +77,33 @@ export const getRoleInfo = (role: Role): RolePermissions | undefined => {
 // App-specific role hierarchy functions
 export const isRoleHigherThan = (role1: Role, role2: Role): boolean => {
   const hierarchy: Record<string, number> = {
-    [ROLES.USER]: 1,
-    [ROLES.MANAGER]: 2,
-    [ROLES.ADMIN]: 3,
+    [ROLES.SUPER_ADMIN]: 1,
+    [ROLES.POWER_ADMIN]: 2,
+    [ROLES.NORMAL_USER]: 3,
   };
-  
+
   return (hierarchy[role1] || 0) > (hierarchy[role2] || 0);
 };
 
-
-export const canManageUser = (currentUser: User | null, targetUser: User): boolean => {
+export const canManageUser = (
+  currentUser: User | null,
+  targetUser: User
+): boolean => {
   if (!currentUser) return false;
-  
+
   // Users cannot manage other users unless they have the permission
   if (!hasPermission(currentUser, PERMISSIONS.USERS_MANAGE_ROLES)) {
     return false;
   }
-  
+
   // Admin can manage everyone
-  if (currentUser.role === ROLES.ADMIN) return true;
-  
+  if (currentUser.Role === ROLES.SUPER_ADMIN) return true;
+
   // Manager can manage users but not other managers or admins
-  if (currentUser.role === ROLES.MANAGER) {
-    return targetUser.role === ROLES.USER;
+  if (currentUser.Role === ROLES.POWER_ADMIN) {
+    return targetUser.Role === ROLES.NORMAL_USER;
   }
-  
+
   // Regular users cannot manage anyone
   return false;
 };

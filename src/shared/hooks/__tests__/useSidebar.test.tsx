@@ -29,7 +29,7 @@ describe('useSidebarData', () => {
 
   it('returns sidebar data for admin role', () => {
     jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
-      user: { name: 'Test User', email: 'test@example.com', role: 'admin' },
+      user: { name: 'Test User', email: 'test@example.com', Role: 'admin' },
       permissions: [
         'dashboard:view',
         'customers:view',
@@ -68,7 +68,7 @@ describe('useSidebarData', () => {
   it('filters sidebar items based on permissions', () => {
     // Only dashboard permission
     jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
-      user: { name: 'Test User', email: 'test@example.com', role: 'user' },
+      user: { name: 'Test User', email: 'test@example.com', Role: 'user' },
       permissions: ['dashboard:view'],
       hasPermission: () => false,
       hasAnyPermission: () => false,

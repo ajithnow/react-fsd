@@ -22,6 +22,7 @@ const routeTree = rootRoute.addChildren(routes);
 
 export const router = createRouter({ 
   routeTree,
+  defaultViewTransition:true,
   defaultNotFoundComponent: () => (
     <div className="flex items-center justify-center min-h-screen">
       <div className="text-center">

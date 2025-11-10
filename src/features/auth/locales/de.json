@@ -1,0 +1,15 @@
+{
+  "login": {
+    "title": "Melden Sie sich bei Ihrem Konto an",
+    "usernameLabel": "Benutzername",
+    "usernamePlaceholder": "Geben Sie Ihren Benutzernamen ein",
+    "passwordLabel": "Passwort",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Anmelden",
+    "loadingButton": "Anmeldung läuft...",
+    "usernameRequired": "Benutzername ist erforderlich",
+    "passwordRequired": "Passwort ist erforderlich",
+    "loginFailedError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.",
+    "successLogin": "Anmeldung erfolgreich"
+  }
+}

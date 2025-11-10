@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavigationProgress } from '@/shared/components';
 import type { GlobalLayoutProps } from '../models';
+import { Toaster } from '@/lib/shadcn/components/ui/sonner';
 
 export const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   // TODO: Add global providers and services here:
@@ -14,6 +15,7 @@ export const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {
   return (
     <>
       <NavigationProgress color="#3b82f6" height={4} shadow={true} />
+      <Toaster />
       {children}
     </>
   );

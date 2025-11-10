@@ -225,17 +225,13 @@ describe('NavUser', () => {
     expect(userEmails).toHaveLength(2);
 
     // Menu items
-    expect(screen.getByText('Account')).toBeInTheDocument();
-    expect(screen.getByText('Billing')).toBeInTheDocument();
+    expect(screen.getByText('Profile')).toBeInTheDocument();
     expect(screen.getByText('Notifications')).toBeInTheDocument();
-    expect(screen.getByText('Upgrade to Pro')).toBeInTheDocument();
     expect(screen.getByText('Log out')).toBeInTheDocument();
 
     // Icons
-    expect(screen.getAllByTestId('user-icon')).toHaveLength(3); // Trigger + dropdown label + account item = 3 total
-    expect(screen.getByTestId('credit-card-icon')).toBeInTheDocument();
+    expect(screen.getAllByTestId('user-icon')).toHaveLength(3);
     expect(screen.getByTestId('bell-icon')).toBeInTheDocument();
-    expect(screen.getByTestId('sparkles-icon')).toBeInTheDocument();
     expect(screen.getByTestId('logout-icon')).toBeInTheDocument();
   });
 
@@ -243,14 +239,14 @@ describe('NavUser', () => {
     render(<NavUser user={mockUser} />);
 
     const separators = screen.getAllByTestId('dropdown-menu-separator');
-    expect(separators).toHaveLength(3); // 3 separators in the actual component
+    expect(separators).toHaveLength(2); // 2 separators in the actual component
   });
 
   it('should render menu groups', () => {
     render(<NavUser user={mockUser} />);
 
     const menuGroups = screen.getAllByTestId('dropdown-menu-group');
-    expect(menuGroups).toHaveLength(2);
+    expect(menuGroups).toHaveLength(1);
   });
 
   it('should handle logout click', async () => {
@@ -267,15 +263,8 @@ describe('NavUser', () => {
   it('should render account link correctly', () => {
     render(<NavUser user={mockUser} />);
 
-    const accountLink = screen.getByText('Account').closest('a');
+    const accountLink = screen.getByText('Profile').closest('a');
     expect(accountLink).toHaveAttribute('href', '/settings/account');
-  });
-
-  it('should render billing link correctly', () => {
-    render(<NavUser user={mockUser} />);
-
-    const billingLink = screen.getByText('Billing').closest('a');
-    expect(billingLink).toHaveAttribute('href', '/settings');
   });
 
   it('should render notifications link correctly', () => {
@@ -286,16 +275,6 @@ describe('NavUser', () => {
       'href',
       '/settings/notifications'
     );
-  });
-
-  it('should render upgrade item without link', () => {
-    render(<NavUser user={mockUser} />);
-
-    const upgradeItem = screen.getByText('Upgrade to Pro');
-    expect(upgradeItem).toBeInTheDocument();
-    // Upgrade to Pro is not a link, it's just a menu item
-    const upgradeLink = upgradeItem.closest('a');
-    expect(upgradeLink).toBeNull();
   });
 
   it('should handle user with different name and email', () => {

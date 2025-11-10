@@ -12,7 +12,7 @@ export interface LoginFormProps {
   isLoading: boolean;
 }
 
-export interface User extends RBACUser{ id: number; name: string };
+export interface User extends RBACUser{  Name: string, FirstName?: string, LastName?: string, Email?: string };
 
 export type AuthState = {
   user: User | null;

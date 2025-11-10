@@ -1,173 +1,137 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslation } from 'react-i18next';
-import {
+import { useNavigate } from '@tanstack/react-router';
+import { UserPlus, Users } from 'lucide-react';
+
+import { 
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
+  CardDescription,
 } from '@/lib/shadcn/components/ui/card';
-import { BarChart3, Users, DollarSign, TrendingUp } from 'lucide-react';
+import { Button } from '@/lib/shadcn/components/ui';
+
+import { PageHeader } from '@/shared/components';
 
 export const DashboardPage: React.FC = () => {
   const { t } = useTranslation('dashboard');
-
-  const stats = [
+  const navigate = useNavigate();
+  
+  const actions = [
     {
-      title: t('dashboard.stats.totalUsers', 'Total Users'),
-      value: '2,543',
-      change: '+12%',
+      title: t('dashboard.quickActions.createUser.title', 'Create User'),
+      description: t('dashboard.quickActions.createUser.description', 'Add a new user to the system'),
+      icon: UserPlus,
+      action: () => navigate({ to: '/users/create' }),
+    },
+    {
+      title: t('dashboard.quickActions.manageUsers.title', 'Manage Users'),
+      description: t('dashboard.quickActions.manageUsers.description', 'View and manage all users'),
       icon: Users,
-    },
-    {
-      title: t('dashboard.stats.revenue', 'Revenue'),
-      value: '$45,231',
-      change: '+8%',
-      icon: DollarSign,
-    },
-    {
-      title: t('dashboard.stats.analytics', 'Analytics'),
-      value: '12,234',
-      change: '+15%',
-      icon: BarChart3,
-    },
-    {
-      title: t('dashboard.stats.growth', 'Growth'),
-      value: '+23%',
-      change: '+4%',
-      icon: TrendingUp,
+      action: () => navigate({ to: '/users' }),
     },
   ];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">
-          {t('dashboard.title', 'Dashboard')}
-        </h1>
-        <p className="text-muted-foreground">
-          {t(
-            'dashboard.subtitle',
-            "Welcome back! Here's an overview of your application."
-          )}
-        </p>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map(stat => (
-          <Card key={stat.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {stat.title}
-              </CardTitle>
-              <stat.icon className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{stat.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className="text-green-600">{stat.change}</span>{' '}
-                {t('dashboard.stats.fromLastMonth', 'from last month')}
-              </p>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+    <div className="container mx-auto py-6 space-y-6">
+      <PageHeader
+        title={t('dashboard.title', 'Dashboard')}
+        description={t(
+          'dashboard.subtitle',
+          "Welcome back! Here's an overview of your application."
+        )}
+      />
+      
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card className="md:col-span-2 lg:col-span-2">
           <CardHeader>
-            <CardTitle>
-              {t('dashboard.recentActivity.title', 'Recent Activity')}
+            <CardTitle className="text-2xl font-bold">
+              {t('dashboard.welcome.title', 'Welcome to Admin Dashboard')}
             </CardTitle>
             <CardDescription>
-              {t(
-                'dashboard.recentActivity.subtitle',
-                'You have 3 new notifications.'
-              )}
+              {t('dashboard.welcome.description', 'Manage your application and users from this central dashboard.')}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {t(
-                      'dashboard.recentActivity.newUserRegistered',
-                      'New user registered'
-                    )}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      'dashboard.recentActivity.timeAgo.minutes',
-                      '{{count}} minutes ago',
-                      { count: 2 }
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {t(
-                      'dashboard.recentActivity.paymentCompleted',
-                      'Payment completed'
-                    )}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      'dashboard.recentActivity.timeAgo.minutes',
-                      '{{count}} minutes ago',
-                      { count: 5 }
-                    )}
-                  </p>
-                </div>
-              </div>
-              <div className="flex items-center space-x-4">
-                <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
-                <div className="flex-1 space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {t(
-                      'dashboard.recentActivity.systemUpdateAvailable',
-                      'System update available'
-                    )}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {t(
-                      'dashboard.recentActivity.timeAgo.hour',
-                      '{{count}} hour ago',
-                      { count: 1 }
-                    )}
-                  </p>
-                </div>
-              </div>
+            <p className="text-sm text-muted-foreground">
+              {t('dashboard.welcome.content', 'This is your boilerplate admin dashboard. Customize it to fit your needs by adding new features and components.')}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              {t('dashboard.quickActions.title', 'Quick Actions')}
+            </CardTitle>
+            <CardDescription>
+              {t('dashboard.quickActions.subtitle', 'Common tasks')}
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="p-4">
+            <div className="grid grid-cols-1 gap-4">
+              {actions.map((action, index) => (
+                <Button
+                  key={`action-${index}`}
+                  variant="outline"
+                  className="cursor-pointer h-auto p-3 flex items-center gap-3 border-border hover:bg-accent hover:border-primary/50 transition-all duration-200"
+                  onClick={action.action}
+                >
+                  <action.icon className="h-5 w-5 text-primary" />
+                  <div className="text-left">
+                    <div className="font-medium text-foreground">
+                      {action.title}
+                    </div>
+                    <div className="text-xs text-muted-foreground">
+                      {action.description}
+                    </div>
+                  </div>
+                </Button>
+              ))}
             </div>
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card>
           <CardHeader>
-            <CardTitle>
-              {t('dashboard.quickActions.title', 'Quick Actions')}
+            <CardTitle className="text-lg font-semibold">
+              {t('dashboard.stats.users', 'Total Users')}
             </CardTitle>
-            <CardDescription>
-              {t('dashboard.quickActions.subtitle', 'Commonly used features')}
-            </CardDescription>
           </CardHeader>
-          <CardContent className="space-y-2">
-            <button className="w-full text-left p-2 hover:bg-accent rounded-md">
-              {t('dashboard.quickActions.createNewUser', 'Create new user')}
-            </button>
-            <button className="w-full text-left p-2 hover:bg-accent rounded-md">
-              {t('dashboard.quickActions.generateReport', 'Generate report')}
-            </button>
-            <button className="w-full text-left p-2 hover:bg-accent rounded-md">
-              {t('dashboard.quickActions.viewAnalytics', 'View analytics')}
-            </button>
-            <button className="w-full text-left p-2 hover:bg-accent rounded-md">
-              {t('dashboard.quickActions.manageSettings', 'Manage settings')}
-            </button>
+          <CardContent>
+            <div className="text-3xl font-bold">-</div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {t('dashboard.stats.usersDescription', 'Registered users in the system')}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              {t('dashboard.stats.active', 'Active Today')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">-</div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {t('dashboard.stats.activeDescription', 'Users active today')}
+            </p>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold">
+              {t('dashboard.stats.new', 'New This Week')}
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold">-</div>
+            <p className="text-sm text-muted-foreground mt-2">
+              {t('dashboard.stats.newDescription', 'New users this week')}
+            </p>
           </CardContent>
         </Card>
       </div>

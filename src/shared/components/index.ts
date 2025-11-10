@@ -14,8 +14,6 @@ export type {
   FilterValues,
 } from './DataTable';
 
-export { UserSelector } from './UserSelector/UserSelector.demo';
-
 export { ActionsDropdown } from './ActionsDropdown';
 
 // Layout components and helpers
@@ -26,7 +24,7 @@ export { TopBar } from './TopBar';
 export { TopLoader, ProgressBar } from './TopLoader';
 export { NavigationProgress } from './NavigationProgress';
 export { LanguageSwitcher } from './LanguageSwitcher';
-
+export { TotalUsageDisplay } from './TotalUsageDisplay/TotalUsageDisplay';
 // Layout configuration helpers
 export {
   createSidebarData,
@@ -37,5 +35,9 @@ export {
 
 // Alert Dialog components
 export { SharedAlertDialog } from "./AlertDialog/SharedAlertDialog";
+export { PageSkeleton } from "./PageSkeleton/PageSkeleton";
 export type { SharedAlertDialogProps } from "./AlertDialog/SharedAlertDialog";
 export { useAlertDialog } from "./AlertDialog/useAlertDialog";
+export * from './LineChart/LineChart';
+export { PageHeader } from './PageHeader';
+export { SharedPopover, SharedPopoverTrigger, SharedPopoverContent } from './Popover';

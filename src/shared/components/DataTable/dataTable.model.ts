@@ -39,6 +39,14 @@ export interface DataTableColumn<T = Record<string, unknown>> {
 export interface DataTableProps<T = Record<string, unknown>> {
   data: T[];
   columns: DataTableColumn<T>[];
+  /** If true, show row selection checkboxes */
+  selectable?: boolean;
+  /** Controlled selected ids (string keys) */
+  selected?: string[];
+  /** Called when selection changes with array of selected ids */
+  onSelectionChange?: (selected: string[]) => void;
+  /** Key or accessor to use for row identity (defaults to 'id'|'key' fallback) */
+  rowKey?: keyof T | ((item: T) => string);
   loading?: boolean;
   pagination?: PaginationInfo;
   onPageChange?: (page: number) => void;
@@ -53,6 +61,11 @@ export interface DataTableProps<T = Record<string, unknown>> {
   className?: string;
   emptyMessage?: string;
   pageSizeOptions?: number[];
+  onRowClick?: (item: T) => void;
+  rowClickable?: boolean;
+  /** Optional function to compute a className for a specific row item */
+  rowClassName?: (item: T) => string;
+
 }
 
 export interface DataTableFiltersProps {

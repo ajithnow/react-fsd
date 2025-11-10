@@ -10,7 +10,7 @@ export interface RolePermissions {
 }
 
 export interface User {
-  role: Role;
+  Role: Role;
   permissions?: Permission[];
 }
 

@@ -34,6 +34,7 @@
 - ```tsx
 
   ```
+
 - import { LogoutButton } from '@/features/auth/components';
 -
 - // Simple logout button
@@ -49,6 +50,7 @@
 - ```
 
   ```
+
 -
 
 - ### Using useLogout hook
@@ -56,6 +58,7 @@
 - ```tsx
 
   ```
+
 - import { useLogout } from '@/features/auth/hooks';
 -
 - function MyComponent() {
@@ -77,6 +80,7 @@
 - ```
 
   ```
+
 -
 
 - ### Using useLogoutManager hook (advanced)
@@ -84,6 +88,7 @@
 - ```tsx
 
   ```
+
 - import { useLogoutManager } from '@/features/auth/managers/logout.manager';
 -
 - function AdvancedLogout() {
@@ -106,6 +111,7 @@
 - ```
 
   ```
+
 -
 
 - ## Features

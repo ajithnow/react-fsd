@@ -2,7 +2,11 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Willkommen zurück! Hier ist eine Übersicht Ihrer Anwendung.",
+    "daily": "täglich",
+    "monthly": "monatlich",
+    "yearly": "jährlich",
     "stats": {
+      "totalBalance": "Total Energy Balance",
       "totalUsers": "Gesamte Benutzer",
       "revenue": "Umsatz",
       "analytics": "Analytik",
@@ -23,10 +27,59 @@
     "quickActions": {
       "title": "Schnellaktionen",
       "subtitle": "Häufig verwendete Funktionen",
-      "createNewUser": "Neuen Benutzer erstellen",
-      "generateReport": "Bericht generieren",
+      "createUser": {
+        "title": "Benutzer erstellen",
+        "description": "Erstellen Sie ein neues Benutzerkonto"
+      },
+      "createCustomer": {
+        "title": "Neuen Kunden erstellen",
+        "description": "Einen neuen Kunden zum System hinzufügen"
+      },
       "viewAnalytics": "Analytik anzeigen",
       "manageSettings": "Einstellungen verwalten"
+    },
+    "energyCard": {
+      "title": "Gesamtenergie-Bilanz",
+      "description": "Summe aller aktuellen Salden der Kunden",
+      "today": "Energieverbrauch heute",
+      "thisMonth": "Summe dieses Monats",
+      "thisYear": "Summe dieses Jahres",
+      "totalTillDate": "Gesamtenergie bis heute",
+      "totalEnergyFeed": "Gesamt-Energie Feed",
+      "refresh": "Aktualisieren",
+      "asOf": "Stand: {{date}} ({{slot}})",
+      "forTimeslot": "für den Zeitraum {{slot}}",
+      "fetchAnalytics": "Analytics abrufen",
+      "noAnalyticsFetched": "Keine Analytics abgerufen",
+      "lastFetched": "Zuletzt: {{date}}",
+      "pickDate": "Datum wählen",
+      "selectYearPlaceholder": "Jahr",
+      "selectMonthPlaceholder": "Monat"
+    },
+    "months": {
+      "1": "Jan",
+      "2": "Feb",
+      "3": "Mär",
+      "4": "Apr",
+      "5": "Mai",
+      "6": "Jun",
+      "7": "Jul",
+      "8": "Aug",
+      "9": "Sep",
+      "10": "Okt",
+      "11": "Nov",
+      "12": "Dez"
     }
+  },
+  "customerCard": {
+    "title": "Kunden-Analytik",
+    "totalCustomers": "Gesamte Kunden",
+    "connectedDevices": "Verbunden Geräte",
+    "notConnected": "Nicht verbundene Geräte",
+    "activeSubscriptions": "Aktive Abonnements",
+    "cancelledSubscriptions": "Stornierte Abonnements",
+    "previousMonthUsers": "Benutzer letzten Monat",
+    "currentMonthUsers": "Benutzer diesen Monat",
+    "newRegistrations": "neue Registrierungen"
   }
 }

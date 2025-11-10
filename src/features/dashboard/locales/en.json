@@ -2,8 +2,24 @@
   "dashboard": {
     "title": "Dashboard",
     "subtitle": "Welcome back! Here's an overview of your application.",
+    "daily": "Daily",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
     "stats": {
+      "totalBalance": "Total Energy Balance",
       "totalUsers": "Total Users",
+      "totalUserDesc": "Total number of users",
+      "connectedDevice": "Connected Devices",
+      "connectedDeviceDesc": "Total number of connected devices",
+      "notConnected": "Not Connected",
+      "notConnectedDesc": "Registered but not connected",
+      "activePlans": "Active Subscriptions",
+      "activePlansDesc": "Current active plans",
+      "cancelledPlans": "Cancelled Subscriptions",
+      "cancelledPlansDesc": "Total cancelled subscriptions",
+      "newUsers": "New Users",
+      "newUsersDesc": "New Users this month",
+      "oldUsersDesc": "Users from previous month",
       "revenue": "Revenue",
       "analytics": "Analytics",
       "growth": "Growth",
@@ -23,10 +39,59 @@
     "quickActions": {
       "title": "Quick Actions",
       "subtitle": "Commonly used features",
-      "createNewUser": "Create new user",
-      "generateReport": "Generate report",
+      "createNotification": {
+        "title": "Create notification",
+        "description": "Create notification"
+      },
+      "createCustomer": {
+        "title": "Create new customer",
+        "description": "Add a new customer to the system"
+      },
       "viewAnalytics": "View analytics",
       "manageSettings": "Manage settings"
+    },
+    "energyCard": {
+      "title": "Total Energy Balance",
+      "description": "Sum of all customers' current balance",
+      "today": "Today's energy consumption",
+      "thisMonth": "This month's total",
+      "thisYear": "This year's total",
+      "totalTillDate": "Total energy till date",
+      "totalEnergyFeed": "Total Energy feed",
+      "refresh": "Refresh total",
+      "asOf": "As of {{date}} ({{slot}})",
+      "forTimeslot": "for the timeslot {{slot}}",
+      "fetchAnalytics": "Fetch analytics",
+      "noAnalyticsFetched": "No analytics fetched",
+      "lastFetched": "Last: {{date}}",
+      "pickDate": "Pick a date",
+      "selectYearPlaceholder": "Year",
+      "selectMonthPlaceholder": "Month"
+    },
+    "months": {
+      "1": "Jan",
+      "2": "Feb",
+      "3": "Mar",
+      "4": "Apr",
+      "5": "May",
+      "6": "Jun",
+      "7": "Jul",
+      "8": "Aug",
+      "9": "Sep",
+      "10": "Oct",
+      "11": "Nov",
+      "12": "Dec"
     }
+  },
+  "customerCard": {
+    "title": "Customer Analytics",
+    "totalCustomers": "Total Customers",
+    "connectedDevices": "Connected Devices",
+    "notConnected": "Not Connected Devices",
+    "activeSubscriptions": "Active Subscriptions",
+    "cancelledSubscriptions": "Cancelled Subscriptions",
+    "previousMonthUsers": "Previous Month Users",
+    "currentMonthUsers": "Current Month Users",
+    "newRegistrations": "new registrations"
   }
 }

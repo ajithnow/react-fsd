@@ -1,0 +1,70 @@
+{
+  "titles": {
+    "auth": "Authentication",
+    "dashboard": "Dashboard"
+  },
+  "auth": {
+    "logOut": "Log out",
+    "loggingOut": "Logging out..."
+  },
+  "appName": "Admin Dashboard",
+  "required": "{{fieldName}} is required",
+  "role": "Role",
+  "save": "Save",
+  "validation.min": "{{fieldName}} must be at least {{min}} characters.",
+  "validation.max": "{{fieldName}} must be at least {{max}} characters.",
+  "validation.allowedCharacters": "can only contain letters, spaces, apostrophes, dots, and hyphens",
+  "validation.email": "Email is required",
+  "validation.emailaddress": "Please enter a valid email address",
+  "validation.email.maxLength": "Email must be less than 100 characters",
+  "validation.invalidCharacters": "contains invalid characters",
+  "validation.postalCode": "Please enter the valid postal code",
+  "validation.password": "Password must be at least 8 characters",
+  "validation.password.uppercase": "Must contain an uppercase letter",
+  "validation.password.lowercase": "Must contain a lowercase letter",
+  "validation.password.number": "Must contain a number",
+  "validation.optional": "{{fieldName}} must be at least {{minLength}} characters if provided",
+  "dataTable": {
+    "noData": "No data available",
+    "loading": "Loading...",
+    "selectAll": "Select all rows",
+    "selectRow": "Select row {{rowId}}",
+    "selectPlaceholder": "Select {{label}}",
+    "filterPlaceholder": "Filter {{label}}",
+    "filtersSingular": "{{count}} filter active",
+    "filtersPlural": "{{count}} filters active",
+    "clear": "Clear",
+    "rowsPerPage": "Rows per page",
+    "showing": "Showing {{start}} to {{end}} of {{total}} entries",
+    "pageOf": "Page {{page}} of {{totalPages}}",
+    "goToFirst": "Go to first page",
+    "goToPrevious": "Go to previous page",
+    "goToNext": "Go to next page",
+    "goToLast": "Go to last page"
+  },
+  "sidebar": {
+    "home": "Home",
+    "groups": {
+      "main": "Main",
+      "administration": "Administration"
+    },
+    "user": {
+      "guest": "Guest User",
+      "unknown": "Unknown User"
+    },
+    "settings": {
+      "title": "Settings",
+      "profile": "Profile",
+      "account": "Account"
+    },
+    "admin": {
+      "userManagement": "User Management"
+    },
+    "dashboard": {
+      "overview": "Overview",
+      "sales": "Sales",
+      "traffic": "Traffic",
+      "reports": "Reports"
+    }
+  }
+}
