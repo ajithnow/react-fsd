@@ -16,6 +16,12 @@ import {
   ROLES,
   ROLE_PERMISSIONS,
 } from '../rbac.utils';
+import { permissionRegistry } from '@/core/registry';
+import { AUTH_PERMISSIONS } from '@/features/auth/constants/permissions.constants';
+
+// Register permissions for testing since they are usually registered during bootstrap
+permissionRegistry.register(AUTH_PERMISSIONS);
+
 import type { User } from '@/core';
 
 // Mock users for testing

@@ -4,7 +4,7 @@ import {
   redirect,
 } from '@tanstack/react-router';
 import { USER_PERMISSIONS, USER_ROUTES } from '../constants';
-import { appLayoutRoute } from '../../layout';
+import { appLayoutRoute } from '@/core/router/layouts';
 import { store } from '@/core/store/index.ts';
 import { hasPermission } from '@/shared/utils/rbac.utils';
 import ROUTE_CONSTANTS from '@/shared/constants/route.constants';

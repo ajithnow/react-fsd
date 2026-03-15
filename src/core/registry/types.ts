@@ -12,9 +12,19 @@ export interface PermissionConfig {
   [key: string]: string
 }
 
+export interface ConstantsConfig {
+  [key: string]: unknown
+}
+
+export interface GuardConfig {
+  [key: string]: unknown
+}
+
 export interface FeatureConfig {
   routes?: AnyRoute[]
   locales?: LocaleConfig
   handlers?: HttpHandler[]
   permissions?: PermissionConfig
+  constants?: ConstantsConfig
+  guards?: GuardConfig
 }

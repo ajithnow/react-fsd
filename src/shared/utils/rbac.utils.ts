@@ -8,24 +8,23 @@ import {
   hasRole,
   hasAnyRole
 } from '../../core/rbac';
-import { PERMISSIONS, ROLES, ROLE_PERMISSIONS } from '../../features/rbac';
+import { PERMISSIONS, ROLES, ROLE_PERMISSIONS } from '../../core/rbac';
 import type { Role, User, Permission, RolePermissions } from '../../core/rbac';
 
 // Convert our simplified config to the format expected by core RBAC
-const createRolePermissionsConfig = (): Record<Role, RolePermissions> => {
+// Utility to get the current role-permissions configuration
+const getAppRolePermissionsConfig = (): Record<Role, RolePermissions> => {
   const config: Record<string, RolePermissions> = {};
   
   Object.entries(ROLE_PERMISSIONS).forEach(([role, permissions]) => {
     config[role] = {
-      role: role,
+      role: role as Role,
       permissions: permissions as Permission[],
     };
   });
   
   return config;
 };
-
-const APP_ROLE_PERMISSIONS_CONFIG = createRolePermissionsConfig();
 
 // Utility to get all permissions for a role using app config
 export const getAllPermissionsForRole = (role: Role): Permission[] => {
@@ -71,7 +70,7 @@ export const hasAllPermissions = (
 };
 
 export const getRoleInfo = (role: Role): RolePermissions | undefined => {
-  return APP_ROLE_PERMISSIONS_CONFIG[role];
+  return getAppRolePermissionsConfig()[role];
 };
 
 // App-specific role hierarchy functions

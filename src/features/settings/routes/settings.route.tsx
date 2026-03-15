@@ -1,5 +1,5 @@
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router';
-import { appLayoutRoute } from '../../layout';
+import { appLayoutRoute } from '@/core/router/layouts';
 import { SETTINGS_ROUTES } from '../constants';
 import { SettingsLayout } from '../pages/SettingsLayout';
 
