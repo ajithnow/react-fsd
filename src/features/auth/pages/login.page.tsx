@@ -1,13 +1,25 @@
 import React from 'react';
+import { useLoginMutation } from '../queries/login.query';
 import { useLoginManager } from '../managers/login.manager';
 import { LoginForm } from '../components';
 import { useDocumentTitle } from '@/shared/hooks/useDocumentTitle';
 import { useTranslation } from 'react-i18next';
 
 export const LoginPage: React.FC = () => {
-  const { handleLogin, isLoading } = useLoginManager();
+  const { mutateAsync: login, isPending: isLoading } = useLoginMutation();
+  const { onLoginSuccess, onLoginError } = useLoginManager();
+  
   const { t } = useTranslation('auth');
   useDocumentTitle(t('login.pageTitle'), 'FSD Admin - Login');
+
+  const handleLogin = async (credentials: { username: string; password: string; }) => {
+    try {
+      const data = await login(credentials);
+      await onLoginSuccess(data);
+    } catch (error) {
+      onLoginError(error);
+    }
+  };
 
   return (
     <>

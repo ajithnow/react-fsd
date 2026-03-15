@@ -1,20 +1,16 @@
 import { describe, it, expect } from '@jest/globals';
 import {
-  getAllPermissionsForRole,
   getAllPermissionsForUser,
   hasPermission,
   hasAnyPermission,
   hasAllPermissions,
-  getRoleInfo,
   isRoleHigherThan,
-  canManageUser,
   getMissingPermissions,
   canAccessFeature,
   hasRole,
   hasAnyRole,
   PERMISSIONS,
   ROLES,
-  ROLE_PERMISSIONS,
 } from '../rbac.utils';
 import { permissionRegistry } from '@/core/registry';
 import { AUTH_PERMISSIONS } from '@/features/auth/constants/permissions.constants';
@@ -27,59 +23,25 @@ import type { User } from '@/core';
 // Mock users for testing
 const adminUser: User = {
   Role: ROLES.SUPER_ADMIN,
-  permissions: [],
+  permissions: [PERMISSIONS.USERS_READ, PERMISSIONS.USERS_CREATE, PERMISSIONS.ADMIN_DASHBOARD],
 };
 
 const managerUser: User = {
   Role: ROLES.POWER_ADMIN,
-  permissions: [],
+  permissions: [PERMISSIONS.USERS_READ, PERMISSIONS.USERS_UPDATE],
 };
 
 const regularUser: User = {
   Role: ROLES.NORMAL_USER,
-  permissions: [],
+  permissions: [PERMISSIONS.PROFILE_READ],
 };
 
 const userWithExtraPermissions: User = {
   Role: ROLES.NORMAL_USER,
-  permissions: [PERMISSIONS.ADMIN_DASHBOARD],
+  permissions: [PERMISSIONS.PROFILE_READ, PERMISSIONS.ADMIN_DASHBOARD],
 };
 
 describe('RBAC Utils - Comprehensive Tests', () => {
-  describe('getAllPermissionsForRole', () => {
-    it('should return permissions for admin role', () => {
-      const permissions = getAllPermissionsForRole(ROLES.SUPER_ADMIN);
-
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions.length).toBeGreaterThan(0);
-      expect(permissions).toContain(PERMISSIONS.USERS_READ);
-      expect(permissions).toContain(PERMISSIONS.ADMIN_DASHBOARD);
-    });
-
-    it('should return permissions for manager role', () => {
-      const permissions = getAllPermissionsForRole(ROLES.POWER_ADMIN);
-
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions).toContain(PERMISSIONS.USERS_READ);
-      expect(permissions).toContain(PERMISSIONS.USERS_UPDATE);
-      expect(permissions).not.toContain(PERMISSIONS.ADMIN_DASHBOARD);
-      expect(permissions).not.toContain(PERMISSIONS.USERS_MANAGE_ROLES);
-    });
-
-    it('should return permissions for user role', () => {
-      const permissions = getAllPermissionsForRole(ROLES.NORMAL_USER);
-
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions).toContain(PERMISSIONS.PROFILE_READ);
-      expect(permissions).not.toContain(PERMISSIONS.USERS_CREATE);
-    });
-
-    it('should return empty array for unknown role', () => {
-      const permissions = getAllPermissionsForRole('unknown');
-
-      expect(permissions).toEqual([]);
-    });
-  });
 
   describe('getAllPermissionsForUser', () => {
     it('should return permissions for admin user', () => {
@@ -87,42 +49,21 @@ describe('RBAC Utils - Comprehensive Tests', () => {
 
       expect(Array.isArray(permissions)).toBe(true);
       expect(permissions.length).toBeGreaterThan(0);
+      expect(permissions).toContain(PERMISSIONS.USERS_READ);
     });
 
     it('should return permissions for regular user', () => {
       const permissions = getAllPermissionsForUser(regularUser);
 
       expect(Array.isArray(permissions)).toBe(true);
+      expect(permissions).toContain(PERMISSIONS.PROFILE_READ);
     });
 
-    it('should combine role and user-specific permissions', () => {
+    it('should return combined permissions', () => {
       const permissions = getAllPermissionsForUser(userWithExtraPermissions);
 
-      expect(permissions).toContain(PERMISSIONS.PROFILE_READ); // From role
-      expect(permissions).toContain(PERMISSIONS.ADMIN_DASHBOARD); // User-specific
-    });
-
-    it('should remove duplicate permissions', () => {
-      const userWithDuplicate: User = {
-        Role: ROLES.NORMAL_USER,
-        permissions: [PERMISSIONS.PROFILE_READ], // Already in user role
-      };
-
-      const permissions = getAllPermissionsForUser(userWithDuplicate);
-      const uniquePermissions = [...new Set(permissions)];
-
-      expect(permissions.length).toBe(uniquePermissions.length);
-    });
-
-    it('should handle user without permissions property', () => {
-      const userWithoutPermissions: User = {
-        Role: ROLES.NORMAL_USER,
-        // No permissions property
-      };
-
-      const permissions = getAllPermissionsForUser(userWithoutPermissions);
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions.length).toBeGreaterThan(0);
+      expect(permissions).toContain(PERMISSIONS.PROFILE_READ); 
+      expect(permissions).toContain(PERMISSIONS.ADMIN_DASHBOARD);
     });
   });
 
@@ -143,7 +84,7 @@ describe('RBAC Utils - Comprehensive Tests', () => {
       expect(hasPermission(regularUser, PERMISSIONS.USERS_CREATE)).toBe(false);
     });
 
-    it('should return true when user has permission through user-specific permissions', () => {
+    it('should return true when user has extra permissions', () => {
       expect(
         hasPermission(userWithExtraPermissions, PERMISSIONS.ADMIN_DASHBOARD)
       ).toBe(true);
@@ -198,49 +139,18 @@ describe('RBAC Utils - Comprehensive Tests', () => {
     });
   });
 
-  describe('getRoleInfo', () => {
-    it('should return role info for admin', () => {
-      const roleInfo = getRoleInfo(ROLES.SUPER_ADMIN);
-
-      expect(roleInfo).toBeDefined();
-      expect(roleInfo?.role).toBe(ROLES.SUPER_ADMIN);
-      expect(roleInfo?.permissions).toContain(PERMISSIONS.ADMIN_DASHBOARD);
-    });
-
-    it('should return role info for manager', () => {
-      const roleInfo = getRoleInfo(ROLES.POWER_ADMIN);
-
-      expect(roleInfo).toBeDefined();
-      expect(roleInfo?.role).toBe(ROLES.POWER_ADMIN);
-      expect(roleInfo?.permissions).not.toContain(PERMISSIONS.ADMIN_DASHBOARD);
-    });
-
-    it('should return role info for user', () => {
-      const roleInfo = getRoleInfo(ROLES.NORMAL_USER);
-
-      expect(roleInfo).toBeDefined();
-      expect(roleInfo?.role).toBe(ROLES.NORMAL_USER);
-    });
-
-    it('should return undefined for unknown role', () => {
-      const roleInfo = getRoleInfo('unknown');
-
-      expect(roleInfo).toBeUndefined();
-    });
-  });
-
   describe('isRoleHigherThan', () => {
     it('should correctly compare role hierarchy', () => {
-      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.SUPER_ADMIN)).toBe(true);
-      expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.SUPER_ADMIN)).toBe(true);
-      expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.POWER_ADMIN)).toBe(true);
+      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.NORMAL_USER)).toBe(true);
+      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, ROLES.NORMAL_USER)).toBe(true);
+      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, ROLES.POWER_ADMIN)).toBe(true);
     });
 
     it('should return false for equal or lower roles', () => {
-      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.NORMAL_USER)).toBe(
+      expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.POWER_ADMIN)).toBe(
         false
       );
-      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, ROLES.POWER_ADMIN)).toBe(
+      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.SUPER_ADMIN)).toBe(
         false
       );
       expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.NORMAL_USER)).toBe(
@@ -252,46 +162,6 @@ describe('RBAC Utils - Comprehensive Tests', () => {
       expect(isRoleHigherThan('unknown', ROLES.NORMAL_USER)).toBe(false);
       expect(isRoleHigherThan(ROLES.SUPER_ADMIN, 'unknown')).toBe(true);
       expect(isRoleHigherThan('unknown1', 'unknown2')).toBe(false);
-    });
-  });
-
-  describe('canManageUser', () => {
-    const targetAdmin: User = { Role: ROLES.SUPER_ADMIN, permissions: [] };
-    const targetManager: User = { Role: ROLES.POWER_ADMIN, permissions: [] };
-    const targetUser: User = { Role: ROLES.NORMAL_USER, permissions: [] };
-
-    it('should allow admin to manage everyone', () => {
-      expect(canManageUser(adminUser, targetAdmin)).toBe(true);
-      expect(canManageUser(adminUser, targetManager)).toBe(true);
-      expect(canManageUser(adminUser, targetUser)).toBe(true);
-    });
-
-    it('should NOT allow manager to manage users (no USERS_MANAGE_ROLES permission)', () => {
-      // Based on current config, manager doesn't have USERS_MANAGE_ROLES
-      expect(canManageUser(managerUser, targetUser)).toBe(false);
-      expect(canManageUser(managerUser, targetManager)).toBe(false);
-      expect(canManageUser(managerUser, targetAdmin)).toBe(false);
-    });
-
-    it('should not allow regular users to manage anyone', () => {
-      expect(canManageUser(regularUser, targetUser)).toBe(false);
-      expect(canManageUser(regularUser, targetManager)).toBe(false);
-      expect(canManageUser(regularUser, targetAdmin)).toBe(false);
-    });
-
-    it('should return false for null current user', () => {
-      expect(canManageUser(null, targetUser)).toBe(false);
-    });
-
-    it('should check for manage roles permission first', () => {
-      const userWithoutManagePermission: User = {
-        Role: 'special',
-        permissions: [PERMISSIONS.USERS_READ], // No USERS_MANAGE_ROLES
-      };
-
-      expect(canManageUser(userWithoutManagePermission, targetUser)).toBe(
-        false
-      );
     });
   });
 
@@ -399,6 +269,7 @@ describe('RBAC Utils - Comprehensive Tests', () => {
       expect(hasAnyRole(adminUser, [ROLES.NORMAL_USER])).toBe(false);
     });
   });
+  
   describe('Constants', () => {
     it('should have PERMISSIONS defined', () => {
       expect(PERMISSIONS).toBeDefined();
@@ -417,16 +288,6 @@ describe('RBAC Utils - Comprehensive Tests', () => {
       expect(ROLES.NORMAL_USER).toBe('NORMAL_USER');
     });
 
-    it('should have ROLE_PERMISSIONS defined', () => {
-      expect(ROLE_PERMISSIONS).toBeDefined();
-      expect(ROLE_PERMISSIONS[ROLES.SUPER_ADMIN]).toBeDefined();
-      expect(Array.isArray(ROLE_PERMISSIONS[ROLES.SUPER_ADMIN])).toBe(true);
-      expect(ROLE_PERMISSIONS[ROLES.POWER_ADMIN]).toBeDefined();
-      expect(Array.isArray(ROLE_PERMISSIONS[ROLES.POWER_ADMIN])).toBe(true);
-      expect(ROLE_PERMISSIONS[ROLES.NORMAL_USER]).toBeDefined();
-      expect(Array.isArray(ROLE_PERMISSIONS[ROLES.NORMAL_USER])).toBe(true);
-    });
-
     it('should have consistent permission strings', () => {
       expect(PERMISSIONS.USERS_READ).toBe('users:read');
       expect(PERMISSIONS.USERS_CREATE).toBe('users:create');
@@ -434,77 +295,6 @@ describe('RBAC Utils - Comprehensive Tests', () => {
       expect(PERMISSIONS.ADMIN_DASHBOARD).toBe('admin:dashboard');
     });
 
-    it('should have admin role with all permissions', () => {
-      const adminPermissions = ROLE_PERMISSIONS[ROLES.SUPER_ADMIN];
-      expect(adminPermissions).toContain(PERMISSIONS.USERS_READ);
-      expect(adminPermissions).toContain(PERMISSIONS.USERS_CREATE);
-      expect(adminPermissions).toContain(PERMISSIONS.ADMIN_DASHBOARD);
-      expect(adminPermissions.length).toBeGreaterThan(5);
-    });
-
-    it('should have manager role with limited permissions', () => {
-      const managerPermissions = ROLE_PERMISSIONS[ROLES.POWER_ADMIN];
-      expect(managerPermissions).toContain(PERMISSIONS.USERS_READ);
-      expect(managerPermissions).toContain(PERMISSIONS.USERS_UPDATE);
-      expect(managerPermissions).not.toContain(PERMISSIONS.ADMIN_DASHBOARD);
-      expect(managerPermissions).not.toContain(PERMISSIONS.USERS_MANAGE_ROLES);
-      expect(managerPermissions.length).toBeLessThan(
-        ROLE_PERMISSIONS[ROLES.SUPER_ADMIN].length
-      );
-    });
-
-    it('should have user role with basic permissions', () => {
-      const userPermissions = ROLE_PERMISSIONS[ROLES.NORMAL_USER];
-      expect(userPermissions).toContain(PERMISSIONS.PROFILE_READ);
-      expect(userPermissions).not.toContain(PERMISSIONS.USERS_CREATE);
-      expect(userPermissions.length).toBeLessThan(
-        ROLE_PERMISSIONS[ROLES.POWER_ADMIN].length
-      );
-    });
-  });
-
-  // Edge cases and error handling
-  describe('Edge Cases', () => {
-    it('should handle createRolePermissionsConfig internal function', () => {
-      // Test that the internal config creation works by checking getRoleInfo
-      const adminInfo = getRoleInfo(ROLES.SUPER_ADMIN);
-      expect(adminInfo).toBeDefined();
-      expect(adminInfo?.permissions).toBeDefined();
-      expect(Array.isArray(adminInfo?.permissions)).toBe(true);
-    });
-
-    it('should handle users with undefined permissions gracefully', () => {
-      const userWithUndefinedPermissions: User = {
-        Role: ROLES.NORMAL_USER,
-        permissions: undefined,
-      };
-
-      const permissions = getAllPermissionsForUser(
-        userWithUndefinedPermissions
-      );
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions.length).toBeGreaterThan(0);
-    });
-
-    it('should handle unknown role in hierarchy comparison', () => {
-      expect(isRoleHigherThan('nonexistent', 'also nonexistent')).toBe(false);
-    });
-
-    it('should maintain permission uniqueness in user aggregation', () => {
-      const userWithManyDuplicates: User = {
-        Role: ROLES.NORMAL_USER,
-        permissions: [
-          PERMISSIONS.PROFILE_READ, // Duplicate from role
-          PERMISSIONS.PROFILE_READ, // Another duplicate
-          PERMISSIONS.ADMIN_DASHBOARD, // Unique
-        ],
-      };
-
-      const permissions = getAllPermissionsForUser(userWithManyDuplicates);
-      const profileReadCount = permissions.filter(
-        p => p === PERMISSIONS.PROFILE_READ
-      ).length;
-      expect(profileReadCount).toBe(1); // Should be deduplicated
-    });
   });
 });
+

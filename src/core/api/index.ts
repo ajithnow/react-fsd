@@ -33,7 +33,8 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
       }
 
       const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
-      const token = storageService.getItem<string>(constants.AUTH?.ACCESS_TOKEN);
+      const authConstants = constants.AUTH as Record<string, string> | undefined;
+      const token = storageService.getItem<string>(authConstants?.ACCESS_TOKEN || 'accessToken');
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -51,6 +52,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
       const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
+      const authConstants = constants.AUTH as Record<string, string> | undefined;
 
       // Handle 401 Unauthorized with token refresh
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -58,7 +60,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
 
         try {
           const refreshToken = storageService.getItem<string>(
-            constants.AUTH?.REFRESH_TOKEN
+            authConstants?.REFRESH_TOKEN || 'refreshToken'
           );
 
           if (!refreshToken) {
@@ -84,7 +86,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
 
           // Update stored token
           storageService.setItem(
-            constants.AUTH?.ACCESS_TOKEN,
+            authConstants?.ACCESS_TOKEN || 'accessToken',
             newAccessToken
           );
 
@@ -97,8 +99,8 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
           logger.error('Token refresh failed', refreshError, 'API');
 
           // Clear tokens and redirect to login
-          storageService.removeItem(constants.AUTH?.ACCESS_TOKEN);
-          storageService.removeItem(constants.AUTH?.REFRESH_TOKEN);
+          storageService.removeItem(authConstants?.ACCESS_TOKEN || 'accessToken');
+          storageService.removeItem(authConstants?.REFRESH_TOKEN || 'refreshToken');
 
           // Redirect to login - you might want to use your router here
           if (typeof window !== 'undefined') {

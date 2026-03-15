@@ -39,7 +39,7 @@ export const getRouter = () => {
 export const router = new Proxy({} as object, {
   get: (_target, prop) => {
     const r = getRouter();
-    return (r as Record<string, unknown>)[prop as string];
+    return (r as unknown as Record<string, unknown>)[prop as string];
   }
 }) as ReturnType<typeof createRouter>;
 

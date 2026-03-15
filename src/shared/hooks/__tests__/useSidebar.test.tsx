@@ -2,10 +2,15 @@ import { renderHook } from '@testing-library/react';
 import { useSidebarData } from '../useSidebar';
 import * as useRBACModule from '../useRBAC';
 
-// Mock useRBAC
+// Mock i18n - return key as the translated value
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({ t: (key: string) => key }),
+}));
+
+// Mock useRBAC - note: User model uses Name (capital N)
 jest.mock('../useRBAC', () => ({
   useRBAC: jest.fn(() => ({
-    user: { name: 'Test User', email: 'test@example.com', role: 'user' },
+    user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view', 'customers:view', 'settings:view'] },
     permissions: ['dashboard:view', 'customers:view', 'settings:view'],
   })),
 }));
@@ -15,7 +20,7 @@ jest.mock('react-redux', () => ({
   useSelector: jest.fn(selector =>
     selector({
       auth: {
-        user: { name: 'Test User', email: 'test@example.com', role: 'user' },
+        user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view'] },
         isAuthenticated: true,
       },
     })
@@ -33,7 +38,12 @@ describe('useSidebarData', () => {
 
   it('returns sidebar data for admin role', () => {
     jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
-      user: { name: 'Test User', email: 'test@example.com', Role: 'admin' },
+      user: { Name: 'Test User', Email: 'test@example.com', Role: 'admin', permissions: [
+        'dashboard:view',
+        'customers:view',
+        'settings:view',
+        'admin:view',
+      ] },
       permissions: [
         'dashboard:view',
         'customers:view',
@@ -55,7 +65,7 @@ describe('useSidebarData', () => {
     expect(result.current).toBeDefined();
     expect(result.current.user.name).toBe('Test User');
     expect(
-      result.current.navGroups.some(g => g.title === 'Administration')
+      result.current.navGroups.some(g => g.title === 'sidebar.groups.main')
     ).toBe(true);
     jest.restoreAllMocks();
   });
@@ -72,7 +82,7 @@ describe('useSidebarData', () => {
   it('filters sidebar items based on permissions', () => {
     // Only dashboard permission
     jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
-      user: { name: 'Test User', email: 'test@example.com', Role: 'user' },
+      user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view'] },
       permissions: ['dashboard:view'],
       hasPermission: () => false,
       hasAnyPermission: () => false,
@@ -87,10 +97,10 @@ describe('useSidebarData', () => {
     }));
     const { result } = renderHook(() => useSidebarData());
     expect(
-      result.current.navGroups[0].items.some(i => i.title === 'Home')
+      result.current.navGroups[0].items.some(i => i.title === 'sidebar.home')
     ).toBe(true);
     expect(
-      result.current.navGroups[0].items.some(i => i.title === 'Customers')
+      result.current.navGroups[0].items.some(i => i.title === 'sidebar.customers.title')
     ).toBe(false);
     jest.restoreAllMocks();
   });

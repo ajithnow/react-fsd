@@ -34,8 +34,8 @@ describe('Logout Service', () => {
     const result = await service.logout(mockRefreshToken);
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/auth/logout',
-      { refreshToken: mockRefreshToken },
+      '/api/portal-admin/logout',
+      { AdminRefreshToken: mockRefreshToken },
       {
         headers: {
           Authorization: `Bearer ${mockToken}`,
@@ -56,8 +56,8 @@ describe('Logout Service', () => {
     await service.logout(mockRefreshToken);
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/auth/logout',
-      { refreshToken: mockRefreshToken },
+      '/api/portal-admin/logout',
+      { AdminRefreshToken: mockRefreshToken },
       {
         headers: {},
       }
@@ -89,8 +89,8 @@ describe('Logout Service', () => {
     await service.logout();
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/auth/logout',
-      { refreshToken: '' },
+      '/api/portal-admin/logout',
+      { AdminRefreshToken: '' },
       {
         headers: {
           Authorization: `Bearer ${mockToken}`,
