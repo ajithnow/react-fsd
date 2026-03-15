@@ -42,6 +42,8 @@ export default function (plop) {
         { type: 'add', path: `${base}/pages/index.ts`,                            templateFile: `${tpl}/pages/index.ts.hbs` },
         { type: 'add', path: `${base}/models/{{kebabCase name}}.model.ts`,        templateFile: `${tpl}/models/model.ts.hbs` },
         { type: 'add', path: `${base}/services/{{kebabCase name}}.service.ts`,    templateFile: `${tpl}/services/service.ts.hbs` },
+        { type: 'add', path: `${base}/services/index.ts`,                         templateFile: `${tpl}/services/index.ts.hbs` },
+        { type: 'add', path: `${base}/constants/index.ts`,                       templateFile: `${tpl}/constants/index.ts.hbs` },
         { type: 'add', path: `${base}/config.ts`,                                 templateFile: `${tpl}/config.ts.hbs` },
       )
 
