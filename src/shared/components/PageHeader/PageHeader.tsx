@@ -10,6 +10,7 @@ interface PageHeaderProps {
     icon?: React.ReactNode;
   };
   className?: string;
+  children?: React.ReactNode;
 }
 
 export const PageHeader: React.FC<PageHeaderProps> = ({
@@ -17,6 +18,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
   description,
   action,
   className = '',
+  children,
 }) => {
   return (
     <div className={`flex justify-between items-center mb-6 ${className}`}>
@@ -24,12 +26,15 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
         <h1 className="text-2xl font-semibold">{title}</h1>
         {description && <p className="text-muted-foreground">{description}</p>}
       </div>
-      {action && (
-        <Button onClick={action.onClick}>
-          {action.icon}
-          {action.label}
-        </Button>
-      )}
+      <div className="flex items-center gap-2">
+        {children}
+        {action && (
+          <Button onClick={action.onClick}>
+            {action.icon}
+            {action.label}
+          </Button>
+        )}
+      </div>
     </div>
   );
 };

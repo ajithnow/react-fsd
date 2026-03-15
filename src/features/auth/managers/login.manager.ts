@@ -1,18 +1,21 @@
 import { useNavigate, useSearch } from '@tanstack/react-router';
-import { useAuthStore } from '../stores/auth.store';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../stores/auth.slice.ts';
 import { useLoginMutation } from '../queries/login.query';
 import { authStorage } from '../utils';
 import { AUTH_ROUTES } from '../constants';
 import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
+import { AppDispatch } from '@/core/store';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/shared/hooks/useToast';
 import { AxiosError } from 'axios';
+import { logger } from '@/core/services/logger.service';
 
 export const useLoginManager = () => {
   const { t } = useTranslation('auth');
-  const setUser = useAuthStore(s => s.setUser);
+  const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const searchParams = useSearch({ strict: false });
+  const searchParams = useSearch({ strict: false }) as { returnUrl?: string };
   const { notify } = useToast();
 
   const { mutateAsync: login, isPending, error } = useLoginMutation();
@@ -40,11 +43,10 @@ export const useLoginManager = () => {
         Status: 'active' as const,
       };
       authStorage.setUser(user);
-      setUser(user);
+      dispatch(setUser(user));
 
       // Get return URL from search params
-      const returnUrl = (searchParams as Record<string, unknown>)
-        ?.returnUrl as string;
+      const returnUrl = searchParams.returnUrl;
       const destination =
         returnUrl && returnUrl !== AUTH_ROUTES.LOGIN
           ? returnUrl
@@ -53,8 +55,9 @@ export const useLoginManager = () => {
       notify(t('login.successLogin'), {position: 'bottom-right'} , "success")
       await navigate({ to: destination });
     } catch (error: unknown) {
-      console.error((error as AxiosError).message)
-      notify(t('login.loginFailedError'), {position: 'bottom-right'}, "error")
+      const errorMessage = error instanceof AxiosError ? error.message : t('login.loginFailedError');
+      logger.error('Login failed in manager', error, 'LoginManager');
+      notify(errorMessage, {position: 'bottom-right'}, "error")
     }
   };
 

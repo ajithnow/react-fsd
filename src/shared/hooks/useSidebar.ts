@@ -16,7 +16,7 @@ import {
   Bell,
   // Bell,
 } from 'lucide-react';
-import { useAuthStore } from '@/features/auth/stores/auth.store.ts';
+import { store } from '@/core/store';
 import type { User } from '@/features/auth/models/auth.model.ts';
 import { useRBAC } from '@/shared';
 import { useTranslation } from 'react-i18next';
@@ -228,7 +228,7 @@ export const useSidebarData = (options?: {
  */
 const getCurrentUser = (): ExtendedUser | null => {
   try {
-    const authUser = useAuthStore.getState().user;
+    const authUser = store.getState().auth.user;
     return authUser as ExtendedUser | null;
   } catch {
     return null;

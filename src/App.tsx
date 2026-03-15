@@ -1,15 +1,27 @@
 import { RouterProvider } from '@tanstack/react-router';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Provider, useSelector } from 'react-redux';
+import { PersistGate } from 'redux-persist/integration/react';
 import { router } from './core/router';
 import { RBACProvider } from './core/rbac';
-import { useAuthStore } from './features/auth/stores/auth.store';
+import { store, persistor, RootState } from './core/store';
 import { ENV } from './core/utils/env.utils';
 
 const queryClient = new QueryClient();
 
 export const App = () => {
-  const { user } = useAuthStore();
+  return (
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppContent />
+      </PersistGate>
+    </Provider>
+  );
+};
+
+const AppContent = () => {
+  const user = useSelector((state: RootState) => state.auth.user);
   
   return (
     <QueryClientProvider client={queryClient}>
