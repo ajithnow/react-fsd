@@ -1,5 +1,6 @@
-import { useAuthStore } from '../stores/auth.store';
+import { useSelector } from 'react-redux';
 import { useLogoutManager } from '../managers/logout.manager';
+import { RootState } from '@/core/store';
 
 /**
  * Simple hook for logout functionality
@@ -7,7 +8,7 @@ import { useLogoutManager } from '../managers/logout.manager';
  */
 export const useLogout = () => {
   const { logoutUser, isPending, error } = useLogoutManager();
-  const user = useAuthStore(s => s.user);
+  const user = useSelector((state: RootState) => state.auth.user);
 
   return {
     logout: logoutUser,

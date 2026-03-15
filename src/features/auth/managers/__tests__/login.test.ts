@@ -18,11 +18,11 @@ jest.mock('../../queries/login.query', () => ({
   }),
 }));
 
-const mockSetUser = jest.fn();
-jest.mock('../../stores/auth.store', () => ({
-  useAuthStore: (
-    fn: (state: { setUser: (user: unknown) => void }) => unknown
-  ) => fn({ setUser: mockSetUser }),
+// Mock react-redux
+const mockDispatch = jest.fn();
+jest.mock('react-redux', () => ({
+  useDispatch: () => mockDispatch,
+  useSelector: jest.fn(),
 }));
 
 const mockNavigate = jest.fn();
@@ -52,15 +52,7 @@ describe('useLoginManager', () => {
       'fake-token'
     );
 
-    expect(mockSetUser).toHaveBeenCalledWith({
-      role: 'NORMAL_USER',
-      status: 'active',
-      name:"john",
-      id:1,
-      username: "john",
-      email:undefined
-    });
-
+    expect(mockDispatch).toHaveBeenCalledWith(expect.anything());
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
   });
 

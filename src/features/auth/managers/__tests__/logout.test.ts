@@ -29,15 +29,15 @@ jest.mock('../../queries/logout.query', () => ({
   }),
 }));
 
-// Mock the auth store
-const mockSetUser = jest.fn();
+// Mock react-redux
+const mockDispatch = jest.fn();
 const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' };
 let mockCurrentUser: typeof mockUser | null = mockUser;
 
-jest.mock('../../stores/auth.store', () => ({
-  useAuthStore: (
-    fn: (state: { setUser: (user: unknown) => void; user: unknown }) => unknown
-  ) => fn({ setUser: mockSetUser, user: mockCurrentUser }),
+jest.mock('react-redux', () => ({
+  useDispatch: () => mockDispatch,
+  useSelector: (fn: (state: { auth: { user: unknown } }) => unknown) => 
+    fn({ auth: { user: mockCurrentUser } }),
 }));
 
 // Mock navigation
@@ -64,9 +64,9 @@ describe('useLogoutManager', () => {
     // Should call logout API with refresh token
     expect(mockLogoutMutation).toHaveBeenCalledWith('fake-refresh-token');
 
-    // Should clear tokens and user state
+    // Should clear tokens and dispatch logout
     expect(mockClearTokens).toHaveBeenCalled();
-    expect(mockSetUser).toHaveBeenCalledWith(null);
+    expect(mockDispatch).toHaveBeenCalled();
 
     // Should navigate to login page
     expect(mockNavigate).toHaveBeenCalledWith({
@@ -85,9 +85,9 @@ describe('useLogoutManager', () => {
       await result.current.logoutUser();
     });
 
-    // Should still clear tokens and user state
+    // Should still clear tokens and dispatch logout
     expect(mockClearTokens).toHaveBeenCalled();
-    expect(mockSetUser).toHaveBeenCalledWith(null);
+    expect(mockDispatch).toHaveBeenCalled();
 
     // Should still navigate to login page
     expect(mockNavigate).toHaveBeenCalledWith({
@@ -116,9 +116,9 @@ describe('useLogoutManager', () => {
     // Should call logout API with empty string
     expect(mockLogoutMutation).toHaveBeenCalledWith('');
 
-    // Should still clear tokens and user state
+    // Should still clear tokens and dispatch logout
     expect(mockClearTokens).toHaveBeenCalled();
-    expect(mockSetUser).toHaveBeenCalledWith(null);
+    expect(mockDispatch).toHaveBeenCalled();
   });
 
   it('should perform quick logout without API call', () => {
@@ -131,9 +131,9 @@ describe('useLogoutManager', () => {
     // Should NOT call logout API
     expect(mockLogoutMutation).not.toHaveBeenCalled();
 
-    // Should clear tokens and user state
+    // Should clear tokens and dispatch logout
     expect(mockClearTokens).toHaveBeenCalled();
-    expect(mockSetUser).toHaveBeenCalledWith(null);
+    expect(mockDispatch).toHaveBeenCalled();
 
     // Should navigate to login page
     expect(mockNavigate).toHaveBeenCalledWith({

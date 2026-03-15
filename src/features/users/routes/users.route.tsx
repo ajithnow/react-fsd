@@ -5,12 +5,12 @@ import {
 } from '@tanstack/react-router';
 import { USER_PERMISSIONS, USER_ROUTES } from '../constants';
 import { appLayoutRoute } from '../../layout';
-import { useAuthStore } from '@/features/auth/stores/auth.store';
+import { store } from '@/core/store/index.ts';
 import { hasPermission } from '@/shared/utils/rbac.utils';
 import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 
 const checkCreatePermission = (permission: string) => {
-  const user = useAuthStore.getState().user;
+  const user = store.getState().auth.user;
   if (!hasPermission(user, permission)) {
     throw redirect({ to: ROUTE_CONSTANTS.ROOT, replace: true });
   }

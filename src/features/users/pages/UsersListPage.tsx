@@ -5,8 +5,12 @@ import { Alert, AlertDescription } from '@/lib/shadcn/components/ui/alert';
 import { UserDataTable } from '../components';
 import { useUserTableLogic } from '../managers/users.manager';
 import { PageHeader, useAlertDialog } from '@/shared/components';
+import { Button } from '@/lib/shadcn/components/ui/button';
 import { UserActionDialog } from '../components/UserActionDialogs/UserActionDialogs';
 import type { AdminUser } from '../models';
+import { Can } from '@/core/rbac/components';
+import { USER_PERMISSIONS } from '../constants';
+
 export const UsersListPage: React.FC = () => {
   const { t } = useTranslation('users');
   const {
@@ -96,12 +100,14 @@ export const UsersListPage: React.FC = () => {
       <PageHeader
         title={t('users.managementTitle')}
         description={t('users.managementDescription')}
-        action={{
-          label: t('users.addNewAdmin'),
-          onClick: onCreate,
-          icon: <Plus className="mr-1 h-4 w-4" />,
-        }}
-      />
+      >
+        <Can perform={USER_PERMISSIONS.USER_CREATE}>
+          <Button onClick={onCreate}>
+            <Plus className="mr-1 h-4 w-4" />
+            {t('users.addNewAdmin')}
+          </Button>
+        </Can>
+      </PageHeader>
 
       {error && (
         <Alert variant="destructive">

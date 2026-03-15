@@ -14,12 +14,17 @@ export interface LoginFormProps {
 
 export interface User extends RBACUser{  Name: string, FirstName?: string, LastName?: string, Email?: string };
 
-export type AuthState = {
+export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  setUser: (user: User | null) => void;
-  logout: () => void;
-};
+  isLoading: boolean;
+  error: string | null;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
 
 export type AuthRoutes = (typeof AUTH_ROUTES)[keyof typeof AUTH_ROUTES];
 

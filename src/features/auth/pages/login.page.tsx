@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 export const LoginPage: React.FC = () => {
   const { handleLogin, isLoading } = useLoginManager();
   const { t } = useTranslation('auth');
-  useDocumentTitle(t('login.pageTitle'), 'STRO Admin - Login');
+  useDocumentTitle(t('login.pageTitle'), 'FSD Admin - Login');
 
   return (
     <>

@@ -1,0 +1,13 @@
+{
+  "entryPoints": ["src/core", "src/features", "src/shared"],
+  "out": "docs",
+  "plugin": ["typedoc-plugin-markdown"],
+  "hideGenerator": true,
+  "includeVersion": true,
+  "theme": "default",
+  "name": "FSD Admin Documentation",
+  "exclude": ["**/*.test.ts", "**/*.test.tsx", "**/__tests__/**", "node_modules/**"],
+  "excludePrivate": true,
+  "excludeProtected": true,
+  "readme": "README.md"
+}

@@ -1,12 +1,15 @@
 import { useNavigate } from '@tanstack/react-router';
-import { useAuthStore } from '../stores/auth.store';
+import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '../stores/auth.slice.ts';
 import { useLogoutMutation } from '../queries/logout.query';
 import { authStorage } from '../utils';
 import { AUTH_ROUTES } from '../constants';
+import { RootState, AppDispatch } from '@/core/store';
+import { logger } from '@/core/services/logger.service';
 
 export const useLogoutManager = () => {
-  const setUser = useAuthStore(s => s.setUser);
-  const user = useAuthStore(s => s.user);
+  const dispatch = useDispatch<AppDispatch>();
+  const user = useSelector((state: RootState) => state.auth.user);
   const navigate = useNavigate();
   const { mutateAsync: logout, isPending, error } = useLogoutMutation();
 
@@ -20,7 +23,7 @@ export const useLogoutManager = () => {
 
       // Clear local storage and auth state
       authStorage.clearTokens();
-      setUser(null);
+      dispatch(setUser(null));
 
       // Navigate to login page
       navigate({
@@ -29,10 +32,10 @@ export const useLogoutManager = () => {
       });
     } catch (error) {
       // Even if API call fails, clear local state and redirect
-      console.error('Logout API call failed, clearing local state:', error);
+      logger.error('Logout API call failed, clearing local state', error, 'LogoutManager');
 
       authStorage.clearTokens();
-      setUser(null);
+      dispatch(setUser(null));
       navigate({
         to: AUTH_ROUTES.LOGIN,
         replace: true,
@@ -43,7 +46,7 @@ export const useLogoutManager = () => {
   const quickLogout = () => {
     // For quick logout without API call (e.g., when offline)
     authStorage.clearTokens();
-    setUser(null);
+    dispatch(setUser(null));
     navigate({
       to: AUTH_ROUTES.LOGIN,
       replace: true,

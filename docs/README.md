@@ -1,243 +1,174 @@
-# 🏗️ React FSD Architecture Documentation
+**FSD Admin Documentation v0.0.1**
 
-This document provides comprehensive documentation for the React Feature-Sliced Design (FSD) architecture implementation in this project.
+***
 
-## 📑 Table of Contents
+# 🚀 React FSD - Feature-Sliced Design Application
 
-1. [Overview](#-overview)
-2. [Architecture Principles](#️-architecture-principles)
-3. [Project Structure](#-project-structure)
-4. [Layer Definitions](#-layer-definitions)
-5. [Development Guidelines](#️-development-guidelines)
-6. [Technology Stack](#-technology-stack)
-7. [Best Practices](#-best-practices)
-8. [Scaling Guidelines](#-scaling-guidelines)
+> A modern React application built with Feature-Sliced Design architecture, TypeScript, and cutting-edge tools for scalable frontend development.
 
-## 🎯 Overview
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-7.0.4-646cff.svg)](https://vitejs.dev/)
+[![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.11-38bdf8.svg)](https://tailwindcss.com/)
+[![Jest](https://img.shields.io/badge/Jest-30.0.5-c21325.svg)](https://jestjs.io/)
 
-This project implements **Feature-Sliced Design (FSD)**, a modern architectural methodology for frontend applications that promotes:
+## ✨ Features
 
-- **Explicit business logic separation**
-- **Controlled cross-imports**
-- **Predictable project growth**
-- **Team scalability**
-- **Maintainable codebase**
+- 🏗️ **Feature-Sliced Design (FSD)** - Scalable architecture for large applications
+- ⚡ **Vite** - Lightning-fast build tool and development server
+- 🔷 **TypeScript** - Full type safety with strict configuration
+- ⚛️ **React 19** - Latest React with modern features
+- 🎨 **ShadCN UI + Tailwind CSS** - Beautiful, accessible UI components
+- 🔄 **TanStack Query** - Powerful data fetching and caching
+- 🗺️ **TanStack Router** - Type-safe routing
+- 🐻 **Zustand** - Lightweight state management
+- 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
+- 🧪 **Jest + RTL** - Comprehensive testing setup
+- 🌍 **i18next** - Internationalization support
+- 🎭 **MSW** - API mocking for development and testing
+- 📏 **ESLint + Prettier** - Code quality and formatting
+- 🪝 **Husky** - Git hooks for quality assurance
 
-### Key Benefits
+## 🏛️ Architecture
 
-- ✅ **Modular**: Each feature is self-contained
-- ✅ **Scalable**: Easy to add new features without breaking existing ones
-- ✅ **Maintainable**: Clear separation of concerns
-- ✅ **Team-friendly**: Multiple developers can work on different features simultaneously
-- ✅ **Type-safe**: Full TypeScript integration throughout
-
-## 🏛️ Architecture Principles
-
-### 1. **Layered Architecture**
-
-```directory
-├── features/     # Business logic & user scenarios
-├── core/         # Shared application-level logic
-├── shared/       # Reusable utilities & components
-└── lib/          # External library adaptations
-```
-
-### 2. **Import Rules**
-
-- ⬇️ **Downward dependencies only**: Higher layers can import from lower layers
-- ❌ **No circular dependencies**: Features cannot import from each other directly
-- ✅ **Shared communication**: Use `shared` layer for cross-feature communication
-
-### 3. **Predictable Structure**
-
-Each feature follows the same internal structure for consistency and developer experience.
-
-## 📁 Project Structure
+This project follows **Feature-Sliced Design** methodology with clear separation of concerns:
 
 ```text
 src/
-├── features/           # 🎯 Business Features
-│   ├── auth/          # Authentication feature (example)
-│   │   ├── components/    # UI components
-│   │   │   └── LoginForm/
-│   │   │       ├── index.tsx
-│   │   │       └── __tests__/
-│   │   ├── constants/     # Feature-specific constants
-│   │   ├── locales/       # Internationalization
-│   │   ├── managers/      # Business logic orchestration
-│   │   ├── mocks/         # Testing & development mocks
-│   │   ├── models/        # TypeScript interfaces & types
-│   │   ├── pages/         # Route components
-│   │   ├── queries/       # Data fetching logic (TanStack Query)
-│   │   ├── routes/        # Routing configuration
-│   │   ├── schema/        # Validation schemas (Zod)
-│   │   ├── services/      # API communication
-│   │   └── stores/        # State management (Zustand)
-│   ├── configs.ts         # Feature configuration
-│   ├── locales.ts         # Locale aggregation
-│   ├── mocks.ts           # Mock aggregation
-│   └── routes.ts          # Route aggregation
-│
-├── core/              # 🔧 Application Core
-│   ├── api/              # API configuration & interceptors
-│   ├── components/       # App-level components
-│   ├── i18n/            # Internationalization setup
-│   ├── mock/            # MSW configuration
-│   └── router/          # Router configuration
-│
-├── shared/            # 🤝 Shared Resources
-│   ├── components/       # Reusable UI components
-│   ├── models/          # Common TypeScript types
-│   └── utils/           # Utility functions
-│
-├── lib/               # 📚 Library Adaptations
-│   └── shadcn/          # ShadCN UI customizations
-│       ├── components/
-│       └── utils/
-│
-└── styles/            # 🎨 Global Styles
-    └── globals.css       # Tailwind + CSS variables
+├── features/     # 🎯 Business features (auth, dashboard, etc.)
+├── core/         # 🔧 App-level configuration (router, API, i18n)
+├── shared/       # 🤝 Reusable components and utilities
+├── lib/          # 📚 External library adaptations
+└── styles/       # 🎨 Global styles and themes
 ```
 
-## 🔍 Layer Definitions
+### Dependency Flow
 
-### 🎯 Features Layer
-
-**Purpose**: Contains all business logic and user-facing functionality.
-
-**Responsibilities**:
-
-- User interfaces and interactions
-- Business logic implementation
-- Feature-specific state management
-- API integrations for the feature
-- Routing and navigation within the feature
-
-**Example Structure** (`features/auth/`):
-
-```typescript
-// models/auth.model.ts - Type definitions
-export interface User {
-  id: number;
-  name: string;
-  email: string;
-}
-
-// stores/auth.store.ts - State management
-export const useAuthStore = create<AuthState>(set => ({
-  user: null,
-  isAuthenticated: false,
-  setUser: user => set({ user, isAuthenticated: !!user }),
-  logout: () => set({ user: null, isAuthenticated: false }),
-}));
-
-// services/login.service.ts - API communication
-export const loginService = {
-  async login(credentials: LoginRequest): Promise<AuthResponse> {
-    // API call implementation
-  },
-};
+```mermaid
+graph TD
+    A[Features] --> B[Shared]
+    A --> C[Core]
+    B --> C
+    A --> D[Lib]
+    B --> D
+    C --> D
 ```
 
-### 🔧 Core Layer
+**Key Principles:**
 
-**Purpose**: Application-wide configurations and shared infrastructure.
+- ✅ Downward dependencies only
+- ❌ No circular dependencies
+- 🔄 Cross-feature communication through shared layer
 
-**Responsibilities**:
+## 🚀 Quick Start
 
-- Router configuration
-- API client setup
-- Internationalization setup
-- Mock service configuration
-- Global error handling
+### Prerequisites
 
-**Example**:
+- **Node.js** 20+
+- **npm** 10+
+- **Git**
 
-```typescript
-// core/router/index.tsx
-export const rootRoute = createRootRoute({
-  component: () => <div><Outlet /></div>,
-});
-
-// core/api/index.ts
-export const apiClient = axios.create({
-  baseURL: process.env.VITE_API_BASE_URL,
-  timeout: 10000,
-});
-```
-
-### 🤝 Shared Layer
-
-**Purpose**: Reusable code that can be used across multiple features.
-
-**Responsibilities**:
-
-- Common utility functions
-- Shared TypeScript types
-- Reusable UI components
-- Common business logic
-
-**Example**:
-
-```typescript
-// shared/utils/common.utils.ts
-export const generateResources = ({
-  modules,
-  supportedLanguages,
-  features,
-}: GenerateResourcesOptions) => {
-  // Implementation for i18n resource generation
-};
-
-// shared/models/common.model.ts
-export interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
-}
-```
-
-### 📚 Lib Layer
-
-**Purpose**: Adapters and configurations for external libraries.
-
-**Responsibilities**:
-
-- Third-party library configurations
-- Custom hooks for external libraries
-- Theme and styling adaptations
-
-**Example**:
-
-```typescript
-// lib/shadcn/utils/utils.ts
-export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs));
-}
-
-// lib/shadcn/components/ui/button.tsx
-export function Button({ className, variant, size, ...props }: ButtonProps) {
-  // ShadCN Button implementation
-}
-```
-
-## 🛠️ Development Guidelines
-
-### Adding a New Feature
-
-1. **Create Feature Directory**:
+### Installation
 
 ```bash
-mkdir src/features/dashboard
+# Clone repository
+git clone https://github.com/your-org/react-fsd.git
+cd react-fsd
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Open http://localhost:3000
 ```
 
-2.**Set Up Feature Structure**:
+### Available Scripts
 
 ```bash
+# Development
+npm run dev          # Start dev server with HMR
+npm run build        # Build for production (TypeScript + Vite)
+npm run preview      # Preview production build
+
+# Code Quality
+npm run lint         # Run ESLint
+npm run prepare      # Setup Husky git hooks
+
+# Testing
+npm test             # Run tests in watch mode
+npm run test:ci      # Run tests in CI mode
+npm run test:coverage # Run tests with coverage report
+
+# Development Tools
+npm run storybook    # Start Storybook component documentation
+```
+
+## 📁 Project Structure
+
+Detailed file structure:
+
+```text
+src/
+├── features/                    # Business Features
+│   ├── auth/                   # Authentication feature
+│   │   ├── components/         # UI components
+│   │   │   └── LoginForm/      # Login form component
+│   │   ├── constants/          # Feature constants
+│   │   ├── locales/           # i18n translations
+│   │   ├── managers/          # Business logic
+│   │   ├── mocks/             # MSW handlers
+│   │   ├── models/            # TypeScript types
+│   │   ├── pages/             # Route components
+│   │   ├── queries/           # TanStack Query hooks
+│   │   ├── routes/            # Route configuration
+│   │   ├── schema/            # Validation schemas
+│   │   ├── services/          # API services
+│   │   └── stores/            # State management
+│   ├── configs.ts             # Feature configuration
+│   ├── locales.ts             # Locale aggregation
+│   ├── mocks.ts               # Mock aggregation
+│   └── routes.ts              # Route aggregation
+│
+├── core/                       # App Infrastructure
+│   ├── api/                   # API configuration
+│   ├── components/            # App-level components
+│   ├── i18n/                  # i18n setup
+│   ├── mock/                  # MSW configuration
+│   └── router/                # Router setup
+│
+├── shared/                     # Shared Resources
+│   ├── components/            # Reusable components
+│   ├── models/                # Common types
+│   └── utils/                 # Utility functions
+│
+├── lib/                        # Library Adaptations
+│   └── shadcn/                # ShadCN UI customizations
+│       ├── components/ui/     # UI components
+│       └── utils/             # UI utilities
+│
+└── styles/                     # Global Styles
+    └── globals.css            # Tailwind + CSS variables
+```
+
+</details>
+
+## 🧩 Adding New Features
+
+Follow our [Feature Development Guide](_media/DEVELOPMENT.md) to add new features:
+
+```bash
+# 1. Create feature structure
 mkdir -p src/features/dashboard/{components,constants,locales,managers,mocks,models,pages,queries,routes,schema,services,stores}
+
+# 2. Implement feature slices (models → services → stores → components → pages)
+
+# 3. Register in configuration
+# Update: features/configs.ts, features/routes.ts, features/locales.ts
 ```
 
-3.**Implement Feature Slices**:
+### Example Feature Structure
 
 ```typescript
 // features/dashboard/models/dashboard.model.ts
@@ -246,302 +177,227 @@ export interface DashboardData {
   charts: ChartData[];
 }
 
-// features/dashboard/stores/dashboard.store.ts
-export const useDashboardStore = create<DashboardState>(() => ({
-  data: null,
-  isLoading: false,
-  // ... state logic
-}));
-
-// features/dashboard/pages/dashboard.page.tsx
-export const DashboardPage = () => {
-  // Page implementation
-};
-```
-
-4.**Register Feature**:
-
-```typescript
-// features/configs.ts
-export const features = ['auth', 'dashboard']; // Add new feature
-
-// features/routes.ts
-import dashboardRoutes from './dashboard/routes';
-export default [...authRoutes, ...dashboardRoutes];
-```
-
-### Cross-Feature Communication
-
-**❌ Wrong** - Direct feature imports:
-
-```typescript
-// features/dashboard/components/UserProfile.tsx
-import { useAuthStore } from '../../auth/stores/auth.store'; // ❌ Don't do this
-```
-
-**✅ Correct** - Through shared layer:
-
-```typescript
-// shared/stores/app.store.ts
-export const useAppStore = create(() => ({
-  user: null,
-  setUser: user => set({ user }),
-}));
-
-// features/auth/managers/auth.manager.ts
-import { useAppStore } from '@/shared/stores/app.store';
-
-export const authManager = {
-  login: credentials => {
-    // Login logic
-    useAppStore.getState().setUser(user);
+// features/dashboard/services/dashboard.service.ts
+export const dashboardService = {
+  async getMetrics(): Promise<Metric[]> {
+    const response = await apiClient.get('/dashboard/metrics');
+    return response.data;
   },
 };
 
-// features/dashboard/components/UserProfile.tsx
-import { useAppStore } from '@/shared/stores/app.store';
+// features/dashboard/stores/dashboard.store.ts
+export const useDashboardStore = create<DashboardState>(set => ({
+  data: null,
+  isLoading: false,
+  fetchData: async () => {
+    // Implementation
+  },
+}));
 ```
 
 ## 🧪 Testing Strategy
 
-### Test Structure
+We maintain **80% test coverage** with a comprehensive testing approach:
 
-Each feature maintains its own test suite following the same structure:
+### Test Types
 
-```text
-features/auth/
-├── components/
-│   └── LoginForm/
-│       └── __tests__/
-│           └── loginForm.test.tsx
-├── managers/
-│   └── __tests__/
-│       └── login.manager.test.ts
-└── services/
-    └── __tests__/
-        └── login.service.test.ts
+- **Unit Tests** (70%): Components, utilities, services
+- **Integration Tests** (20%): Feature workflows
+- **E2E Tests** (10%): Critical user journeys
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run with coverage
+npm run test:coverage
+
+# Run specific test file
+npm test LoginForm.test.tsx
+
+# Run tests for specific feature
+npm test -- --testPathPattern=features/auth
 ```
 
-### Testing Best Practices
-
-1. **Unit Tests**: Test individual functions and components
-2. **Integration Tests**: Test feature workflows
-3. **Mock External Dependencies**: Use MSW for API mocking
-4. **High Coverage**: Maintain 80% coverage threshold
+### Test Example
 
 ```typescript
-// Example test structure
 describe('LoginForm', () => {
-  it('should render login form correctly', () => {
-    // Component rendering test
-  });
+  it('should handle form submission with valid data', async () => {
+    const user = userEvent.setup();
+    const mockOnSubmit = jest.fn();
 
-  it('should handle form submission', () => {
-    // User interaction test
-  });
+    render(<LoginForm onSubmit={mockOnSubmit} isLoading={false} />);
 
-  it('should display validation errors', () => {
-    // Error handling test
+    await user.type(screen.getByLabelText(/username/i), 'testuser');
+    await user.type(screen.getByLabelText(/password/i), 'password123');
+    await user.click(screen.getByRole('button', { name: /login/i }));
+
+    await waitFor(() => {
+      expect(mockOnSubmit).toHaveBeenCalledWith({
+        username: 'testuser',
+        password: 'password123',
+      });
+    });
   });
 });
 ```
 
-## 📊 Technology Stack
+## 🎨 UI Components
 
-### Core Technologies
-
-- **React 19.1.0** - UI library with latest features
-- **TypeScript 5.8.3** - Type safety and developer experience
-- **Vite 7.0.4** - Fast build tool and development server
-
-### State Management
-
-- **Zustand 5.0.6** - Lightweight state management
-- **TanStack Query** - Server state management
-- **React Hook Form 7.60.0** - Form state management
-
-### UI & Styling
-
-- **ShadCN UI** - Modern component library
-- **Tailwind CSS 4.1.11** - Utility-first CSS framework
-- **Radix UI** - Accessible component primitives
-
-### Development Tools
-
-- **Jest 30.0.5** - Testing framework
-- **React Testing Library** - Component testing utilities
-- **ESLint 9.30.1** - Code linting
-- **Prettier 3.6.2** - Code formatting
-- **Husky** - Git hooks automation
-
-### Build & Deployment
-
-- **Vite** - Build tool with optimizations
-- **TypeScript** - Compile-time type checking
-- **Path Aliases** - Clean import statements
-
-## ✨ Best Practices
-
-### 1. **Consistent Naming Conventions**
+Built with **ShadCN UI** and **Tailwind CSS** for consistent, accessible design:
 
 ```typescript
-// Files: kebab-case
-login - form.component.tsx;
-auth.service.ts;
-user.model.ts;
+import { Button } from '@/lib/shadcn/components/ui/button';
+import { Input } from '@/lib/shadcn/components/ui/input';
+import { Card } from '@/lib/shadcn/components/ui/card';
 
-// Components: PascalCase
-export const LoginForm = () => {};
-
-// Functions/Variables: camelCase
-const handleSubmit = () => {};
-const isAuthenticated = true;
-
-// Constants: SCREAMING_SNAKE_CASE
-export const AUTH_ROUTES = {
-  LOGIN: '/login',
-  REGISTER: '/register',
-} as const;
+export const ExampleComponent = () => (
+  <Card className="p-6">
+    <Input placeholder="Enter text..." className="mb-4" />
+    <Button className="w-full">
+      Submit
+    </Button>
+  </Card>
+);
 ```
 
-### 2. **TypeScript Best Practices**
+### Theme Support
+
+- 🌅 Light mode
+- 🌙 Dark mode
+- 🎨 CSS custom properties
+- 📱 Responsive design
+- ♿ Accessibility compliant
+
+## 🌍 Internationalization
+
+Multi-language support using **react-i18next**:
 
 ```typescript
-// Use interfaces for object shapes
-interface User {
-  id: number;
-  name: string;
-  email: string;
+// features/auth/locales/en.json
+{
+  "login": {
+    "title": "Sign In",
+    "usernameLabel": "Username",
+    "passwordLabel": "Password",
+    "loginButton": "Sign In"
+  }
 }
 
-// Use type for unions and computed types
-type AuthRoutes = (typeof AUTH_ROUTES)[keyof typeof AUTH_ROUTES];
-type UserRole = 'admin' | 'user' | 'guest';
+// Component usage
+import { useTranslation } from 'react-i18next';
 
-// Use generics for reusable types
-interface ApiResponse<T> {
-  data: T;
-  message: string;
-  success: boolean;
-}
-```
+export const LoginForm = () => {
+  const { t } = useTranslation('auth');
 
-### 3. **Component Organization**
-
-```typescript
-// Component structure
-interface Props {
-  // Props interface first
-}
-
-export const Component = ({ prop1, prop2 }: Props) => {
-  // Hooks at the top
-  const [state, setState] = useState();
-  const query = useQuery();
-
-  // Event handlers
-  const handleClick = () => {};
-
-  // Render logic
   return (
-    <div>
-      {/* JSX */}
-    </div>
+    <form>
+      <h1>{t('login.title')}</h1>
+      {/* Form fields */}
+    </form>
   );
 };
 ```
 
-### 4. **Error Handling**
+## 🔄 State Management
+
+### Local State (Zustand)
 
 ```typescript
-// Service layer error handling
-export const authService = {
-  async login(
-    credentials: LoginRequest
-  ): Promise<Result<AuthResponse, ApiError>> {
-    try {
-      const response = await apiClient.post('/auth/login', credentials);
-      return { success: true, data: response.data };
-    } catch (error) {
-      return {
-        success: false,
-        error: new ApiError('Login failed', error),
-      };
-    }
-  },
+// Feature-specific state
+export const useAuthStore = create<AuthState>(set => ({
+  user: null,
+  isAuthenticated: false,
+  setUser: user => set({ user, isAuthenticated: !!user }),
+  logout: () => set({ user: null, isAuthenticated: false }),
+}));
+```
+
+### Server State (TanStack Query)
+
+```typescript
+// Data fetching with caching
+export const useUsers = () => {
+  return useQuery({
+    queryKey: ['users'],
+    queryFn: () => userService.getAll(),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
 };
-
-// Component error handling
-const { data, error, isLoading } = useQuery({
-  queryKey: ['auth', 'login'],
-  queryFn: () => authService.login(credentials),
-  onError: error => {
-    toast.error(error.message);
-  },
-});
 ```
 
-## 📈 Scaling Guidelines
+## 📚 Documentation
 
-### Adding New Features
+- 📖 **[Architecture Guide](_media/ARCHITECTURE.md)** - Detailed FSD architecture
+- 🛠️ **[Development Guide](_media/DEVELOPMENT.md)** - Feature development process
+- 🚩 **[Feature Flags Guide](_media/FEATURE-FLAGS.md)** - Feature flag system usage
+- 🧪 **[Testing Guide](_media/TESTING.md)** - Testing strategies and examples
+- 🚀 **[Deployment Guide](_media/DEPLOYMENT.md)** - Deploy to various platforms
+- 🤝 **[Contributing Guide](_media/CONTRIBUTING.md)** - How to contribute
 
-1. **Plan Feature Boundaries**: Define clear responsibilities
-2. **Design Data Flow**: Plan state management and API interactions
-3. **Create Feature Structure**: Follow established patterns
-4. **Implement Incrementally**: Start with core functionality
-5. **Add Tests**: Maintain coverage standards
-6. **Update Documentation**: Keep docs current
+## 🚀 Deployment
 
-### Team Collaboration
+Deploy to multiple platforms with optimized builds:
 
-1. **Feature Ownership**: Assign features to team members
-2. **Shared Standards**: Follow established conventions
-3. **Code Reviews**: Review architectural decisions
-4. **Documentation**: Document significant changes
+```bash
+# Build for production
+npm run build
 
-### Performance Considerations
-
-1. **Code Splitting**: Use dynamic imports for features
-2. **Bundle Analysis**: Monitor bundle sizes
-3. **Lazy Loading**: Load features on demand
-4. **Memoization**: Use React.memo and useMemo appropriately
-
-```typescript
-// Example: Lazy loading features
-const DashboardPage = lazy(() => import('./features/dashboard/pages/dashboard.page'));
-const AuthPage = lazy(() => import('./features/auth/pages/login.page'));
-
-// In router configuration
-const dashboardRoute = createRoute({
-  path: '/dashboard',
-  component: () => (
-    <Suspense fallback={<LoadingSpinner />}>
-      <DashboardPage />
-    </Suspense>
-  ),
-});
+# Preview build locally
+npm run preview
 ```
 
-## 🎯 Conclusion
+### Supported Platforms
 
-This Feature-Sliced Design architecture provides:
+- **Vercel** - Zero-config deployment
+- **Netlify** - JAMstack deployment
+- **GitHub Pages** - Static site hosting
+- **Docker** - Containerized deployment
 
-- **Predictable Structure**: Consistent patterns across features
-- **Scalable Growth**: Easy to add new features
-- **Team Efficiency**: Clear boundaries and responsibilities
-- **Maintainable Code**: Separation of concerns and type safety
-- **Modern Tooling**: Latest React ecosystem tools
+See [Deployment Guide](_media/DEPLOYMENT.md) for detailed instructions.
 
-The `auth` feature serves as a reference implementation. Use it as a template when creating new features, following the same structure and patterns for consistency and maintainability.
+## 🤝 Contributing
 
-## 📚 Related Documentation
+We welcome contributions! Please see our [Contributing Guide](_media/CONTRIBUTING.md) for details.
 
-- **[Development Guide](./DEVELOPMENT.md)** - Step-by-step feature development process
-- **[Feature Flags Guide](./FEATURE-FLAGS.md)** - Feature flag system implementation and usage
-- **[Testing Guide](./TESTING.md)** - Testing strategies and best practices
-- **[Deployment Guide](./DEPLOYMENT.md)** - Production deployment strategies
-- **[Contributing Guidelines](./CONTRIBUTING.md)** - How to contribute to the project
+### Development Workflow
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Make your changes following our [coding standards](_media/CONTRIBUTING.md#code-standards)
+4. Add tests for new functionality
+5. Commit using [conventional commits](_media/CONTRIBUTING.md#commit-message-format)
+6. Push and create a Pull Request
+
+### Code Quality
+
+- ✅ TypeScript strict mode
+- ✅ ESLint + Prettier
+- ✅ Pre-commit hooks
+- ✅ 80% test coverage requirement
+- ✅ Automated CI/CD
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🎯 Roadmap
+
+- [ ] **Component Library** - Extract reusable components
+- [ ] **Storybook Integration** - Component documentation
+- [ ] **E2E Testing** - Playwright integration
+- [ ] **Performance Monitoring** - Real user metrics
+- [ ] **PWA Support** - Service worker integration
+- [ ] **Micro-frontend** - Module federation setup
+
+## 🙏 Acknowledgments
+
+- [Feature-Sliced Design](https://feature-sliced.design/) - Architecture methodology
+- [ShadCN UI](https://ui.shadcn.com/) - Beautiful component library
+- [TanStack](https://tanstack.com/) - Powerful data management tools
+- [Vite](https://vitejs.dev/) - Next generation frontend tooling
 
 ---
-
-For questions or contributions to this architecture, please refer to the [Contributing Guidelines](./CONTRIBUTING.md) or reach out to the development team.
