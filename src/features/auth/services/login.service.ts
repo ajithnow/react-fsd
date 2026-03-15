@@ -1,25 +1,17 @@
-import { useMemo } from 'react';
-import { createApiClient } from '@/core/api';
+import apiClient from '@/core/api';
 import { ENDPOINTS } from '@/features/auth/constants';
 
 const useLoginService = () => {
-  const clients = useMemo(
-    () => ({
-      real: createApiClient({ isMock: false }),
-      mock: createApiClient({ isMock: true }),
-    }),
-    []
-  );
   const loginApi = async (credentials: {
     username: string;
     password: string;
   }) => {
     // Replace with actual condition to check if mock is enabled
     const MOCK_ENABLED = false;
-    const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
     const { data } = await apiClient.post(
       ENDPOINTS.LOGIN,
-      credentials
+      credentials,
+      { isMock: MOCK_ENABLED }
     );
     return {
       token: data?.data?.tokens?.AccessToken,
