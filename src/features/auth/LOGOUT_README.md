@@ -43,7 +43,7 @@ Complete logout functionality has been implemented with the following components
 
 - ✅ API Integration with server token invalidation
 - ✅ Local storage cleanup (tokens and user data)
-- ✅ State management (Zustand store updates)
+- ✅ State management (Redux store updates)
 - ✅ Automatic redirect to login page
 - ✅ Error handling and fallback scenarios
 - ✅ Loading states and user feedback

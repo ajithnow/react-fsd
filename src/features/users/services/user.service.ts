@@ -1,5 +1,5 @@
-import { createApiClient } from '@/core/api';
-import { useCallback, useMemo } from 'react';
+import apiClient from '@/core/api';
+import { useCallback } from 'react';
 import type {
   AdminUser,
   CreateUserRequest,
@@ -10,14 +10,6 @@ import type {
 import { USER_ENDPOINTS } from '@/features/users';
 
 export const useUserService = () => {
-  const clients = useMemo(
-    () => ({
-      real: createApiClient({ isMock: false }),
-      mock: createApiClient({ isMock: true }),
-    }),
-    []
-  );
-
   /**
    * Get all users with optional filters
    */
@@ -25,14 +17,13 @@ export const useUserService = () => {
     async (filters?: UserFilters): Promise<UsersListResponse> => {
       // Replace with actual condition to check if mock is enabled
       const MOCK_ENABLED = false;
-      const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
       const response = await apiClient.get<UsersListResponse>(
         USER_ENDPOINTS.USERS,
-        { params: filters }
+        { params: filters, isMock: MOCK_ENABLED }
       );
       return response.data;
     },
-    [clients.mock, clients.real]
+    []
   );
 
   /**
@@ -42,14 +33,16 @@ export const useUserService = () => {
     async (id: string): Promise<AdminUser> => {
       // Replace with actual condition to check if mock is enabled
       const MOCK_ENABLED = false;
-      const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
-  const response = await apiClient.get(USER_ENDPOINTS.USER_BY_ID(id));
-  // Backend may return a wrapper: { message: string, data: { ...user } }
-  // If so, unwrap to return the inner user object; otherwise return response.data directly.
-  return response.data?.data ?? response.data;
+      const response = await apiClient.get(USER_ENDPOINTS.USER_BY_ID(id), {
+        isMock: MOCK_ENABLED,
+      });
+      // Backend may return a wrapper: { message: string, data: { ...user } }
+      // If so, unwrap to return the inner user object; otherwise return response.data directly.
+      return response.data?.data ?? response.data;
     },
-    [clients.mock, clients.real]
+    []
   );
+
   /**
    * Create a new user
    */
@@ -57,14 +50,14 @@ export const useUserService = () => {
     async (userData: CreateUserRequest): Promise<AdminUser> => {
       // Replace with actual condition to check if mock is enabled
       const MOCK_ENABLED = false;
-      const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
       const response = await apiClient.post(
         USER_ENDPOINTS.CREATE_USER,
-        userData
+        userData,
+        { isMock: MOCK_ENABLED }
       );
       return response.data;
     },
-    [clients.mock, clients.real]
+    []
   );
 
   /**
@@ -74,15 +67,15 @@ export const useUserService = () => {
     async (userData: UpdateUserRequest): Promise<AdminUser> => {
       // Replace with actual condition to check if mock is enabled
       const MOCK_ENABLED = false;
-      const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
       const response = await apiClient.put<AdminUser>(
         USER_ENDPOINTS.UPDATE_USER,
-        userData
+        userData,
+        { isMock: MOCK_ENABLED }
       );
 
       return response.data;
     },
-    [clients.mock, clients.real]
+    []
   );
 
   /**
@@ -92,10 +85,13 @@ export const useUserService = () => {
     async (id: string): Promise<void> => {
       // Replace with actual condition to check if mock is enabled
       const MOCK_ENABLED = false;
-      const apiClient = MOCK_ENABLED ? clients.mock : clients.real;
-      await apiClient.post(USER_ENDPOINTS.DELETE_USER, { userId: id });
+      await apiClient.post(
+        USER_ENDPOINTS.DELETE_USER,
+        { userId: id },
+        { isMock: MOCK_ENABLED }
+      );
     },
-    [clients.mock, clients.real]
+    []
   );
 
   /**

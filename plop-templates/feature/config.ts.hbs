@@ -1,0 +1,26 @@
+import type { FeatureConfig } from '@/core/registry'
+import {{camelCase name}}Routes from './routes'
+{{#if hasLocales}}
+import {{camelCase name}}Locales from './locales'
+{{/if}}
+{{#if hasMocks}}
+import { {{camelCase name}}Handlers } from './mocks'
+{{/if}}
+{{#if hasPermissions}}
+import { {{constantCase name}}_PERMISSIONS } from './constants/permissions.constants'
+{{/if}}
+
+const config: FeatureConfig = {
+  routes: {{camelCase name}}Routes,
+  {{#if hasLocales}}
+  locales: { ns: '{{camelCase name}}', resources: {{camelCase name}}Locales },
+  {{/if}}
+  {{#if hasMocks}}
+  handlers: {{camelCase name}}Handlers,
+  {{/if}}
+  {{#if hasPermissions}}
+  permissions: {{constantCase name}}_PERMISSIONS,
+  {{/if}}
+}
+
+export default config

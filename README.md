@@ -17,7 +17,7 @@
 - 🎨 **ShadCN UI + Tailwind CSS** - Beautiful, accessible UI components
 - 🔄 **TanStack Query** - Powerful data fetching and caching
 - 🗺️ **TanStack Router** - Type-safe routing
-- 🐻 **Zustand** - Lightweight state management
+- 📦 **Redux Toolkit** - Industry-standard state management
 - 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
 - 🧪 **Jest + RTL** - Comprehensive testing setup
 - 🌍 **i18next** - Internationalization support
@@ -122,17 +122,15 @@ src/
 │   │   ├── schema/            # Validation schemas
 │   │   ├── services/          # API services
 │   │   └── stores/            # State management
-│   ├── configs.ts             # Feature configuration
-│   ├── locales.ts             # Locale aggregation
-│   ├── mocks.ts               # Mock aggregation
-│   └── routes.ts              # Route aggregation
+│   └── config.ts              # Feature-level registry entry
 │
 ├── core/                       # App Infrastructure
-│   ├── api/                   # API configuration
+│   ├── api/                   # API configuration & endpoints
 │   ├── components/            # App-level components
 │   ├── i18n/                  # i18n setup
 │   ├── mock/                  # MSW configuration
-│   └── router/                # Router setup
+│   ├── registry/              # Centralized feature registries
+│   └── router/                # Router setup & root route
 │
 ├── shared/                     # Shared Resources
 │   ├── components/            # Reusable components
@@ -155,13 +153,18 @@ src/
 Follow our [Feature Development Guide](./docs/DEVELOPMENT.md) to add new features:
 
 ```bash
-# 1. Create feature structure
-mkdir -p src/features/dashboard/{components,constants,locales,managers,mocks,models,pages,queries,routes,schema,services,stores}
+# 1. Create feature structure automatically
+# This will guide you through prompts and scaffold all files (routes, stores, etc.)
+npm run generate:feature
 
-# 2. Implement feature slices (models → services → stores → components → pages)
+# 2. Implement feature logic (models → services → stores → components → pages)
 
-# 3. Register in configuration
-# Update: features/configs.ts, features/routes.ts, features/locales.ts
+# 3. Register automatically
+# The new feature's `config.ts` is auto-discovered!
+# (Wait for HMR or restart dev server)
+
+# 4. Optional: Manual Redux wiring
+# If you chose to include a Store, add the reducer to src/core/store/index.ts
 ```
 
 ### Example Feature Structure
@@ -300,16 +303,24 @@ export const LoginForm = () => {
 
 ## 🔄 State Management
 
-### Local State (Zustand)
+### Local State (Redux Toolkit)
 
 ```typescript
-// Feature-specific state
-export const useAuthStore = create<AuthState>(set => ({
-  user: null,
-  isAuthenticated: false,
-  setUser: user => set({ user, isAuthenticated: !!user }),
-  logout: () => set({ user: null, isAuthenticated: false }),
-}));
+// Feature-specific slice
+export const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: null, isAuthenticated: false },
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
+    logout: state => {
+      state.user = null;
+      state.isAuthenticated = false;
+    },
+  },
+});
 ```
 
 ### Server State (TanStack Query)

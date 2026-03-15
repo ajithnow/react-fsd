@@ -1,6 +1,6 @@
 **FSD Admin Documentation v0.0.1**
 
-***
+---
 
 # 🚀 React FSD - Feature-Sliced Design Application
 
@@ -21,7 +21,7 @@
 - 🎨 **ShadCN UI + Tailwind CSS** - Beautiful, accessible UI components
 - 🔄 **TanStack Query** - Powerful data fetching and caching
 - 🗺️ **TanStack Router** - Type-safe routing
-- 🐻 **Zustand** - Lightweight state management
+- 📦 **Redux Toolkit** - Industry-standard state management
 - 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
 - 🧪 **Jest + RTL** - Comprehensive testing setup
 - 🌍 **i18next** - Internationalization support
@@ -304,16 +304,24 @@ export const LoginForm = () => {
 
 ## 🔄 State Management
 
-### Local State (Zustand)
+### Local State (Redux Toolkit)
 
 ```typescript
-// Feature-specific state
-export const useAuthStore = create<AuthState>(set => ({
-  user: null,
-  isAuthenticated: false,
-  setUser: user => set({ user, isAuthenticated: !!user }),
-  logout: () => set({ user: null, isAuthenticated: false }),
-}));
+// Feature-specific slice
+export const authSlice = createSlice({
+  name: 'auth',
+  initialState: { user: null, isAuthenticated: false },
+  reducers: {
+    setUser: (state, action) => {
+      state.user = action.payload;
+      state.isAuthenticated = !!action.payload;
+    },
+    logout: state => {
+      state.user = null;
+      state.isAuthenticated = false;
+    },
+  },
+});
 ```
 
 ### Server State (TanStack Query)

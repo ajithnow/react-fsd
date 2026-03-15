@@ -8,19 +8,30 @@ import { logger } from '@/core/services/logger.service';
 const API_BASE_URL = ENV.API_BASE_URL;
 const MOCK_API_BASE_URL = ENV.MOCK_API_BASE_URL;
 
+declare module 'axios' {
+  export interface AxiosRequestConfig {
+    isMock?: boolean;
+  }
+}
+
 // Create the base API client factory
-const createApiClient = ({ isMock = false } = {}) => {
+const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
   const client = axios.create({
-    baseURL: isMock ? MOCK_API_BASE_URL : API_BASE_URL, 
+    baseURL: defaultIsMock ? MOCK_API_BASE_URL : API_BASE_URL, 
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
   });
 
-  // Request interceptor - Add auth token
+  // Request interceptor - Handle per-endpoint mocking and add auth token
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
+      // Per-endpoint mocking override
+      if (config.isMock !== undefined) {
+        config.baseURL = config.isMock ? MOCK_API_BASE_URL : API_BASE_URL;
+      }
+
       const token = storageService.getItem<string>(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
 
       if (token) {

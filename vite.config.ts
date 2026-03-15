@@ -90,8 +90,8 @@ export default defineConfig(({ mode }) => {
               // cross-chunk dependencies (Radix imports many helpers that
               // other vendor code expects synchronously).
 
-              // Lightweight state libs
-              if (id.includes('zustand')) return 'state';
+              // Lightweight state libs / Redux
+              if (id.includes('redux') || id.includes('@reduxjs')) return 'state';
 
               // Fallback: put remaining node_modules into vendor
               return 'vendor';

@@ -1,0 +1,7 @@
+import { http, HttpResponse } from 'msw'
+
+export const {{camelCase name}}Handlers = [
+  http.get('/api/{{kebabCase name}}', () => {
+    return HttpResponse.json([])
+  }),
+]
