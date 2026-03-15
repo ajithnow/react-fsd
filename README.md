@@ -122,17 +122,15 @@ src/
 │   │   ├── schema/            # Validation schemas
 │   │   ├── services/          # API services
 │   │   └── stores/            # State management
-│   ├── configs.ts             # Feature configuration
-│   ├── locales.ts             # Locale aggregation
-│   ├── mocks.ts               # Mock aggregation
-│   └── routes.ts              # Route aggregation
+│   └── config.ts              # Feature-level registry entry
 │
 ├── core/                       # App Infrastructure
-│   ├── api/                   # API configuration
+│   ├── api/                   # API configuration & endpoints
 │   ├── components/            # App-level components
 │   ├── i18n/                  # i18n setup
 │   ├── mock/                  # MSW configuration
-│   └── router/                # Router setup
+│   ├── registry/              # Centralized feature registries
+│   └── router/                # Router setup & root route
 │
 ├── shared/                     # Shared Resources
 │   ├── components/            # Reusable components
@@ -160,8 +158,9 @@ mkdir -p src/features/dashboard/{components,constants,locales,managers,mocks,mod
 
 # 2. Implement feature slices (models → services → stores → components → pages)
 
-# 3. Register in configuration
-# Update: features/configs.ts, features/routes.ts, features/locales.ts
+# 3. Register automatically
+# Simply create a `config.ts` in the feature root.
+# It will be auto-discovered by `src/features/config.ts`.
 ```
 
 ### Example Feature Structure
