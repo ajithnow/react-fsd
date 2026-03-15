@@ -19,3 +19,6 @@ export {
 export { RBACProvider } from './contexts/RBACContext';
 export { RBACContext } from './contexts/context';
 export type { RBACContextType } from './contexts/context';
+
+// Configuration
+export * from './config';

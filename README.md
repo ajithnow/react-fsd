@@ -137,7 +137,7 @@ src/
 │   ├── models/                # Common types
 │   └── utils/                 # Utility functions
 │
-├── lib/                        # Library Adaptations
+│   ├── lib/                        # Library Adaptations
 │   └── shadcn/                # ShadCN UI customizations
 │       ├── components/ui/     # UI components
 │       └── utils/             # UI utilities
@@ -145,6 +145,14 @@ src/
 └── styles/                     # Global Styles
     └── globals.css            # Tailwind + CSS variables
 ```
+
+### 🧠 Pattern: Handlers, Queries, and Managers
+
+To maintain strict separation of concerns, features should isolate their data-fetching logic from their client-side side-effects:
+
+- **Queries (`features/*/queries/`)**: Strictly responsbile for network requests and React Query state (`isPending`, `error` caching, etc.). Should _not_ contain routing or Redux logic.
+- **Managers (`features/*/managers/`)**: Pure UI/Client side orchestration. They provide `onSuccess` or `onError` callbacks that handle updating global state, modifying local storage, triggering toast notifications, or invoking the router.
+- **Pages/Components**: Assemble Queries and Managers. They call the query, and pass the result (or error) to the manager functions.
 
 </details>
 

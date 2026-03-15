@@ -44,3 +44,34 @@ export function createRegistry<T>(name: string) {
     },
   };
 }
+
+/**
+ * Generic map-based registry factory for key-value feature concerns.
+ */
+export function createMapRegistry<T>(name: string) {
+  let items: Record<string, T> = {};
+  let isFrozen = false;
+
+  return {
+    register(newItems: Record<string, T>): void {
+      if (isFrozen) {
+        console.warn(`[${name}] Attempted to register items after registry was frozen.`);
+        return;
+      }
+      Object.assign(items, newItems);
+    },
+
+    getAll(): Record<string, T> {
+      return items;
+    },
+
+    freeze(): void {
+      isFrozen = true;
+    },
+
+    _reset(): void {
+      items = {};
+      isFrozen = false;
+    },
+  };
+}

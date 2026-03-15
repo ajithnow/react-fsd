@@ -1,4 +1,4 @@
-import { FEATURE_CONSTANTS } from '@/features/constants';
+import { constantsRegistry } from '@/core/registry';
 import { ENV } from '@/core/utils/env.utils';
 import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'axios';
 import { API_ENDPOINTS } from './endpoints';
@@ -32,7 +32,9 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
         config.baseURL = config.isMock ? MOCK_API_BASE_URL : API_BASE_URL;
       }
 
-      const token = storageService.getItem<string>(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
+      const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
+      const authConstants = constants.AUTH as Record<string, string> | undefined;
+      const token = storageService.getItem<string>(authConstants?.ACCESS_TOKEN || 'accessToken');
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
@@ -49,6 +51,8 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
       const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
+      const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
+      const authConstants = constants.AUTH as Record<string, string> | undefined;
 
       // Handle 401 Unauthorized with token refresh
       if (error.response?.status === 401 && !originalRequest._retry) {
@@ -56,7 +60,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
 
         try {
           const refreshToken = storageService.getItem<string>(
-            FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN
+            authConstants?.REFRESH_TOKEN || 'refreshToken'
           );
 
           if (!refreshToken) {
@@ -82,7 +86,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
 
           // Update stored token
           storageService.setItem(
-            FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN,
+            authConstants?.ACCESS_TOKEN || 'accessToken',
             newAccessToken
           );
 
@@ -95,8 +99,8 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
           logger.error('Token refresh failed', refreshError, 'API');
 
           // Clear tokens and redirect to login
-          storageService.removeItem(FEATURE_CONSTANTS.AUTH.ACCESS_TOKEN);
-          storageService.removeItem(FEATURE_CONSTANTS.AUTH.REFRESH_TOKEN);
+          storageService.removeItem(authConstants?.ACCESS_TOKEN || 'accessToken');
+          storageService.removeItem(authConstants?.REFRESH_TOKEN || 'refreshToken');
 
           // Redirect to login - you might want to use your router here
           if (typeof window !== 'undefined') {

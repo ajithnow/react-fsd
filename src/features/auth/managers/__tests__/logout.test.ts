@@ -95,10 +95,10 @@ describe('useLogoutManager', () => {
       replace: true,
     });
 
-    // Should log the error
+    // Should log the error (logger prefixes message with context '[LogoutManager]')
     expect(consoleSpy).toHaveBeenCalledWith(
-      'Logout API call failed, clearing local state:',
-      expect.any(Error)
+      expect.stringContaining('Logout API call failed, clearing local state'),
+      expect.anything()
     );
 
     consoleSpy.mockRestore();

@@ -6,8 +6,6 @@ import {
   hasPermission as sharedHasPermission,
   hasAnyPermission as sharedHasAnyPermission,
   hasAllPermissions as sharedHasAllPermissions,
-  getRoleInfo,
-  isRoleHigherThan,
   getMissingPermissions,
   canAccessFeature,
 } from '../utils/rbac.utils';
@@ -27,8 +25,6 @@ export const useRBAC = () => {
       sharedHasAllPermissions(user, perms),
     hasRole: (role: string) => !!user && user.Role === role,
     hasAnyRole: (roles: string[]) => !!user && roles.includes(user.Role),
-    getRoleInfo,
-    isRoleHigherThan,
     getMissingPermissions: (required: string[]) =>
       getMissingPermissions(user, required),
     canAccessFeature: (featurePerms: string[]) =>

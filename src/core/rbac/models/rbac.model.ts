@@ -11,7 +11,7 @@ export interface RolePermissions {
 
 export interface User {
   Role: Role;
-  permissions?: Permission[];
+  permissions: Permission[];
 }
 
 export interface RBACProviderProps {
