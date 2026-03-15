@@ -1,0 +1,23 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+interface {{pascalCase name}}State {
+  isLoading: boolean
+}
+
+const initialState: {{pascalCase name}}State = {
+  isLoading: false,
+}
+
+export const {{camelCase name}}Slice = createSlice({
+  name: '{{camelCase name}}',
+  initialState,
+  reducers: {
+    setLoading(state, action: PayloadAction<boolean>) {
+      state.isLoading = action.payload
+    },
+  },
+})
+
+export const { setLoading } = {{camelCase name}}Slice.actions
+
+export default {{camelCase name}}Slice.reducer

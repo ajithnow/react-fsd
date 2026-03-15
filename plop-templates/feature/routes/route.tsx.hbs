@@ -1,0 +1,25 @@
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import { {{constantCase name}}_ROUTES } from '../constants/routes.constants'
+
+{{#if (eq layout 'app')}}
+import { appLayoutRoute } from '../../layout'
+const parentRoute = appLayoutRoute
+{{else if (eq layout 'auth')}}
+import { authLayoutRoute } from '../../layout'
+const parentRoute = authLayoutRoute
+{{else}}
+import { rootRoute } from '@/core/router/root.route'
+const parentRoute = rootRoute
+{{/if}}
+
+const {{camelCase name}}Route = createRoute({
+  path: {{constantCase name}}_ROUTES.INDEX,
+  getParentRoute: () => parentRoute,
+  component: lazyRouteComponent(() =>
+    import('../pages').then(m => ({ default: m.{{pascalCase name}}Page }))
+  ),
+})
+
+const {{camelCase name}}Routes = [{{camelCase name}}Route]
+
+export default {{camelCase name}}Routes

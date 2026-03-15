@@ -1,0 +1,13 @@
+import { useQuery } from '@tanstack/react-query'
+import { {{camelCase name}}Service } from '../services/{{kebabCase name}}.service'
+
+export const {{constantCase name}}_QUERY_KEYS = {
+  all: ['{{camelCase name}}'] as const,
+}
+
+export const use{{pascalCase name}}List = () => {
+  return useQuery({
+    queryKey: {{constantCase name}}_QUERY_KEYS.all,
+    queryFn: () => {{camelCase name}}Service.getAll(),
+  })
+}

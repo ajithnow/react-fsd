@@ -1,0 +1,9 @@
+import { apiClient } from '@/core/api'
+import type { {{pascalCase name}} } from '../models/{{kebabCase name}}.model'
+
+export const {{camelCase name}}Service = {
+  async getAll(): Promise<{{pascalCase name}}[]> {
+    const response = await apiClient.get('/{{kebabCase name}}')
+    return response.data
+  },
+}

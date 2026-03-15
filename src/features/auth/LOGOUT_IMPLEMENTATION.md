@@ -119,7 +119,7 @@
 -
 - - ✅ **API Integration**: Calls `/api/auth/logout` to invalidate tokens on server
 - - ✅ **Token Management**: Clears access tokens and refresh tokens from localStorage
-- - ✅ **State Management**: Updates Zustand auth store to clear user data
+- - ✅ **State Management**: Updates Redux auth slice to clear user data
 - - ✅ **Navigation**: Automatically redirects to login page after logout
 - - ✅ **Error Handling**: Graceful fallback if API call fails
 - - ✅ **Loading States**: Shows loading indicators during logout process
@@ -138,7 +138,7 @@
 - 4. API call is made to `/api/auth/logout` with refresh token
 - 5. Server invalidates the tokens (MSW mock handles this in development)
 - 6. Local tokens are cleared from localStorage
-- 7. Auth store is updated to clear user state
+- 7. Auth store is updated via Redux to clear user state
 - 8. User is redirected to login page
 - 9. If API call fails, local state is still cleared as fallback
 -
