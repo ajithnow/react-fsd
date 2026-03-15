@@ -7,7 +7,8 @@ import type {
   ModuleRoutes,
   CrudRouteNames,
 } from '../models/route.model';
-import { AUTH_ROUTES } from '../../features/auth/constants/routes.constants';
+// AUTH_ROUTES removed to break circular dependency
+
 
 /**
  * Creates a set of routes prefixed with the module name
@@ -56,12 +57,5 @@ export function createCrudRoutes(
   } as const);
 }
 
-/**
- * Check if a route path is an auth route
- * @param path - The path to check
- * @returns boolean indicating if the path is an auth route
- */
-export function isAuthRoute(path: string): boolean {
-  const authRoutes = Object.values(AUTH_ROUTES);
-  return authRoutes.some(route => path.startsWith(route));
-}
+// isAuthRoute was moved to features/auth/utils/auth.utils.ts to break circular dependency
+

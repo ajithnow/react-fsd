@@ -1,5 +1,8 @@
 // Auth token management utilities
+import { AUTH_ROUTES } from '../constants/routes.constants';
+
 export const AUTH_TOKEN_KEY = 'auth_token';
+
 export const AUTH_REFRESH_TOKEN_KEY = 'auth_refresh_token';
 export const AUTH_USER_KEY = 'auth_user';
 
@@ -86,3 +89,14 @@ export const isAuthenticated = (): boolean => {
     return false;
   }
 };
+
+/**
+ * Check if a route path is an auth route
+ * @param path - The path to check
+ * @returns boolean indicating if the path is an auth route
+ */
+export function isAuthRoute(path: string): boolean {
+  const authRoutes = Object.values(AUTH_ROUTES);
+  return authRoutes.some(route => path.startsWith(route));
+}
+

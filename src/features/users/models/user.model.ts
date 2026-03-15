@@ -2,7 +2,8 @@ import type { UserStatus, UserType } from '../constants/users.constants';
 import { PaginationInfo, SortConfig, FilterValues } from '@/shared/components';
 import { z } from 'zod';
 import { UserFormSchema } from '../schema';
-import { useUserTableLogic } from '../managers';
+// Removed manager import to break circular dependency
+
 
 type UserSchema = ReturnType<typeof UserFormSchema>['userSchema'];
 
@@ -41,7 +42,7 @@ export interface UpdateUserRequest extends Partial<CreateUserRequest> {
   status?: boolean; // Optional for toggling status
 }
 
-export type UsersManagerState = ReturnType<typeof useUserTableLogic>;
+// UsersManagerState moved to managers/users.manager.ts to break circular dependency
 
 // User list response
 export interface UsersListResponse {

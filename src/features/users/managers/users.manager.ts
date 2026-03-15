@@ -8,7 +8,10 @@ import type {
   FilterValues,
 } from '@/shared/components';
 
+export type UsersManagerState = ReturnType<typeof useUserTableLogic>;
+
 export const useUserTableLogic = () => {
+
   const [mounted, setMounted] = useState(false);
 
   const [currentFilters, setCurrentFilters] = useState(() => {

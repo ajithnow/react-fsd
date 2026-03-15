@@ -1,7 +1,9 @@
 import en from './en.json';
 import de from './de.json';
 
-export default {
+const dashboardLocales = {
   en,
   de,
 };
+
+export default dashboardLocales;
