@@ -3,7 +3,8 @@ import { LoginPage } from '../pages/login.page';
 import { AuthLayout } from '../layouts';
 import { AUTH_ROUTES } from '../constants/routes.constants';
 import { GuestGuard } from '../guards';
-import { rootRoute } from '@/core/router';
+import { rootRoute } from '@/core/router/root.route';
+
 
 const loginRoute = createRoute({
   path: AUTH_ROUTES.LOGIN,

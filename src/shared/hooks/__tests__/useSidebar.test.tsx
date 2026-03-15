@@ -10,13 +10,17 @@ jest.mock('../useRBAC', () => ({
   })),
 }));
 
-// Mock useAuthStore
-jest.mock('../../../features/auth/stores/auth.store', () => ({
-  useAuthStore: {
-    getState: () => ({
-      user: { name: 'Test User', email: 'test@example.com', role: 'user' },
-    }),
-  },
+// Mock useSelector
+jest.mock('react-redux', () => ({
+  useSelector: jest.fn(selector =>
+    selector({
+      auth: {
+        user: { name: 'Test User', email: 'test@example.com', role: 'user' },
+        isAuthenticated: true,
+      },
+    })
+  ),
+  useDispatch: jest.fn(() => jest.fn()),
 }));
 
 describe('useSidebarData', () => {

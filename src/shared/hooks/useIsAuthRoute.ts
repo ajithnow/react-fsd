@@ -1,5 +1,5 @@
 import { useRouter } from '@tanstack/react-router';
-import { isAuthRoute } from '../utils/route.utils';
+import { isAuthRoute } from '@/features/auth/utils/auth.utils';
 
 /**
  * Hook to determine if the current route is an authentication route

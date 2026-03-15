@@ -12,8 +12,7 @@ jest.mock('react-pdf', () => ({
 }));
 
 // Mock Button
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-jest.mock('@/shared/components/Button', () => ({ children, onClick }: any) => (
+jest.mock('@/shared/components/Button', () => ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
   <button onClick={onClick}>{children}</button>
 ));
 

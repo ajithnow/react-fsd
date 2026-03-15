@@ -1,4 +1,5 @@
-import { rootRoute } from '../core/router';
+import { rootRoute } from '../core/router/root.route';
+
 import { createRoute, Outlet, redirect } from '@tanstack/react-router';
 import { isAuthenticated } from './auth/utils/auth.utils';
 import { AUTH_ROUTES, ROUTE_PREFIX } from './auth/constants/routes.constants';
@@ -38,9 +39,9 @@ export const appLayoutRoute = createRoute({
   component: AppLayoutWrapper,
 });
 
-// Auth layout route - no app layout, just outlet for auth pages
+// Auth layout route - path-based (Tanstack Router generates ID from path)
 export const authLayoutRoute = createRoute({
-  path: '/auth',
+  path: ROUTE_PREFIX, // '/auth/'
   getParentRoute: () => rootRoute,
   component: () => <Outlet />,
 });

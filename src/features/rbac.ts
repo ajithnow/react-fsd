@@ -1,17 +1,10 @@
 // Application RBAC Configuration
 // This file aggregates permissions from all features and defines roles
 
-// Import feature-specific permissions
-import { AUTH_PERMISSIONS } from '@/features/auth/constants';
-import { DASHBOARD_PERMISSIONS } from './dashboard/constants/permissions.constants';
-import { USER_PERMISSIONS } from './users/constants';
+import { permissionRegistry } from '@/core/registry';
 
-// Aggregate all permissions
-export const PERMISSIONS = {
-  ...AUTH_PERMISSIONS,
-  ...DASHBOARD_PERMISSIONS,
-  ...USER_PERMISSIONS,
-} as const;
+// Aggregate all permissions from registered features
+export const PERMISSIONS = permissionRegistry.getAll();
 
 // Define application roles
 export const ROLES = {

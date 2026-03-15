@@ -1,9 +1,9 @@
 import en from './en.json';
 import de from './de.json';
 
-const settingsLocales = {
+const customersLocales = {
   en,
   de,
 };
 
-export default settingsLocales;
+export default customersLocales;

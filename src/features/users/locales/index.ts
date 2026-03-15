@@ -1,5 +1,9 @@
 import en from './en.json';
 import de from './de.json';
-export default {
-  en,de
+
+const usersLocales = {
+  en,
+  de,
 };
+
+export default usersLocales;
