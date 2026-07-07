@@ -8,7 +8,7 @@ import { PageHeader, useAlertDialog } from '@/shared/components';
 import { Button } from '@/lib/shadcn/components/ui/button';
 import { UserActionDialog } from '../components/UserActionDialogs/UserActionDialogs';
 import type { AdminUser } from '../models';
-import { Can } from '@/core/rbac/components';
+import { Can } from '@/shared/lib/rbac';
 import { USER_PERMISSIONS } from '../constants';
 
 export const UsersListPage: React.FC = () => {

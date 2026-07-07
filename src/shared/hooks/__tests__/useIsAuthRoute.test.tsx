@@ -9,9 +9,13 @@ jest.mock('@tanstack/react-router', () => ({
 import { useIsAuthRoute } from '../useIsAuthRoute';
 
 // Mock isAuthRoute to test only hook logic, not utility logic
-jest.mock('../../utils/route.utils', () => ({
-  isAuthRoute: jest.fn(path => path.startsWith('/auth')),
-}));
+jest.mock('@/features/auth/utils/auth.utils', () => {
+  const actual = jest.requireActual('@/features/auth/utils/auth.utils');
+  return {
+    ...actual,
+    isAuthRoute: jest.fn(path => path.startsWith('/auth')),
+  };
+});
 
 describe('useIsAuthRoute', () => {
   it('returns true for auth route', () => {

@@ -1,4 +1,4 @@
-import { PermissionGuardProps } from '@/core/rbac/models/rbac.model';
+import { PermissionGuardProps } from '@/shared/lib/rbac';
 import { useRBAC } from '@/shared/hooks/useRBAC';
 import React from 'react';
 

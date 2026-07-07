@@ -3,6 +3,22 @@ import '@testing-library/jest-dom';
 import { DataTableFilters } from '../DataTableFilters';
 import { FilterConfig } from '../dataTable.model';
 
+// Mock react-i18next
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: { defaultValue?: string; count?: number; [key: string]: unknown }) => {
+      if (options?.defaultValue) {
+        let str = options.defaultValue;
+        if (options.count !== undefined) {
+          str = str.replace('{{count}}', options.count.toString());
+        }
+        return str;
+      }
+      return key;
+    },
+  }),
+}));
+
 // Mock props for testing
 const mockOnFilterChange = jest.fn();
 
@@ -300,6 +316,6 @@ describe('DataTableFilters', () => {
     );
 
     // Should render label but no input for unsupported dateRange type
-    expect(screen.getByText('Unknown')).toBeInTheDocument();
+    expect(screen.getAllByText('Unknown')[0]).toBeInTheDocument();
   });
 });

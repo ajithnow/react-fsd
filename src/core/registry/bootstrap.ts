@@ -1,7 +1,6 @@
 import {
   localeRegistry,
   mockRegistry,
-  permissionRegistry,
   constantsRegistry,
   guardsRegistry,
 } from './index';
@@ -22,7 +21,6 @@ export function bootstrapFeatures(modules: Record<string, { default: FeatureConf
       if (config.routes?.length) featureRoutes.push(...config.routes);
       if (config.locales) localeRegistry.register(config.locales);
       if (config.handlers?.length) mockRegistry.register(config.handlers);
-      if (config.permissions) permissionRegistry.register(config.permissions);
       if (config.constants) constantsRegistry.register(config.constants);
       if (config.guards) guardsRegistry.register(config.guards);
     } catch (e) {

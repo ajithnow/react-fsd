@@ -139,7 +139,7 @@ describe('SharedAlertDialog', () => {
       
       const actionButton = screen.getByTestId('alert-dialog-action');
       expect(actionButton).toHaveClass('bg-destructive');
-      expect(actionButton).toHaveClass('text-destructive-foreground');
+      expect(actionButton).toHaveClass('text-white');
       expect(actionButton).toHaveClass('hover:bg-destructive/90');
     });
 

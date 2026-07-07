@@ -1,5 +1,3 @@
-// RBAC (Role-Based Access Control) models and types
-
 export type Permission = string;
 
 export type Role = string;
