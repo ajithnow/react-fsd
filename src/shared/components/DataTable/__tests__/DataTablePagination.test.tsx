@@ -4,6 +4,37 @@ import { DataTablePagination } from '../DataTablePagination';
 import { PaginationInfo } from '../dataTable.model';
 
 // Mock props for testing
+// Mock react-i18next
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, options?: { defaultValue?: string; count?: number; [key: string]: unknown }) => {
+      if (options?.defaultValue) {
+        let str = options.defaultValue;
+        if (options.count !== undefined) {
+          str = str.replace('{{count}}', options.count.toString());
+        }
+        if (options.page !== undefined) {
+          str = str.replace('{{page}}', options.page.toString());
+        }
+        if (options.totalPages !== undefined) {
+          str = str.replace('{{totalPages}}', options.totalPages.toString());
+        }
+        if (options.start !== undefined) {
+          str = str.replace('{{start}}', options.start.toString());
+        }
+        if (options.end !== undefined) {
+          str = str.replace('{{end}}', options.end.toString());
+        }
+        if (options.total !== undefined) {
+          str = str.replace('{{total}}', options.total.toString());
+        }
+        return str;
+      }
+      return key;
+    },
+  }),
+}));
+
 const mockOnPageChange = jest.fn();
 const mockOnPageSizeChange = jest.fn();
 

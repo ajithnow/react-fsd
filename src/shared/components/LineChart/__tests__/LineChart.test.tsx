@@ -276,6 +276,7 @@ describe('LineChart Component', () => {
           value: 'Value',
           angle: -90,
           position: 'insideLeft',
+          offset: -10,
         })
       );
     });

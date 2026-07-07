@@ -1,8 +1,6 @@
-// RBAC React Context Provider for providing authentication and permission state
-
 import React, { useMemo } from 'react';
-import { RBACProviderProps } from '../models/rbac.model';
-import { RBACContext, RBACContextType } from './context';
+import type { RBACProviderProps } from './models';
+import { RBACContext, type RBACContextType } from './context';
 
 export const RBACProvider: React.FC<RBACProviderProps> = ({ 
   children, 
@@ -10,7 +8,6 @@ export const RBACProvider: React.FC<RBACProviderProps> = ({
 }) => {
   const contextValue: RBACContextType = useMemo(() => {
     const permissions = user?.permissions || [];
-
     return {
       user,
       permissions

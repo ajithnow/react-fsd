@@ -1,6 +1,6 @@
 // RBAC React hooks for permission and role checking
 
-import { useRBACContext } from '@/core/rbac/hooks/useRBAC';
+import { useRBAC as useRBACContext } from '../lib/rbac/context';
 import {
   getAllPermissionsForUser,
   hasPermission as sharedHasPermission,
@@ -8,7 +8,7 @@ import {
   hasAllPermissions as sharedHasAllPermissions,
   getMissingPermissions,
   canAccessFeature,
-} from '../utils/rbac.utils';
+} from '../lib/rbac/utils';
 
 export const useRBAC = () => {
   const { user } = useRBACContext();

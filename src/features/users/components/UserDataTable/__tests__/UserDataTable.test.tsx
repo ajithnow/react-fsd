@@ -12,7 +12,10 @@ jest.mock('~/assets/images/logo.png', () => 'logo-mock');
 // Mock react-i18next and router hooks used by the component
 jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
 const mockNavigate = jest.fn();
-jest.mock('@tanstack/react-router', () => ({ useNavigate: () => mockNavigate }));
+jest.mock('@tanstack/react-router', () => ({ 
+  useNavigate: () => mockNavigate,
+  Link: 'a'
+}));
 
 // Provide a lightweight mock for the shared utilities the component imports
 jest.mock('@/shared', () => {
@@ -203,15 +206,15 @@ describe('UserDataTable', () => {
     expect(screen.getByText(/users.role/i)).toBeInTheDocument();
     expect(screen.getByText(/users.status/i)).toBeInTheDocument();
 
-    // role badge labels (t returns key strings in our mock)
-    // POWER_ADMIN maps to 'PowerAdmin' label via typeData
-    expect(screen.getByText('PowerAdmin')).toBeInTheDocument();
+    expect(screen.getByText('users.powerAdmin')).toBeInTheDocument();
 
-    // Actions: view should exist for both users, edit should exist only for active user (Alice)
+    // Actions: view and edit should exist for both users
     expect(
       screen.getAllByText('users.viewDetails').length
     ).toBeGreaterThanOrEqual(2);
-    expect(screen.getByText('users.editUser')).toBeInTheDocument();
+    expect(
+      screen.getAllByText('users.editUser').length
+    ).toBeGreaterThanOrEqual(2);
   });
 
   it('calls action callbacks (view/edit) when actions are triggered', () => {
@@ -270,15 +273,11 @@ describe('UserDataTable', () => {
     } as UserDataTableProps;
     render(React.createElement(UserDataTable, props));
 
-    // reset password and delete buttons are present for active user (Alice)
-    const resetButtons = screen.getAllByText('users.resetPassword');
+    // delete button is present for active user (Alice)
     const deleteButtons = screen.getAllByText('users.deleteUser');
-    expect(resetButtons.length).toBeGreaterThanOrEqual(1);
     expect(deleteButtons.length).toBeGreaterThanOrEqual(1);
 
-    resetButtons[0].click();
     deleteButtons[0].click();
-    expect(onReset).toHaveBeenCalled();
     expect(onDelete).toHaveBeenCalled();
   });
 

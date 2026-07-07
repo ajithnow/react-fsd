@@ -2,14 +2,26 @@
 import { renderHook } from '@testing-library/react';
 import { useRBAC, usePermission, useAnyPermission, useAllPermissions, useRole, useAnyRole } from '../useRBAC';
 
-// Mock RBAC context and provider
 const mockUser = {
-  role: 'admin',
-  permissions: ['users:read', 'users:create', 'admin:dashboard'],
+  UserId: '1',
+  Role: 'admin',
+  Email: 'test@test.com',
+  FirstName: 'Test',
+  LastName: 'Test',
+  Status: true
 };
 
-jest.mock('@/core/rbac/hooks/useRBAC', () => ({
-  useRBACContext: () => ({ user: mockUser }),
+jest.mock('@/shared/lib/rbac/context', () => ({
+  useRBAC: () => ({ user: mockUser }),
+}));
+
+jest.mock('../../lib/rbac/utils', () => ({
+  getAllPermissionsForUser: jest.fn(() => ['users:read', 'users:create', 'admin:dashboard']),
+  hasPermission: jest.fn((user, perm) => ['users:read', 'users:create', 'admin:dashboard'].includes(perm)),
+  hasAnyPermission: jest.fn((user, perms) => perms.some((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),
+  hasAllPermissions: jest.fn((user, perms) => perms.every((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),
+  getMissingPermissions: jest.fn(),
+  canAccessFeature: jest.fn(),
 }));
 
 describe('useRBAC (shared/hooks)', () => {

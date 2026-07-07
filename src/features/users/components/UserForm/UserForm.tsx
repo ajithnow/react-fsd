@@ -22,7 +22,7 @@ import { Card, CardContent } from '@/lib/shadcn/components/ui/card';
 import { UserFormProps, UserFormSchema, FormData } from '@/features/users';
 import { SharedAlertDialog, useAlertDialog } from '@/shared/components';
 import { authStorage } from '@/features/auth/utils';
-import { ROLES } from '@/core/rbac';
+import { ROLES } from '@/shared/lib/rbac';
 
 export const UserForm: React.FC<
   UserFormProps & { onDirtyChange?: (dirty: boolean) => void }

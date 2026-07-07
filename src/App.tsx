@@ -4,7 +4,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Provider, useSelector } from 'react-redux';
 import { PersistGate } from 'redux-persist/integration/react';
 import { router } from './core/router';
-import { RBACProvider } from './core/rbac';
+import { RBACProvider } from './shared/lib/rbac';
 import { store, persistor, RootState } from './core/store';
 import { ENV } from './core/utils/env.utils';
 

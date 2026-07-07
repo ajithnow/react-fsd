@@ -6,7 +6,7 @@ import {
 import { USER_PERMISSIONS, USER_ROUTES } from '../constants';
 import { appLayoutRoute } from '@/core/router/layouts';
 import { store } from '@/core/store/index.ts';
-import { hasPermission } from '@/shared/utils/rbac.utils';
+import { hasPermission } from '@/shared/lib/rbac';
 import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 
 const checkCreatePermission = (permission: string) => {

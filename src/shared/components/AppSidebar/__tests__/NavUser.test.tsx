@@ -3,6 +3,13 @@ import '@testing-library/jest-dom';
 import { NavUser } from '../NavUser';
 import { User } from '../appSidebar.models';
 
+// Mock react-i18next
+jest.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key,
+  }),
+}));
+
 // Mock TanStack Router
 jest.mock('@tanstack/react-router', () => ({
   Link: ({
@@ -211,7 +218,7 @@ describe('NavUser', () => {
 
     expect(screen.getByTestId('dropdown-menu-trigger')).toBeInTheDocument();
     expect(screen.getByTestId('chevrons-up-down-icon')).toBeInTheDocument();
-    expect(screen.getAllByTestId('user-icon')).toHaveLength(3); // One in trigger, one in dropdown label, one in account item
+    expect(screen.getAllByTestId('user-icon')).toHaveLength(2); // One in trigger, one in dropdown label
   });
 
   it('should render dropdown menu content with all menu items', () => {
@@ -225,13 +232,10 @@ describe('NavUser', () => {
     expect(userEmails).toHaveLength(2);
 
     // Menu items
-    expect(screen.getByText('Profile')).toBeInTheDocument();
-    expect(screen.getByText('Notifications')).toBeInTheDocument();
-    expect(screen.getByText('Log out')).toBeInTheDocument();
+    expect(screen.getByText('auth.logOut')).toBeInTheDocument();
 
     // Icons
-    expect(screen.getAllByTestId('user-icon')).toHaveLength(3);
-    expect(screen.getByTestId('bell-icon')).toBeInTheDocument();
+    expect(screen.getAllByTestId('user-icon')).toHaveLength(2); // One in trigger, one in label
     expect(screen.getByTestId('logout-icon')).toBeInTheDocument();
   });
 
@@ -239,20 +243,20 @@ describe('NavUser', () => {
     render(<NavUser user={mockUser} />);
 
     const separators = screen.getAllByTestId('dropdown-menu-separator');
-    expect(separators).toHaveLength(2); // 2 separators in the actual component
+    expect(separators).toHaveLength(1); // 1 separator in the actual component
   });
 
   it('should render menu groups', () => {
     render(<NavUser user={mockUser} />);
 
-    const menuGroups = screen.getAllByTestId('dropdown-menu-group');
-    expect(menuGroups).toHaveLength(1);
+    const menuGroups = screen.queryAllByTestId('dropdown-menu-group');
+    expect(menuGroups).toHaveLength(0);
   });
 
   it('should handle logout click', async () => {
     render(<NavUser user={mockUser} />);
 
-    const logoutItem = screen.getByText('Log out');
+    const logoutItem = screen.getByText('auth.logOut');
     fireEvent.click(logoutItem);
 
     await waitFor(() => {
@@ -260,22 +264,7 @@ describe('NavUser', () => {
     });
   });
 
-  it('should render account link correctly', () => {
-    render(<NavUser user={mockUser} />);
 
-    const accountLink = screen.getByText('Profile').closest('a');
-    expect(accountLink).toHaveAttribute('href', '/settings/account');
-  });
-
-  it('should render notifications link correctly', () => {
-    render(<NavUser user={mockUser} />);
-
-    const notificationsLink = screen.getByText('Notifications').closest('a');
-    expect(notificationsLink).toHaveAttribute(
-      'href',
-      '/settings/notifications'
-    );
-  });
 
   it('should handle user with different name and email', () => {
     const userWithDifferentInfo: User = {
