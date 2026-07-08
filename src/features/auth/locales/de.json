@@ -1,6 +1,7 @@
 {
   "login": {
     "title": "Melden Sie sich bei Ihrem Konto an",
+    "subtitle": "Melden Sie sich an, um fortzufahren",
     "usernameLabel": "Benutzername",
     "usernamePlaceholder": "Geben Sie Ihren Benutzernamen ein",
     "passwordLabel": "Passwort",

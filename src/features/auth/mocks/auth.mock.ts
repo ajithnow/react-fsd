@@ -1,12 +1,13 @@
 import { http, HttpResponse } from 'msw';
+import { getPermissionsForRole } from '@/shared/lib/rbac';
 
 // Mock users database
 const users = [
   {
     id: 1,
-    firstName: 'asw',
-    lastName: 's',
-    email: 'aswin.sh@pitsolutions.com',
+    firstName: 'Admin',
+    lastName: 'User',
+    email: 'admin@example.com',
     username: 'admin',
     password: 'admin123',
     role: 'SUPER_ADMIN',
@@ -15,7 +16,7 @@ const users = [
     id: 2,
     firstName: 'John',
     lastName: 'Manager',
-    email: 'john.manager@company.com',
+    email: 'manager@example.com',
     username: 'manager',
     password: 'manager123',
     role: 'MANAGER',
@@ -24,7 +25,7 @@ const users = [
     id: 3,
     firstName: 'Jane',
     lastName: 'User',
-    email: 'jane.user@company.com',
+    email: 'user@example.com',
     username: 'user',
     password: 'user123',
     role: 'USER',
@@ -84,7 +85,8 @@ export const authHandler = [
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          role: user.role
+          role: user.role,
+          permissions: getPermissionsForRole(user.role),
         }
       }
     });

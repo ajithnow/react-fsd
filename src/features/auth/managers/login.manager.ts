@@ -10,6 +10,7 @@ import { useToast } from '@/shared/hooks/useToast';
 import { AxiosError } from 'axios';
 import { logger } from '@/core/services/logger.service';
 import type { User } from '../models/auth.model';
+import { getPermissionsForRole } from '@/shared/lib/rbac';
 
 export const useLoginManager = () => {
   const { t } = useTranslation('auth');
@@ -33,12 +34,15 @@ export const useLoginManager = () => {
     authStorage.setRefreshToken(refreshToken);
 
     // Use the user data from API response and add email if not present
+    const role = apiUser.Role ?? apiUser.role;
     const user = {
       ...apiUser,
-      Email: apiUser.Email,
+      Email: apiUser.Email ?? apiUser.email,
+      Role: role,
       Status: 'active' as const,
-      // Ensure permissions are set from the API response safely without `any`
-      permissions: (apiUser as unknown as { permissions?: string[] }).permissions || [],
+      permissions:
+        (apiUser as { permissions?: string[] }).permissions ??
+        getPermissionsForRole(role),
     } as unknown as User;
     
     authStorage.setUser(user);

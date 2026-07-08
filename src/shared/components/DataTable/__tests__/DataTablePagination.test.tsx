@@ -10,24 +10,17 @@ jest.mock('react-i18next', () => ({
     t: (key: string, options?: { defaultValue?: string; count?: number; [key: string]: unknown }) => {
       if (options?.defaultValue) {
         let str = options.defaultValue;
-        if (options.count !== undefined) {
-          str = str.replace('{{count}}', options.count.toString());
-        }
-        if (options.page !== undefined) {
-          str = str.replace('{{page}}', options.page.toString());
-        }
-        if (options.totalPages !== undefined) {
-          str = str.replace('{{totalPages}}', options.totalPages.toString());
-        }
-        if (options.start !== undefined) {
-          str = str.replace('{{start}}', options.start.toString());
-        }
-        if (options.end !== undefined) {
-          str = str.replace('{{end}}', options.end.toString());
-        }
-        if (options.total !== undefined) {
-          str = str.replace('{{total}}', options.total.toString());
-        }
+        const replaceToken = (token: string, value: unknown) => {
+          if (value !== undefined && value !== null) {
+            str = str.replace(`{{${token}}}`, String(value));
+          }
+        };
+        replaceToken('count', options.count);
+        replaceToken('page', options.page);
+        replaceToken('totalPages', options.totalPages);
+        replaceToken('start', options.start);
+        replaceToken('end', options.end);
+        replaceToken('total', options.total);
         return str;
       }
       return key;

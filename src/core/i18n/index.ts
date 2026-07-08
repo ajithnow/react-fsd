@@ -28,12 +28,13 @@ export async function initializeI18n() {
     .init({
       resources,
       fallbackLng: "en",
+      load: "languageOnly",
       debug: ENV.IS_DEV,
       interpolation: {
         escapeValue: false,
       },
       ns: namespaces,
-      defaultNS: "common",
+      defaultNS: "shared",
       react: {
         useSuspense: true,
       },

@@ -5,12 +5,12 @@
 // Common environment variable getters
 export const ENV = {
   get API_BASE_URL() {
-    const url = process.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+    const url = process.env.VITE_API_BASE_URL || 'http://localhost:3000';
     return url;
   },
 
   get MOCK_API_BASE_URL() {
-    const url = process.env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000/api';
+    const url = process.env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000';
     return url;
   },
 

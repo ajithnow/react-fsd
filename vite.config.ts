@@ -105,10 +105,10 @@ export default defineConfig(({ mode }) => {
       'process.env.NODE_ENV': JSON.stringify(env.NODE_ENV || mode),
       'process.env.MODE': JSON.stringify(mode),
       'process.env.VITE_API_BASE_URL': JSON.stringify(
-        env.VITE_API_BASE_URL || 'http://localhost:3000/api'
+        env.VITE_API_BASE_URL || 'http://localhost:3000'
       ),
       'process.env.VITE_MOCK_API_BASE_URL': JSON.stringify(
-        env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000/api'
+        env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000'
       ),
       'process.env.VITE_FEATURE_FLAGS': JSON.stringify(
         env.VITE_FEATURE_FLAGS || '{}'

@@ -13,17 +13,22 @@ const useLoginService = () => {
       credentials,
       { isMock: MOCK_ENABLED }
     );
+
+    const tokens = data?.data?.tokens;
+    const userData = data?.data?.user;
+
     return {
-      token: data?.data?.tokens?.AccessToken,
+      token: tokens?.AccessToken ?? tokens?.accessToken,
       user: {
-        Email: data?.data?.user?.Email,
-        FirstName: data?.data?.user?.FirstName,
-        LastName: data?.data?.user?.LastName,
-        Role: data?.data?.user?.Role,
-        Name: `${data?.data?.user?.FirstName} ${data?.data?.user?.LastName}`,
+        Email: userData?.Email ?? userData?.email,
+        FirstName: userData?.FirstName ?? userData?.firstName,
+        LastName: userData?.LastName ?? userData?.lastName,
+        Role: userData?.Role ?? userData?.role,
+        Name: `${userData?.FirstName ?? userData?.firstName ?? ''} ${userData?.LastName ?? userData?.lastName ?? ''}`.trim(),
+        permissions: userData?.permissions,
       },
-      refreshToken: data?.data?.tokens?.RefreshToken,
-      expiresIn: data?.data?.tokens?.AccessTokenExpiry,
+      refreshToken: tokens?.RefreshToken ?? tokens?.refreshToken,
+      expiresIn: tokens?.AccessTokenExpiry ?? tokens?.accessTokenExpiry,
     };
   };
   return {

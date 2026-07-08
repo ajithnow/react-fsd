@@ -14,8 +14,8 @@ import sharedLocales from '@/shared/locales'
  * Discovers and registers all features during application bootstrap.
  */
 function initializeFeatures() {
-  // Step 1: Register shared/common locales
-  localeRegistry.register([{ ns: 'common', resources: sharedLocales }]);
+  // Step 1: Register shared locales
+  localeRegistry.register([{ ns: 'shared', resources: sharedLocales }]);
 
   // Step 2: Eagerly discover all feature configs
   const modules = import.meta.glob<{ default: FeatureConfig }>(
@@ -36,8 +36,22 @@ async function enableMocking() {
   const { worker } = await import('./core/mock/browser.ts')
   
   return worker.start({
-    onUnhandledRequest: 'warn',
-    quiet: false, 
+    onUnhandledRequest(request, print) {
+      const url = new URL(request.url);
+
+      // Let the browser/Vite handle SPA navigations and dev assets.
+      if (
+        request.destination === 'document' ||
+        url.pathname.startsWith('/@') ||
+        url.pathname.startsWith('/src/') ||
+        url.pathname.startsWith('/node_modules/')
+      ) {
+        return;
+      }
+
+      print.warning();
+    },
+    quiet: false,
   })
 }
 

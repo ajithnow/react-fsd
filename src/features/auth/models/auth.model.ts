@@ -1,7 +1,7 @@
 import type z from 'zod';
 import type { AUTH_ROUTES } from '../constants/routes.constants';
 import type useAuthSchema from '../schema/auth.schema';
-import type { User as RBACUser } from '@/core';
+import type { User as RBACUser } from '@/shared/lib/rbac';
 
 export type LoginFormValues = z.infer<
   ReturnType<typeof useAuthSchema>['login']

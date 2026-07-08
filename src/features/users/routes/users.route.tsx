@@ -7,12 +7,12 @@ import { USER_PERMISSIONS, USER_ROUTES } from '../constants';
 import { appLayoutRoute } from '@/core/router/layouts';
 import { store } from '@/core/store/index.ts';
 import { hasPermission } from '@/shared/lib/rbac';
-import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
+import { SETTINGS_ROUTES } from '@/features/settings/constants';
 
 const checkCreatePermission = (permission: string) => {
   const user = store.getState().auth.user;
   if (!hasPermission(user, permission)) {
-    throw redirect({ to: ROUTE_CONSTANTS.ROOT, replace: true });
+    throw redirect({ to: SETTINGS_ROUTES.PROFILE, replace: true });
   }
 };
 
