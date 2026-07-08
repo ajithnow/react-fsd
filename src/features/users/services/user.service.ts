@@ -8,6 +8,7 @@ import type {
   UserFilters,
 } from '../models';
 import { USER_ENDPOINTS } from '@/features/users';
+import { unwrapData } from '@/shared';
 
 export const useUserService = () => {
   /**
@@ -38,7 +39,7 @@ export const useUserService = () => {
       });
       // Backend may return a wrapper: { message: string, data: { ...user } }
       // If so, unwrap to return the inner user object; otherwise return response.data directly.
-      return response.data?.data ?? response.data;
+      return unwrapData<AdminUser>(response.data);
     },
     []
   );
@@ -55,7 +56,7 @@ export const useUserService = () => {
         userData,
         { isMock: MOCK_ENABLED }
       );
-      return response.data;
+      return unwrapData<AdminUser>(response.data);
     },
     []
   );
@@ -73,7 +74,7 @@ export const useUserService = () => {
         { isMock: MOCK_ENABLED }
       );
 
-      return response.data;
+      return unwrapData<AdminUser>(response.data);
     },
     []
   );

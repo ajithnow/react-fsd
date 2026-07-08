@@ -2,12 +2,18 @@ import { http, HttpResponse } from 'msw';
 import { mockUsers, getUserById } from './users.mock';
 import type { AdminUser } from '../models/user.model';
 
+const findUserIndex = (id: string) => mockUsers.findIndex(u => u.UserId === id);
+
+const buildUserResponse = (user: AdminUser) =>
+  HttpResponse.json({
+    message: 'Success',
+    data: user,
+  });
+
 export const usersHandlers = [
-  // Get users list - basic pagination/filtering optional
-  (http.get('/api/portal-admin/users', ({ request }) => {
+  // List users — client paginates/filter locally; return full list in API shape
+  http.get('/api/portal-admin/users', ({ request }) => {
     const url = new URL(request.url);
-    const page = parseInt(url.searchParams.get('page') || '1');
-    const pageSize = parseInt(url.searchParams.get('pageSize') || '10');
     const search = url.searchParams.get('search');
 
     let filtered = [...mockUsers];
@@ -22,28 +28,20 @@ export const usersHandlers = [
       );
     }
 
-    const total = filtered.length;
-    const start = (page - 1) * pageSize;
-    const pageData = filtered.slice(start, start + pageSize);
-
     return HttpResponse.json({
-      data: pageData,
-      pagination: {
-        page,
-        pageSize,
-        total,
-        totalPages: Math.ceil(total / pageSize),
+      message: 'Success',
+      data: {
+        count: filtered.length,
+        users: filtered,
       },
     });
   }),
+
   // Get single user by id
-
-  // Absolute-origin fallback: some requests use full origin in axios baseURL
-  http.get('http://localhost:3001/api/portal-admin/user/:id', ({ params }) => {
+  http.get('/api/portal-admin/user/:id', ({ params }) => {
     const { id } = params;
     let user = getUserById(id as string);
 
-    // If user not found but ID looks like a UUID, return a fallback user
     if (!user && id && typeof id === 'string' && id.length > 10) {
       user = {
         UserId: id,
@@ -56,34 +54,15 @@ export const usersHandlers = [
     }
 
     if (!user) {
-      return HttpResponse.json({ error: 'User not found' }, { status: 404 });
+      return HttpResponse.json(
+        { message: 'User not found', data: null },
+        { status: 404 }
+      );
     }
 
-    return HttpResponse.json(user);
+    return buildUserResponse(user);
   }),
-  // Also handle port 3000 in case baseURL is configured for that
-  http.get('http://localhost:3000/api/portal-admin/user/:id', ({ params }) => {
-    const { id } = params;
-    let user = getUserById(id as string);
 
-    // If user not found but ID looks like a UUID, return a fallback user
-    if (!user && id && typeof id === 'string' && id.length > 10) {
-      user = {
-        UserId: id,
-        FirstName: 'Demo',
-        LastName: 'User',
-        Email: 'demo.user@example.com',
-        Role: 'NORMAL_USER',
-        Status: true,
-      };
-    }
-
-    if (!user) {
-      return HttpResponse.json({ error: 'User not found' }, { status: 404 });
-    }
-
-    return HttpResponse.json(user);
-  }),
   // Create user
   http.post('/api/portal-admin/user/create', async ({ request }) => {
     const payload = (await request.json()) as Partial<AdminUser> & {
@@ -102,38 +81,77 @@ export const usersHandlers = [
       Status: true,
     };
 
-    // push to mock list for session lifetime
     mockUsers.push(newUser);
 
-    // Return created user (matching CreateUserRequest -> AdminUser conversion in service)
-    return HttpResponse.json(newUser, { status: 201 });
+    return HttpResponse.json(
+      { message: 'Success', data: newUser },
+      { status: 201 }
+    );
   }),
-  // Update user
-  http.put('/api/portal-admin/user/:id', async ({ params, request }) => {
-    const { id } = params as { id: string };
-    const updates = (await request.json()) as Partial<AdminUser>;
 
-    const idx = mockUsers.findIndex(u => u.UserId === id);
-    if (idx === -1) {
-      return HttpResponse.json({ error: 'User not found' }, { status: 404 });
+  // Update user (matches service endpoint)
+  http.put('/api/portal-admin/user/edit', async ({ request }) => {
+    const payload = (await request.json()) as Partial<AdminUser> & {
+      userId?: string;
+      firstName?: string;
+      lastName?: string;
+      email?: string;
+      role?: AdminUser['Role'];
+      status?: boolean;
+    };
+
+    const userId = payload.userId;
+    if (!userId) {
+      return HttpResponse.json(
+        { message: 'User ID is required', data: null },
+        { status: 400 }
+      );
     }
 
-    const updated = { ...mockUsers[idx], ...updates };
+    const idx = findUserIndex(userId);
+    if (idx === -1) {
+      return HttpResponse.json(
+        { message: 'User not found', data: null },
+        { status: 404 }
+      );
+    }
+
+    const updated: AdminUser = {
+      ...mockUsers[idx],
+      ...(payload.firstName ? { FirstName: payload.firstName } : {}),
+      ...(payload.lastName ? { LastName: payload.lastName } : {}),
+      ...(payload.email ? { Email: payload.email } : {}),
+      ...(payload.role ? { Role: payload.role } : {}),
+      ...(payload.status !== undefined ? { Status: payload.status } : {}),
+    };
+
     mockUsers[idx] = updated;
 
-    return HttpResponse.json(updated);
+    return HttpResponse.json({ message: 'Success', data: updated });
   }),
-  // Delete user
-  http.delete('/api/portal-admin/user/:id', ({ params }) => {
-    const { id } = params as { id: string };
-    const idx = mockUsers.findIndex(u => u.UserId === id);
+
+  // Delete user (matches service endpoint)
+  http.post('/api/portal-admin/user/delete', async ({ request }) => {
+    const payload = (await request.json()) as { userId?: string };
+    const userId = payload.userId;
+
+    if (!userId) {
+      return HttpResponse.json(
+        { message: 'User ID is required', data: null },
+        { status: 400 }
+      );
+    }
+
+    const idx = findUserIndex(userId);
     if (idx === -1) {
-      return HttpResponse.json({ error: 'User not found' }, { status: 404 });
+      return HttpResponse.json(
+        { message: 'User not found', data: null },
+        { status: 404 }
+      );
     }
 
     mockUsers.splice(idx, 1);
-    return HttpResponse.json(null, { status: 204 });
-  })),
+
+    return HttpResponse.json({ message: 'Success', data: null });
+  }),
 ];
-
-
