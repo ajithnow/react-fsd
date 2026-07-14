@@ -1,3 +1,14 @@
+import { useSelector } from 'react-redux';
+import { useTranslation } from 'react-i18next';
+import type { RootState } from '@/core/store';
+import { store } from '@/core/store';
+import {
+  sidebarRegistry,
+  type SidebarConfig,
+  type SidebarItemConfig,
+} from '@/core/registry';
+import type { User } from '@/features/auth/types';
+import { isRbacEnabled } from '@/shared/lib/rbac';
 import { SidebarData } from '../components/AppSidebar/appSidebar.types';
 import {
   createSidebarData,
@@ -5,21 +16,6 @@ import {
   createNavLink,
   createNavCollapsible,
 } from '../components/AppLayout/sidebarHelpers';
-import {
-  Home,
-  BarChart3,
-  Users,
-  FileText,
-  Settings,
-  Shield,
-  UserIcon,
-  Bell,
-} from 'lucide-react';
-import { useSelector } from 'react-redux';
-import { store } from '@/core/store';
-import type { RootState } from '@/core/store';
-import type { User } from '@/features/auth/types';
-import { useTranslation } from 'react-i18next';
 
 type ExtendedUser = User & {
   email?: string;
@@ -27,132 +23,119 @@ type ExtendedUser = User & {
   createdAt?: string;
 };
 
-type SidebarItem = {
-  labelKey: string;
-  link: string;
-  icon?: React.ComponentType;
-  children?: SidebarItem[];
-};
+type TranslateFn = (key: string, options?: { ns?: string }) => string;
 
-const DEFAULT_SIDEBAR_CONFIG: SidebarItem[] = [
-  {
-    labelKey: 'sidebar.home',
-    link: '/',
-    icon: Home,
-  },
-  {
-    labelKey: 'sidebar.customers.title',
-    link: '/customers',
-    icon: Users,
-  },
-  {
-    labelKey: 'sidebar.admin.userManagement',
-    link: '/users',
-    icon: Users,
-  },
-  {
-    labelKey: 'Notifications',
-    link: '/notifications',
-    icon: Bell,
-  },
-  {
-    labelKey: 'sidebar.settings.title',
-    link: '/settings',
-    icon: Settings,
-    children: [
-      {
-        labelKey: 'sidebar.settings.profile',
-        link: '/settings/profile',
-        icon: UserIcon,
-      },
-      {
-        labelKey: 'sidebar.settings.account',
-        link: '/settings/account',
-        icon: Shield,
-      },
-    ],
-  },
-];
+const sortByOrder = <T extends { order?: number }>(items: T[]): T[] =>
+  [...items].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-const FEATURE_SIDEBAR_CONFIGS: Record<string, SidebarItem[]> = {
-  customers: [
-    {
-      labelKey: 'sidebar.customers.all',
-      link: '/customers',
-      icon: Users,
-    },
-    {
-      labelKey: 'sidebar.customers.add',
-      link: '/customers/create',
-      icon: Users,
-    },
-    {
-      labelKey: 'sidebar.customers.reports',
-      link: '/customers/reports',
-      icon: BarChart3,
-    },
-  ],
-  dashboard: [
-    {
-      labelKey: 'sidebar.dashboard.overview',
-      link: '/dashboard',
-      icon: BarChart3,
-    },
-    {
-      labelKey: 'sidebar.dashboard.sales',
-      link: '/dashboard/sales',
-      icon: BarChart3,
-    },
-    {
-      labelKey: 'sidebar.dashboard.traffic',
-      link: '/dashboard/traffic',
-      icon: BarChart3,
-    },
-    {
-      labelKey: 'sidebar.dashboard.reports',
-      link: '/dashboard/reports',
-      icon: FileText,
-    },
-  ],
-};
+/**
+ * One pass over a tiny nav tree. `allowed` is built once per assemble (O(1) checks).
+ * Items without `permission` stay visible; empty parents are dropped.
+ */
+const filterItemsByPermission = (
+  items: SidebarItemConfig[],
+  allowed: Set<string> | null
+): SidebarItemConfig[] => {
+  if (!allowed) return items;
 
-const convertToSidebarFormat = (
-  items: SidebarItem[],
-  t: (key: string) => string
-) => {
-  return items.map(item => {
-    if (item.children && item.children.length > 0) {
-      return createNavCollapsible(
-        t(item.labelKey),
-        item.children.map(child => ({
-          title: t(child.labelKey),
-          url: child.link,
-          icon: child.icon,
-        })),
-        item.icon
-      );
+  const result: SidebarItemConfig[] = [];
+
+  for (const item of items) {
+    if (item.permission && !allowed.has(item.permission)) continue;
+
+    if (item.children?.length) {
+      const children = filterItemsByPermission(item.children, allowed);
+      if (children.length === 0) continue;
+      result.push({ ...item, children });
+      continue;
     }
 
-    return createNavLink(t(item.labelKey), item.link, item.icon);
-  });
+    result.push(item);
+  }
+
+  return result;
+};
+
+const convertItem = (item: SidebarItemConfig, t: TranslateFn) => {
+  const title = t(item.labelKey, { ns: item.ns ?? 'shared' });
+
+  if (item.children && item.children.length > 0) {
+    return createNavCollapsible(
+      title,
+      sortByOrder(item.children).map(child => ({
+        title: t(child.labelKey, { ns: child.ns ?? item.ns ?? 'shared' }),
+        url: child.link,
+        icon: child.icon,
+      })),
+      item.icon
+    );
+  }
+
+  return createNavLink(title, item.link, item.icon);
 };
 
 /**
- * React hook to get sidebar data that updates with auth state.
- * Nav visibility is not gated here — route guards and action-level checks own access.
+ * Merge registered sidebar contributions into nav groups (sorted by order).
  */
-export const useSidebarData = (options?: {
-  userRole?: 'admin' | 'user';
-  feature?: string;
-}): SidebarData => {
-  const user = useSelector((state: RootState) => state.auth.user);
-  const { t } = useTranslation('shared');
+export const assembleSidebarItems = (
+  contributions: SidebarConfig[] = sidebarRegistry.getAll()
+): Array<{
+  groupId: string;
+  groupLabelKey: string;
+  groupNs: string;
+  items: SidebarItemConfig[];
+}> => {
+  const sorted = sortByOrder(contributions);
+  const groups = new Map<
+    string,
+    {
+      groupId: string;
+      groupLabelKey: string;
+      groupNs: string;
+      items: SidebarItemConfig[];
+    }
+  >();
 
-  return getSidebarData({
-    ...options,
-    customUser: user as ExtendedUser | null,
-    translate: t,
-  });
+  for (const contribution of sorted) {
+    const groupId = contribution.group ?? 'main';
+    const existing = groups.get(groupId);
+
+    if (!existing) {
+      groups.set(groupId, {
+        groupId,
+        groupLabelKey:
+          contribution.groupLabelKey ?? 'sidebar.groups.main',
+        groupNs: contribution.groupNs ?? 'shared',
+        items: [...contribution.items],
+      });
+    } else {
+      existing.items.push(...contribution.items);
+    }
+  }
+
+  return Array.from(groups.values()).map(group => ({
+    ...group,
+    items: sortByOrder(group.items),
+  }));
+};
+
+const createUserDataFromAuth = (
+  authUser: ExtendedUser | null,
+  t: TranslateFn
+) => {
+  if (!authUser) {
+    return {
+      name: t('sidebar.user.guest', { ns: 'shared' }),
+      email: 'guest@example.com',
+      avatar: '/avatars/default.jpg',
+    };
+  }
+
+  return {
+    name: authUser.name || t('sidebar.user.unknown', { ns: 'shared' }),
+    email: authUser.email || authUser.name || 'user@example.com',
+    avatar: '/avatars/user.jpg',
+  };
 };
 
 const getCurrentUser = (): ExtendedUser | null => {
@@ -163,98 +146,50 @@ const getCurrentUser = (): ExtendedUser | null => {
   }
 };
 
-const createUserDataFromAuth = (
-  authUser: ExtendedUser | null,
-  t: (key: string) => string
-) => {
-  if (!authUser) {
-    return {
-      name: t('sidebar.user.guest'),
-      email: 'guest@example.com',
-      avatar: '/avatars/default.jpg',
-    };
-  }
+/**
+ * Build sidebar data from the sidebar registry (+ optional overrides for tests).
+ * Items with `permission` are filtered using the session user.
+ */
+export const getSidebarData = (options?: {
+  customUser?: ExtendedUser | null;
+  translate?: TranslateFn;
+  contributions?: SidebarConfig[];
+}): SidebarData => {
+  const t = options?.translate ?? ((key: string) => key);
+  const authUser = options?.customUser ?? getCurrentUser();
+  const groups = assembleSidebarItems(options?.contributions);
+  const allowed = isRbacEnabled()
+    ? new Set(authUser?.permissions ?? [])
+    : null;
 
-  return {
-    name: authUser.name || t('sidebar.user.unknown'),
-    email: authUser.email || authUser.name || 'user@example.com',
-    avatar: '/avatars/user.jpg',
-  };
-};
+  const navGroups = groups
+    .map(group => {
+      const visibleItems = filterItemsByPermission(group.items, allowed);
+      if (visibleItems.length === 0) return null;
 
-const buildSidebarData = (
-  items: SidebarItem[],
-  authUser: ExtendedUser | null,
-  t: (key: string) => string
-): SidebarData => {
-  const navItems = convertToSidebarFormat(items, t);
+      return createNavGroup(
+        t(group.groupLabelKey, { ns: group.groupNs }),
+        visibleItems.map(item => convertItem(item, t))
+      );
+    })
+    .filter((group): group is NonNullable<typeof group> => group !== null);
 
   return createSidebarData({
     user: createUserDataFromAuth(authUser, t),
-    navGroups: [createNavGroup(t('sidebar.groups.main'), navItems)],
+    navGroups,
   });
 };
 
-export const getDefaultSidebarData = (
-  customUser?: ExtendedUser | null,
-  translate?: (key: string) => string
-): SidebarData => {
-  const t = translate || ((key: string) => key);
-  const authUser = customUser || getCurrentUser();
-  return buildSidebarData([...DEFAULT_SIDEBAR_CONFIG], authUser, t);
-};
+/**
+ * React hook: sidebar from feature registry + auth user.
+ * Gated items use `permission` on feature sidebar configs + Redux user.
+ */
+export const useSidebarData = (): SidebarData => {
+  const user = useSelector((state: RootState) => state.auth.user);
+  const { t } = useTranslation();
 
-export const getAdminSidebarData = (
-  customUser?: ExtendedUser | null,
-  translate?: (key: string) => string
-): SidebarData => {
-  const t = translate || ((key: string) => key);
-  const authUser = customUser || getCurrentUser();
-  return buildSidebarData([...DEFAULT_SIDEBAR_CONFIG], authUser, t);
-};
-
-export const getFeatureSidebarData = (
-  feature: string,
-  customUser?: ExtendedUser | null,
-  translate?: (key: string) => string
-): SidebarData => {
-  const t = translate || ((key: string) => key);
-  const authUser = customUser || getCurrentUser();
-
-  const featureItems = FEATURE_SIDEBAR_CONFIGS[feature];
-  if (!featureItems) {
-    return getDefaultSidebarData(authUser, t);
-  }
-
-  const otherItems = DEFAULT_SIDEBAR_CONFIG.filter(
-    item =>
-      !FEATURE_SIDEBAR_CONFIGS[feature]?.some(
-        featureItem => featureItem.link === item.link
-      )
-  );
-
-  return buildSidebarData([...featureItems, ...otherItems], authUser, t);
-};
-
-export const getSidebarData = (options?: {
-  userRole?: 'admin' | 'user';
-  feature?: string;
-  customUser?: ExtendedUser | null;
-  translate?: (key: string) => string;
-}): SidebarData => {
-  const { userRole, feature, customUser, translate } = options || {};
-  const t = translate || ((key: string) => key);
-  const authUser = customUser || getCurrentUser();
-  const actualUserRole =
-    userRole || (authUser?.role === 'admin' ? 'admin' : 'user');
-
-  if (feature) {
-    return getFeatureSidebarData(feature, authUser, t);
-  }
-
-  if (actualUserRole === 'admin') {
-    return getAdminSidebarData(authUser, t);
-  }
-
-  return getDefaultSidebarData(authUser, t);
+  return getSidebarData({
+    customUser: user as ExtendedUser | null,
+    translate: (key, options) => t(key, options),
+  });
 };

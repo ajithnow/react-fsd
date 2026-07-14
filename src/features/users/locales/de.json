@@ -1,4 +1,7 @@
 {
+  "nav": {
+    "users": "Benutzerverwaltung"
+  },
   "users": {
     "title": "Neuen Benutzer erstellen",
     "subtitle": "Einen neuen Benutzer zum System hinzufügen",

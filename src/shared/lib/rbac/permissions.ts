@@ -11,6 +11,9 @@ export const PERMISSIONS = {
   USERS_MANAGE_ROLES: 'users:manage_roles',
   USERS_EXPORT: 'users:export',
 
+  BOOKINGS_READ: 'bookings:read',
+  BOOKINGS_MANAGE: 'bookings:manage',
+
   PROFILE_READ: 'profile:read',
   PROFILE_UPDATE: 'profile:update',
 

@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "bookings": "Bookings"
+  },
+  "list": {
+    "title": "Bookings",
+    "subtitle": "Dummy bookings module — wire APIs here later.",
+    "empty": "No bookings yet. This is a scaffold page."
+  }
+}

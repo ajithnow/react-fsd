@@ -1,4 +1,7 @@
 {
+  "nav": {
+    "users": "User Management"
+  },
   "users": {
     "title": "Create New User",
     "subtitle": "Add a new user to the system",

@@ -3,9 +3,10 @@ import { createRoot } from 'react-dom/client'
 import './styles/globals.css'
 import App from './App.tsx'
 import { initializeI18n } from './core/i18n'
-import { localeRegistry, type FeatureConfig } from '@/core/registry'
+import { localeRegistry, sidebarRegistry, type FeatureConfig } from '@/core/registry'
 import { bootstrapFeatures } from '@/core/registry/bootstrap'
 import { assembleRoutes } from '@/core/router/assembly'
+import { shellSidebar } from '@/core/shell/sidebar'
 import sharedLocales from '@/shared/locales'
 
 /**
@@ -14,6 +15,8 @@ import sharedLocales from '@/shared/locales'
  */
 function initializeFeatures() {
   localeRegistry.register([{ ns: 'common', resources: sharedLocales }]);
+  localeRegistry.register([{ ns: 'shared', resources: sharedLocales }]);
+  sidebarRegistry.register(shellSidebar);
 
   const modules = import.meta.glob<{ default: FeatureConfig }>(
     './features/*/config.ts',

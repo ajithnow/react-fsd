@@ -87,4 +87,20 @@ describe('resolvePermissions', () => {
     setRolePermissions({ Ops: ['profiles:approve'] });
     expect(resolvePermissions('Ops')).toEqual(['profiles:approve']);
   });
+
+  it('merges feature contributions into the fallback map', async () => {
+    const { mergeRolePermissions } = await import(
+      '../constants/rolePermissions.constants'
+    );
+    setRolePermissions({ ...DEFAULT_ROLE_PERMISSIONS });
+    mergeRolePermissions({
+      [ROLES.VIEWER]: ['bookings:read'],
+    });
+    expect(resolvePermissions(ROLES.VIEWER)).toEqual(
+      expect.arrayContaining([
+        AUTH_PERMISSIONS.PROFILE_READ,
+        'bookings:read',
+      ])
+    );
+  });
 });

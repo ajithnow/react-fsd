@@ -1,0 +1,10 @@
+{
+  "nav": {
+    "bookings": "Buchungen"
+  },
+  "list": {
+    "title": "Buchungen",
+    "subtitle": "Dummy-Buchungsmodul — APIs später anbinden.",
+    "empty": "Noch keine Buchungen. Dies ist eine Scaffold-Seite."
+  }
+}

@@ -1,0 +1,6 @@
+import { PERMISSIONS } from '@/shared/lib/rbac';
+
+export const BOOKING_PERMISSIONS = {
+  READ: PERMISSIONS.BOOKINGS_READ,
+  MANAGE: PERMISSIONS.BOOKINGS_MANAGE,
+} as const;
