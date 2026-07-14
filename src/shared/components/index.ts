@@ -11,6 +11,9 @@ export type {
   FilterValues,
 } from './DataTable';
 
+export { ResourceDataTable } from './ResourceDataTable';
+export type { ResourceDataTableProps } from './ResourceDataTable';
+
 export { ActionsDropdown } from './ActionsDropdown';
 
 export { AppLayout } from './AppLayout';

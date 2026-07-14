@@ -120,13 +120,68 @@ vi.mock('@/shared', async () => {
         )
       )
     );
-  const useRBAC = () => ({ hasPermission: () => true });
+
+  const ResourceDataTable: React.FC<{
+    data: AdminUser[];
+    columns: Column[];
+    loading?: boolean;
+    emptyMessage?: string;
+    getActions?: (item: AdminUser) => { id: string; label: string; onClick?: () => void }[];
+    actionsHeader?: string;
+    testId?: string;
+    className?: string;
+    onRowClick?: (item: AdminUser) => void;
+  }> = ({
+    data,
+    columns,
+    loading,
+    emptyMessage,
+    getActions,
+    actionsHeader = 'Actions',
+    testId,
+    className,
+  }) => {
+    const resolvedColumns = getActions
+      ? [
+          ...columns,
+          {
+            id: 'actions',
+            header: actionsHeader,
+            cell: (item: AdminUser) =>
+              React.createElement(ActionsDropdown, {
+                actions: getActions(item),
+              }),
+          },
+        ]
+      : columns;
+
+    return React.createElement(
+      'div',
+      { 'data-testid': testId, className },
+      React.createElement(DataTable, {
+        data,
+        columns: resolvedColumns,
+        loading,
+        emptyMessage,
+      })
+    );
+  };
+
+  const useRBAC = () => ({
+    hasPermission: () => true,
+    user: null,
+  });
+
+  const TextCell: React.FC<{ value?: string }> = ({ value }) =>
+    React.createElement('span', null, value);
 
   return {
     DataTable,
     DataTableColumn: {},
+    ResourceDataTable,
     ActionsDropdown,
     useRBAC,
+    TextCell,
   };
 });
 
