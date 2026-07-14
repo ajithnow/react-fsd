@@ -78,4 +78,8 @@ const authSlice = createSlice({
 });
 
 export const { setUser, logout, clearError, setLoading } = authSlice.actions;
+
+/** Session user from Redux — single source of truth for RBAC checks. */
+export const selectAuthUser = (state: { auth: AuthState }) => state.auth.user;
+
 export default authSlice.reducer;

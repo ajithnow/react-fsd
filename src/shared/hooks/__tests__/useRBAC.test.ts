@@ -1,6 +1,12 @@
-
 import { renderHook } from '@testing-library/react';
-import { useRBAC, usePermission, useAnyPermission, useAllPermissions, useRole, useAnyRole } from '../useRBAC';
+import {
+  useRBAC,
+  usePermission,
+  useAnyPermission,
+  useAllPermissions,
+  useRole,
+  useAnyRole,
+} from '../useRBAC';
 
 const mockUser = {
   id: '1',
@@ -14,18 +20,43 @@ const mockUser = {
   status: 'active',
 };
 
-vi.mock('@/shared/lib/rbac/context', () => ({
-  useRBAC: () => ({ user: mockUser }),
+vi.mock('react-redux', () => ({
+  useSelector: (selector: (state: unknown) => unknown) =>
+    selector({
+      auth: {
+        user: mockUser,
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      },
+    }),
 }));
 
 vi.mock('../../lib/rbac/utils', () => ({
-  getAllPermissionsForUser: vi.fn(() => ['users:read', 'users:create', 'admin:dashboard']),
-  getUserRoles: vi.fn((user) => (user ? [user.role] : [])),
-  hasPermission: vi.fn((_user, perm) => ['users:read', 'users:create', 'admin:dashboard'].includes(perm)),
-  hasAnyPermission: vi.fn((_user, perms) => perms.some((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),
-  hasAllPermissions: vi.fn((_user, perms) => perms.every((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),
+  getAllPermissionsForUser: vi.fn(() => [
+    'users:read',
+    'users:create',
+    'admin:dashboard',
+  ]),
+  getUserRoles: vi.fn((user: { role?: string } | null) =>
+    user ? [user.role] : []
+  ),
+  hasPermission: vi.fn((_user, perm) =>
+    ['users:read', 'users:create', 'admin:dashboard'].includes(perm)
+  ),
+  hasAnyPermission: vi.fn((_user, perms) =>
+    perms.some((p: string) =>
+      ['users:read', 'users:create', 'admin:dashboard'].includes(p)
+    )
+  ),
+  hasAllPermissions: vi.fn((_user, perms) =>
+    perms.every((p: string) =>
+      ['users:read', 'users:create', 'admin:dashboard'].includes(p)
+    )
+  ),
   getMissingPermissions: vi.fn(),
   canAccessFeature: vi.fn(),
+  isRbacEnabled: vi.fn(() => true),
 }));
 
 describe('useRBAC (shared/hooks)', () => {
@@ -43,14 +74,20 @@ describe('useRBAC (shared/hooks)', () => {
 
   it('hasAnyPermission returns true if user has any', () => {
     const { result } = renderHook(() => useRBAC());
-    expect(result.current.hasAnyPermission(['not:real', 'users:read'])).toBe(true);
+    expect(result.current.hasAnyPermission(['not:real', 'users:read'])).toBe(
+      true
+    );
     expect(result.current.hasAnyPermission(['not:real'])).toBe(false);
   });
 
   it('hasAllPermissions returns true only if user has all', () => {
     const { result } = renderHook(() => useRBAC());
-    expect(result.current.hasAllPermissions(['users:read', 'users:create'])).toBe(true);
-    expect(result.current.hasAllPermissions(['users:read', 'not:real'])).toBe(false);
+    expect(
+      result.current.hasAllPermissions(['users:read', 'users:create'])
+    ).toBe(true);
+    expect(
+      result.current.hasAllPermissions(['users:read', 'not:real'])
+    ).toBe(false);
   });
 
   it('hasRole and hasAnyRole work as expected', () => {
@@ -68,11 +105,15 @@ describe('usePermission, useAnyPermission, useAllPermissions, useRole, useAnyRol
     expect(result.current).toBe(true);
   });
   it('useAnyPermission returns true if user has any', () => {
-    const { result } = renderHook(() => useAnyPermission(['not:real', 'users:read']));
+    const { result } = renderHook(() =>
+      useAnyPermission(['not:real', 'users:read'])
+    );
     expect(result.current).toBe(true);
   });
   it('useAllPermissions returns true if user has all', () => {
-    const { result } = renderHook(() => useAllPermissions(['users:read', 'users:create']));
+    const { result } = renderHook(() =>
+      useAllPermissions(['users:read', 'users:create'])
+    );
     expect(result.current).toBe(true);
   });
   it('useRole returns true if user has role', () => {

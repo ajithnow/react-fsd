@@ -1,5 +1,6 @@
 import React from 'react';
-import { useRBAC } from './context';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/features/auth/stores/auth.slice';
 import { hasPermission } from './utils';
 
 export interface CanProps {
@@ -12,7 +13,7 @@ export interface CanProps {
 }
 
 export const Can: React.FC<CanProps> = ({ perform, children, no = null }) => {
-  const { user } = useRBAC();
+  const user = useSelector(selectAuthUser);
 
   if (hasPermission(user, perform)) {
     return <>{children}</>;

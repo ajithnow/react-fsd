@@ -1,6 +1,7 @@
-// RBAC React hooks for permission and role checking
+// RBAC React hooks — identity from Redux auth; checks from pure utils
 
-import { useRBAC as useRBACContext } from '../lib/rbac/context';
+import { useSelector } from 'react-redux';
+import { selectAuthUser } from '@/features/auth/stores/auth.slice';
 import {
   getAllPermissionsForUser,
   getUserRoles,
@@ -13,7 +14,7 @@ import {
 } from '../lib/rbac/utils';
 
 export const useRBAC = () => {
-  const { user } = useRBACContext();
+  const user = useSelector(selectAuthUser);
   const permissions = user ? getAllPermissionsForUser(user) : [];
 
   return {
@@ -29,7 +30,7 @@ export const useRBAC = () => {
       !isRbacEnabled() || (!!user && getUserRoles(user).includes(role)),
     hasAnyRole: (roles: string[]) =>
       !isRbacEnabled() ||
-      (!!user && roles.some((r) => getUserRoles(user).includes(r))),
+      (!!user && roles.some(r => getUserRoles(user).includes(r))),
     getMissingPermissions: (required: string[]) =>
       getMissingPermissions(user, required),
     canAccessFeature: (featurePerms: string[]) =>
@@ -37,41 +38,26 @@ export const useRBAC = () => {
   };
 };
 
-/**
- * Hook for checking if user has a specific permission
- */
 export const usePermission = (permission: string) => {
   const { hasPermission } = useRBAC();
   return hasPermission(permission);
 };
 
-/**
- * Hook for checking if user has any of the specified permissions
- */
 export const useAnyPermission = (permissions: string[]) => {
   const { hasAnyPermission } = useRBAC();
   return hasAnyPermission(permissions);
 };
 
-/**
- * Hook for checking if user has all of the specified permissions
- */
 export const useAllPermissions = (permissions: string[]) => {
   const { hasAllPermissions } = useRBAC();
   return hasAllPermissions(permissions);
 };
 
-/**
- * Hook for checking if user has a specific role
- */
 export const useRole = (role: string) => {
   const { hasRole } = useRBAC();
   return hasRole(role);
 };
 
-/**
- * Hook for checking if user has any of the specified roles
- */
 export const useAnyRole = (roles: string[]) => {
   const { hasAnyRole } = useRBAC();
   return hasAnyRole(roles);
