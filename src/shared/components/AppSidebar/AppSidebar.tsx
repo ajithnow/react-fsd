@@ -21,11 +21,11 @@ export const AppSidebar = ({ data, ...props }: AppSidebarProps) => {
     <Sidebar collapsible="icon" variant="inset" {...props}>
       <SidebarHeader>
         <div className="flex items-center gap-2 px-2 py-1">
-          <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary/10 text-sidebar-primary-foreground">
+          <div className="flex aspect-square size-8 items-center justify-center overflow-hidden rounded-lg">
             <img
-              src="/app-logo.png"
-              alt="Application Logo"
-              className="size-4"
+              src="/logo.svg"
+              alt=""
+              className="size-8"
             />
           </div>
           <div className="grid flex-1 text-left text-sm leading-tight">

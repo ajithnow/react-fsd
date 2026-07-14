@@ -1,4 +1,6 @@
 import { renderHook } from '@testing-library/react';
+import { useIsAuthRoute } from '../useIsAuthRoute';
+
 let mockPathname = '/auth/login';
 
 vi.mock('@tanstack/react-router', () => ({
@@ -6,14 +8,15 @@ vi.mock('@tanstack/react-router', () => ({
     state: { location: { pathname: mockPathname } },
   }),
 }));
-import { useIsAuthRoute } from '../useIsAuthRoute';
 
 // Mock isAuthRoute to test only hook logic, not utility logic
-vi.mock('@/features/auth/utils/auth.utils', () => {
-  const actual = await vi.importActual('@/features/auth/utils/auth.utils');
+vi.mock('@/features/auth/utils/auth.utils', async () => {
+  const actual = await vi.importActual<
+    typeof import('@/features/auth/utils/auth.utils')
+  >('@/features/auth/utils/auth.utils');
   return {
     ...actual,
-    isAuthRoute: vi.fn(path => path.startsWith('/auth')),
+    isAuthRoute: vi.fn((path: string) => path.startsWith('/auth')),
   };
 });
 

@@ -1,6 +1,6 @@
 import { AuthLayoutProps } from '../types';
 import { useTranslation } from 'react-i18next';
-import logoImage from '@/assets/images/logo.png';
+import logoImage from '@/assets/images/logo.svg';
 
 export const AuthLayout = ({ children }: AuthLayoutProps) => {
   const { t } = useTranslation('auth');
@@ -10,9 +10,8 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
         <div className="max-w-md text-center">
           <img
             src={logoImage}
-            alt="Application Logo"
-            className="mx-auto mb-4"
-            width={'100px'}
+            alt=""
+            className="mx-auto mb-4 size-24 rounded-2xl shadow-sm"
           />
           <h1 className="text-4xl font-bold mb-4">{t('login.welcomeText')}</h1>
           <p className="text-lg opacity-90">{t('login.welcomeSubText')}</p>
@@ -20,7 +19,12 @@ export const AuthLayout = ({ children }: AuthLayoutProps) => {
       </div>
       <div className="flex-1 flex items-center justify-center p-8 bg-gray-50">
         <div className="w-full max-w-md">
-          <div className="text-center mb-8 lg:hidden">
+          <div className="mb-8 flex flex-col items-center gap-3 text-center lg:hidden">
+            <img
+              src={logoImage}
+              alt=""
+              className="size-14 rounded-xl"
+            />
             <h1 className="text-3xl font-bold">{t('login.welcomeText')}</h1>
           </div>
           {children}

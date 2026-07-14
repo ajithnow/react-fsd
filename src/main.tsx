@@ -1,5 +1,6 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { registerSW } from 'virtual:pwa-register'
 import './styles/globals.css'
 import App from './App.tsx'
 import { initializeI18n } from './core/i18n'
@@ -8,6 +9,8 @@ import { bootstrapFeatures } from '@/core/registry/bootstrap'
 import { assembleRoutes } from '@/core/router/assembly'
 import { shellSidebar } from '@/core/shell/sidebar'
 import sharedLocales from '@/shared/locales'
+
+registerSW({ immediate: true })
 
 /**
  * INITIALIZE FEATURES
@@ -29,7 +32,7 @@ function initializeFeatures() {
 
 initializeFeatures();
 
-initializeI18n().then(() => {
+void initializeI18n().then(() => {
   createRoot(document.getElementById('root')!).render(
     <StrictMode>
       <App />

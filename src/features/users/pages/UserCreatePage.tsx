@@ -32,7 +32,7 @@ export const UserCreatePage: React.FC = () => {
     if (canGoBack) {
       router.history.back();
     } else {
-      router.navigate({ to: '/users' });
+      void router.navigate({ to: '/users' });
     }
   };
 
@@ -56,7 +56,7 @@ export const UserCreatePage: React.FC = () => {
       <UserForm
         onSubmit={handleSubmit}
         isLoading={isCreating}
-        error={(createError as ApiErrorResponse)?.response?.data?.Message}
+        error={(createError as ApiErrorResponse)?.response?.data?.message}
         translate={t}
         onDirtyChange={setIsDirty}
       />

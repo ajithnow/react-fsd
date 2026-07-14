@@ -17,8 +17,8 @@ vi.mock('@tanstack/react-router', () => ({
 }));
 
 // Provide a lightweight mock for the shared utilities the component imports
-vi.mock('@/shared', () => {
-  const React = await vi.importActual('react') as typeof import('react');
+vi.mock('@/shared', async () => {
+  const React = (await vi.importActual('react')) as typeof import('react');
   type Column = {
     id: string;
     header: string;
@@ -205,7 +205,8 @@ describe('UserDataTable', () => {
     expect(screen.getByText(/users.role/i)).toBeInTheDocument();
     expect(screen.getByText(/users.status/i)).toBeInTheDocument();
 
-    expect(screen.getByText('users.powerAdmin')).toBeInTheDocument();
+    expect(screen.getByText('users.viewer')).toBeInTheDocument();
+    expect(screen.getByText('users.editor')).toBeInTheDocument();
 
     // Actions: view and edit should exist for both users
     expect(
