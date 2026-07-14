@@ -1,6 +1,6 @@
 export * from './types'
 export * from './route-registry'
 export * from './locale-registry'
-export * from './mock-registry'
 export * from './constants-registry'
 export * from './guards-registry'
+export * from './sidebar-registry'

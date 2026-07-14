@@ -4,7 +4,7 @@ import { SharedAlertDialog } from '../SharedAlertDialog';
 import type { SharedAlertDialogProps } from '../SharedAlertDialog';
 
 // Mock the shadcn components to avoid setup complexity
-jest.mock('../../../../lib/shadcn/components/ui/alert-dialog', () => ({
+vi.mock('../../../../lib/shadcn/components/ui/alert-dialog', () => ({
   AlertDialog: ({ children, open }: { children: React.ReactNode; open: boolean }) => 
     open ? <div data-testid="alert-dialog">{children}</div> : null,
   AlertDialogContent: ({ children }: { children: React.ReactNode }) => 
@@ -43,11 +43,11 @@ jest.mock('../../../../lib/shadcn/components/ui/alert-dialog', () => ({
 describe('SharedAlertDialog', () => {
   const defaultProps: SharedAlertDialogProps = {
     open: true,
-    onOpenChange: jest.fn(),
+    onOpenChange: vi.fn(),
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {
@@ -153,8 +153,8 @@ describe('SharedAlertDialog', () => {
 
   describe('Event Handling', () => {
     it('calls onConfirm and onOpenChange when confirm button is clicked', async () => {
-      const onConfirm = jest.fn();
-      const onOpenChange = jest.fn();
+      const onConfirm = vi.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog 
@@ -171,8 +171,8 @@ describe('SharedAlertDialog', () => {
     });
 
     it('calls onCancel and onOpenChange when cancel button is clicked', async () => {
-      const onCancel = jest.fn();
-      const onOpenChange = jest.fn();
+      const onCancel = vi.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog 
@@ -189,7 +189,7 @@ describe('SharedAlertDialog', () => {
     });
 
     it('only calls onOpenChange when onConfirm is not provided', () => {
-      const onOpenChange = jest.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog 
@@ -204,7 +204,7 @@ describe('SharedAlertDialog', () => {
     });
 
     it('only calls onOpenChange when onCancel is not provided', () => {
-      const onOpenChange = jest.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog 
@@ -221,9 +221,9 @@ describe('SharedAlertDialog', () => {
 
   describe('Integration Scenarios', () => {
     it('renders complete dialog with all props', () => {
-      const onConfirm = jest.fn();
-      const onCancel = jest.fn();
-      const onOpenChange = jest.fn();
+      const onConfirm = vi.fn();
+      const onCancel = vi.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog
@@ -259,9 +259,9 @@ describe('SharedAlertDialog', () => {
     });
 
     it('handles multiple button clicks correctly', () => {
-      const onConfirm = jest.fn();
-      const onCancel = jest.fn();
-      const onOpenChange = jest.fn();
+      const onConfirm = vi.fn();
+      const onCancel = vi.fn();
+      const onOpenChange = vi.fn();
       
       render(
         <SharedAlertDialog

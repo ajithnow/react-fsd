@@ -1,5 +1,5 @@
 import { generateResources } from '../common.utils';
-import type { GenerateResourcesOptions } from '../../models/common.model';
+import type { GenerateResourcesOptions } from '../../types';
 
 describe('generateResources', () => {
   it('should generate resources correctly with valid input', () => {

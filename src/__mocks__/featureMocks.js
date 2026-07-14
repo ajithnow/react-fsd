@@ -1,2 +1,2 @@
-// Generic noop mocks for feature entrypoints that require browser APIs or MSW
+// Generic noop mocks for feature entrypoints that require browser APIs
 module.exports = {};

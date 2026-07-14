@@ -1,8 +1,8 @@
 // Shared components
 export * from './components';
 
-// Shared models
-export * from './models';
+// Shared types
+export * from './types';
 
 // Shared constants
 export * from './constants';

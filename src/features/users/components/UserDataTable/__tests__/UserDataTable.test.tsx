@@ -1,25 +1,24 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { UserDataTable } from '../UserDataTable';
-import type { AdminUser, UserDataTableProps } from '../../../models/user.model';
+import type { AdminUser, UserDataTableProps } from '../../../types';
 
 
 // hoisted mocks to prevent Jest from attempting to parse binary assets
-jest.mock('@/assets/images/logo.png', () => 'logo-mock');
-jest.mock('~/assets/images/logo.png', () => 'logo-mock');
+vi.mock('@/assets/images/logo.png', () => ({ default: 'logo-mock' }));
+vi.mock('~/assets/images/logo.png', () => ({ default: 'logo-mock' }));
 
 // Mock react-i18next and router hooks used by the component
-jest.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
-const mockNavigate = jest.fn();
-jest.mock('@tanstack/react-router', () => ({ 
+vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
+const mockNavigate = vi.fn();
+vi.mock('@tanstack/react-router', () => ({ 
   useNavigate: () => mockNavigate,
   Link: 'a'
 }));
 
 // Provide a lightweight mock for the shared utilities the component imports
-jest.mock('@/shared', () => {
-  const React = jest.requireActual('react') as typeof import('react');
+vi.mock('@/shared', async () => {
+  const React = (await vi.importActual('react')) as typeof import('react');
   type Column = {
     id: string;
     header: string;
@@ -121,22 +120,77 @@ jest.mock('@/shared', () => {
         )
       )
     );
-  const useRBAC = () => ({ hasPermission: () => true });
+
+  const ResourceDataTable: React.FC<{
+    data: AdminUser[];
+    columns: Column[];
+    loading?: boolean;
+    emptyMessage?: string;
+    getActions?: (item: AdminUser) => { id: string; label: string; onClick?: () => void }[];
+    actionsHeader?: string;
+    testId?: string;
+    className?: string;
+    onRowClick?: (item: AdminUser) => void;
+  }> = ({
+    data,
+    columns,
+    loading,
+    emptyMessage,
+    getActions,
+    actionsHeader = 'Actions',
+    testId,
+    className,
+  }) => {
+    const resolvedColumns = getActions
+      ? [
+          ...columns,
+          {
+            id: 'actions',
+            header: actionsHeader,
+            cell: (item: AdminUser) =>
+              React.createElement(ActionsDropdown, {
+                actions: getActions(item),
+              }),
+          },
+        ]
+      : columns;
+
+    return React.createElement(
+      'div',
+      { 'data-testid': testId, className },
+      React.createElement(DataTable, {
+        data,
+        columns: resolvedColumns,
+        loading,
+        emptyMessage,
+      })
+    );
+  };
+
+  const useRBAC = () => ({
+    hasPermission: () => true,
+    user: null,
+  });
+
+  const TextCell: React.FC<{ value?: string }> = ({ value }) =>
+    React.createElement('span', null, value);
 
   return {
     DataTable,
     DataTableColumn: {},
+    ResourceDataTable,
     ActionsDropdown,
     useRBAC,
+    TextCell,
   };
 });
 
 // Mock the users feature constants to avoid importing routes/mocks
-jest.mock('@/features/users', () => ({
+vi.mock('@/features/users', () => ({
   USER_PERMISSIONS: {
-    USER_READ: 'user:read',
-    USER_UPDATE: 'user:update',
-    USER_DELETE: 'user:delete',
+    USER_READ: 'users:read',
+    USER_UPDATE: 'users:update',
+    USER_DELETE: 'users:delete',
   },
   USER_STATUS: {
     ACTIVE: 'active',
@@ -144,9 +198,9 @@ jest.mock('@/features/users', () => ({
     SUSPENDED: 'suspended',
   },
   USER_TYPES: {
-    POWER_ADMIN: 'POWER_ADMIN',
-    NORMAL_USER: 'NORMAL_USER',
-    SUPER_ADMIN: 'SUPER_ADMIN',
+    ADMIN: 'admin',
+    EDITOR: 'editor',
+    VIEWER: 'viewer',
   },
   USER_ROUTES: {
     DETAIL: '/users/:id',
@@ -160,7 +214,7 @@ const mockUsers: AdminUser[] = [
     FirstName: 'Alice',
     LastName: 'Smith',
     Email: 'alice@example.com',
-    Role: 'NORMAL_USER',
+    Role: 'viewer',
     Status: true,
   },
   {
@@ -168,7 +222,7 @@ const mockUsers: AdminUser[] = [
     FirstName: 'Bob',
     LastName: 'Jones',
     Email: 'bob@example.com',
-    Role: 'POWER_ADMIN',
+    Role: 'editor',
     Status: false,
   },
 ];
@@ -178,10 +232,10 @@ const defaultProps: UserDataTableProps = {
   loading: false,
   pagination: { page: 1, pageSize: 10, total: 2, totalPages: 1 },
   currentFilters: {},
-  onPageChange: jest.fn(),
-  onPageSizeChange: jest.fn(),
-  onSortChange: jest.fn(),
-  onFilterChange: jest.fn(),
+  onPageChange: vi.fn(),
+  onPageSizeChange: vi.fn(),
+  onSortChange: vi.fn(),
+  onFilterChange: vi.fn(),
 };
 
 describe('UserDataTable', () => {
@@ -206,7 +260,8 @@ describe('UserDataTable', () => {
     expect(screen.getByText(/users.role/i)).toBeInTheDocument();
     expect(screen.getByText(/users.status/i)).toBeInTheDocument();
 
-    expect(screen.getByText('users.powerAdmin')).toBeInTheDocument();
+    expect(screen.getByText('users.viewer')).toBeInTheDocument();
+    expect(screen.getByText('users.editor')).toBeInTheDocument();
 
     // Actions: view and edit should exist for both users
     expect(
@@ -218,8 +273,8 @@ describe('UserDataTable', () => {
   });
 
   it('calls action callbacks (view/edit) when actions are triggered', () => {
-    const onView = jest.fn();
-    const onEdit = jest.fn();
+    const onView = vi.fn();
+    const onEdit = vi.fn();
 
     const props = { ...defaultProps, onView, onEdit } as UserDataTableProps;
     render(React.createElement(UserDataTable, props));
@@ -264,8 +319,8 @@ describe('UserDataTable', () => {
   });
 
   it('calls onResetPassword and onDelete when provided for active user', () => {
-    const onReset = jest.fn();
-    const onDelete = jest.fn();
+    const onReset = vi.fn();
+    const onDelete = vi.fn();
     const props = {
       ...defaultProps,
       onResetPassword: onReset,

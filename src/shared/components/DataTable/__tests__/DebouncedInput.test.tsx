@@ -2,17 +2,17 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { DebouncedInput } from '../DebouncedInput';
 
 // Mock timers for debounce testing
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('DebouncedInput', () => {
-  const mockOnChange = jest.fn();
+  const mockOnChange = vi.fn();
 
   beforeEach(() => {
     mockOnChange.mockClear();
   });
 
   afterEach(() => {
-    jest.clearAllTimers();
+    vi.clearAllTimers();
   });
 
   it('renders with initial value', () => {
@@ -91,7 +91,7 @@ describe('DebouncedInput', () => {
     expect(mockOnChange).not.toHaveBeenCalled();
     
     // Fast-forward time by 500ms
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     
     // Now it should be called
     expect(mockOnChange).toHaveBeenCalledWith('debounced value');
@@ -112,11 +112,11 @@ describe('DebouncedInput', () => {
     fireEvent.change(input, { target: { value: 'custom delay' } });
     
     // Should not be called after 500ms
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     expect(mockOnChange).not.toHaveBeenCalled();
     
     // Should be called after 1000ms
-    jest.advanceTimersByTime(500); // Total 1000ms
+    vi.advanceTimersByTime(500); // Total 1000ms
     expect(mockOnChange).toHaveBeenCalledWith('custom delay');
   });
 
@@ -133,19 +133,19 @@ describe('DebouncedInput', () => {
     
     // Type multiple characters rapidly
     fireEvent.change(input, { target: { value: 'a' } });
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     
     fireEvent.change(input, { target: { value: 'ab' } });
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     
     fireEvent.change(input, { target: { value: 'abc' } });
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     
     // Still within debounce window, should not be called
     expect(mockOnChange).not.toHaveBeenCalled();
     
     // Complete the debounce delay
-    jest.advanceTimersByTime(200); // Total 300ms from last change
+    vi.advanceTimersByTime(200); // Total 300ms from last change
     
     // Should only be called once with final value
     expect(mockOnChange).toHaveBeenCalledWith('abc');
@@ -164,17 +164,17 @@ describe('DebouncedInput', () => {
     const input = screen.getByRole('textbox');
     
     fireEvent.change(input, { target: { value: 'first' } });
-    jest.advanceTimersByTime(400);
+    vi.advanceTimersByTime(400);
     
     // Type again before debounce completes
     fireEvent.change(input, { target: { value: 'second' } });
-    jest.advanceTimersByTime(400);
+    vi.advanceTimersByTime(400);
     
     // Still shouldn't be called
     expect(mockOnChange).not.toHaveBeenCalled();
     
     // Complete the second debounce
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     
     expect(mockOnChange).toHaveBeenCalledWith('second');
     expect(mockOnChange).toHaveBeenCalledTimes(1);
@@ -216,7 +216,7 @@ describe('DebouncedInput', () => {
     // Set the same value
     fireEvent.change(input, { target: { value: 'same value' } });
     
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     
     // Should not call onChange since value didn't actually change
     expect(mockOnChange).not.toHaveBeenCalled();
@@ -237,7 +237,7 @@ describe('DebouncedInput', () => {
     
     expect(input).toHaveValue('');
     
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     
     expect(mockOnChange).toHaveBeenCalledWith('');
   });
@@ -256,7 +256,7 @@ describe('DebouncedInput', () => {
     // Unmount before debounce completes
     unmount();
     
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     
     // Should not be called after unmount
     expect(mockOnChange).not.toHaveBeenCalled();
@@ -278,7 +278,7 @@ describe('DebouncedInput', () => {
     input.setSelectionRange(2, 2); // Cursor after "he"
     
     // Advance time but not enough to trigger debounce
-    jest.advanceTimersByTime(100);
+    vi.advanceTimersByTime(100);
     
     // Input should still be focused and cursor position maintained
     expect(document.activeElement).toBe(input);
@@ -300,7 +300,7 @@ describe('DebouncedInput', () => {
     
     expect(input).toHaveValue(specialText);
     
-    jest.advanceTimersByTime(500);
+    vi.advanceTimersByTime(500);
     
     expect(mockOnChange).toHaveBeenCalledWith(specialText);
   });

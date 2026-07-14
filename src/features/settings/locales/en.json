@@ -1,4 +1,9 @@
 {
+  "nav": {
+    "settings": "Settings",
+    "profile": "Profile",
+    "account": "Account"
+  },
   "title": "Settings",
   "description": "Manage your account settings and set e-mail preferences.",
 

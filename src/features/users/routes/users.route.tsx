@@ -12,6 +12,8 @@ import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 const checkCreatePermission = (permission: string) => {
   const user = store.getState().auth.user;
   if (!hasPermission(user, permission)) {
+    // Never redirect to a route that immediately sends the user back here
+    // (previous `/` → `/users` → `/` loop).
     throw redirect({ to: ROUTE_CONSTANTS.ROOT, replace: true });
   }
 };

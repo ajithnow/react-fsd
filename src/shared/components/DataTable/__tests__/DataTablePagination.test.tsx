@@ -1,11 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { DataTablePagination } from '../DataTablePagination';
-import { PaginationInfo } from '../dataTable.model';
+import { PaginationInfo } from '../dataTable.types';
 
 // Mock props for testing
 // Mock react-i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: { defaultValue?: string; count?: number; [key: string]: unknown }) => {
       if (options?.defaultValue) {
@@ -13,20 +12,20 @@ jest.mock('react-i18next', () => ({
         if (options.count !== undefined) {
           str = str.replace('{{count}}', options.count.toString());
         }
-        if (options.page !== undefined) {
-          str = str.replace('{{page}}', options.page.toString());
+        if (options.page != null) {
+          str = str.replace('{{page}}', String(options.page));
         }
-        if (options.totalPages !== undefined) {
-          str = str.replace('{{totalPages}}', options.totalPages.toString());
+        if (options.totalPages != null) {
+          str = str.replace('{{totalPages}}', String(options.totalPages));
         }
-        if (options.start !== undefined) {
-          str = str.replace('{{start}}', options.start.toString());
+        if (options.start != null) {
+          str = str.replace('{{start}}', String(options.start));
         }
-        if (options.end !== undefined) {
-          str = str.replace('{{end}}', options.end.toString());
+        if (options.end != null) {
+          str = str.replace('{{end}}', String(options.end));
         }
-        if (options.total !== undefined) {
-          str = str.replace('{{total}}', options.total.toString());
+        if (options.total != null) {
+          str = str.replace('{{total}}', String(options.total));
         }
         return str;
       }
@@ -35,8 +34,8 @@ jest.mock('react-i18next', () => ({
   }),
 }));
 
-const mockOnPageChange = jest.fn();
-const mockOnPageSizeChange = jest.fn();
+const mockOnPageChange = vi.fn();
+const mockOnPageSizeChange = vi.fn();
 
 const getMockPagination = (overrides: Partial<PaginationInfo>): PaginationInfo => ({
   page: 1,
@@ -49,7 +48,7 @@ const getMockPagination = (overrides: Partial<PaginationInfo>): PaginationInfo =
 describe('DataTablePagination', () => {
   beforeEach(() => {
     // Reset mocks before each test
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders correctly with initial props', () => {

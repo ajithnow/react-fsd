@@ -2,11 +2,11 @@
 
 > A modern React application built with Feature-Sliced Design architecture, TypeScript, and cutting-edge tools for scalable frontend development.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.0.4-646cff.svg)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.11-38bdf8.svg)](https://tailwindcss.com/)
-[![Jest](https://img.shields.io/badge/Jest-30.0.5-c21325.svg)](https://jestjs.io/)
+[![Vitest](https://img.shields.io/badge/Vitest-4.1-6E9F18.svg)](https://vitest.dev/)
 
 ## ✨ Features
 
@@ -19,10 +19,9 @@
 - 🗺️ **TanStack Router** - Type-safe routing
 - 📦 **Redux Toolkit** - Industry-standard state management
 - 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
-- 🧪 **Jest + RTL** - Comprehensive testing setup
+- 🧪 **Vitest + RTL** - Fast unit/integration testing with Vite
 - 🌍 **i18next** - Internationalization support
-- 🎭 **MSW** - API mocking for development and testing
-- 📏 **ESLint + Prettier** - Code quality and formatting
+- 📏 **Oxlint + Prettier** - Fast linting (TS 7 type-aware) and formatting
 - 🪝 **Husky** - Git hooks for quality assurance
 
 ## 🏛️ Architecture
@@ -89,7 +88,7 @@ npm run build        # Build for production (TypeScript + Vite)
 npm run preview      # Preview production build
 
 # Code Quality
-npm run lint         # Run ESLint
+npm run lint         # Run Oxlint (type-aware)
 npm run prepare      # Setup Husky git hooks
 
 # Testing
@@ -114,7 +113,7 @@ src/
 │   │   ├── constants/          # Feature constants
 │   │   ├── locales/           # i18n translations
 │   │   ├── managers/          # Business logic
-│   │   ├── mocks/             # MSW handlers
+│   │   ├── mappers/           # API → domain mappers
 │   │   ├── models/            # TypeScript types
 │   │   ├── pages/             # Route components
 │   │   ├── queries/           # TanStack Query hooks
@@ -128,7 +127,6 @@ src/
 │   ├── api/                   # API configuration & endpoints
 │   ├── components/            # App-level components
 │   ├── i18n/                  # i18n setup
-│   ├── mock/                  # MSW configuration
 │   ├── registry/              # Centralized feature registries
 │   └── router/                # Router setup & root route
 │
@@ -158,21 +156,16 @@ To maintain strict separation of concerns, features should isolate their data-fe
 
 ## 🧩 Adding New Features
 
-Follow our [Feature Development Guide](./docs/DEVELOPMENT.md) to add new features:
+Add a new slice under `src/features/` with a `config.ts` entry (routes, locales, constants, guards). The app auto-discovers feature configs on boot.
 
 ```bash
-# 1. Create feature structure automatically
-# This will guide you through prompts and scaffold all files (routes, stores, etc.)
-npm run generate:feature
+# 1. Create the feature folder + config.ts manually
 
 # 2. Implement feature logic (models → services → stores → components → pages)
 
-# 3. Register automatically
-# The new feature's `config.ts` is auto-discovered!
-# (Wait for HMR or restart dev server)
+# 3. Restart / wait for HMR — config.ts is auto-discovered
 
-# 4. Optional: Manual Redux wiring
-# If you chose to include a Store, add the reducer to src/core/store/index.ts
+# 4. Optional: if you added a Redux slice, wire the reducer in src/core/store/index.ts
 ```
 
 ### Example Feature Structure
@@ -210,7 +203,6 @@ We maintain **80% test coverage** with a comprehensive testing approach:
 
 - **Unit Tests** (70%): Components, utilities, services
 - **Integration Tests** (20%): Feature workflows
-- **E2E Tests** (10%): Critical user journeys
 
 ### Running Tests
 
@@ -390,7 +382,7 @@ We welcome contributions! Please see our [Contributing Guide](./docs/CONTRIBUTIN
 ### Code Quality
 
 - ✅ TypeScript strict mode
-- ✅ ESLint + Prettier
+- ✅ Oxlint + Prettier
 - ✅ Pre-commit hooks
 - ✅ 80% test coverage requirement
 - ✅ Automated CI/CD
@@ -403,7 +395,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [ ] **Component Library** - Extract reusable components
 - [ ] **Storybook Integration** - Component documentation
-- [ ] **E2E Testing** - Playwright integration
 - [ ] **Performance Monitoring** - Real user metrics
 - [ ] **PWA Support** - Service worker integration
 - [ ] **Micro-frontend** - Module federation setup

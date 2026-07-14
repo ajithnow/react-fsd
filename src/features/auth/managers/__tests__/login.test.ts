@@ -1,58 +1,71 @@
-import { AUTH_CONSTANTS } from '../../constants';
 import { useLoginManager } from '../login.manager';
+import { authStorage } from '../../utils';
 import { renderHook, act } from '@testing-library/react';
 
-// Mock react-redux
-const mockDispatch = jest.fn();
-jest.mock('react-redux', () => ({
-  useDispatch: () => mockDispatch,
-  useSelector: jest.fn(),
+const mockGetProfile = vi.fn();
+
+vi.mock('../../services', () => ({
+  __esModule: true,
+  default: {
+    useProfileService: () => ({
+      getProfile: mockGetProfile,
+    }),
+  },
 }));
 
-const mockNavigate = jest.fn();
-const mockUseSearch = jest.fn().mockReturnValue({});
-jest.mock('@tanstack/react-router', () => ({
+const mockDispatch = vi.fn();
+vi.mock('react-redux', () => ({
+  useDispatch: () => mockDispatch,
+  useSelector: vi.fn(),
+}));
+
+const mockNavigate = vi.fn();
+const mockUseSearch = vi.fn().mockReturnValue({});
+vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
   useSearch: () => mockUseSearch(),
 }));
 
 describe('useLoginManager', () => {
-  const defaultApiUser = {
-    Email: 'john@example.com',
-    FirstName: 'John',
-    LastName: 'Doe',
-    Role: 'NORMAL_USER',
-    Name: 'John Doe',
+  const defaultPayload = {
+    accessToken: 'fake-token',
+    refreshToken: 'fake-refresh',
   };
 
-  const defaultPayload = {
-    token: 'fake-token',
-    user: defaultApiUser,
-    refreshToken: 'fake-refresh',
+  const profileUser = {
+    id: '1',
+    email: 'john@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    role: 'viewer',
+    roles: ['viewer'],
+    name: 'John Doe',
+    permissions: [],
+    status: 'active',
   };
 
   beforeEach(() => {
     localStorage.clear();
-    jest.clearAllMocks();
+    vi.clearAllMocks();
+    mockGetProfile.mockResolvedValue(profileUser);
   });
 
-  it('should handle login success correctly', async () => {
+  it('should store tokens, load profile, and navigate on success', async () => {
     const { result } = renderHook(() => useLoginManager());
 
     await act(async () => {
       await result.current.onLoginSuccess(defaultPayload);
     });
 
-    expect(localStorage.getItem(AUTH_CONSTANTS.ACCESS_TOKEN)).toBe('fake-token');
-    expect(localStorage.getItem(AUTH_CONSTANTS.REFRESH_TOKEN)).toBe('fake-refresh');
-
+    expect(authStorage.getToken()).toBe('fake-token');
+    expect(authStorage.getRefreshToken()).toBe('fake-refresh');
+    expect(mockGetProfile).toHaveBeenCalled();
     expect(mockDispatch).toHaveBeenCalledWith(expect.anything());
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
   });
 
   it('should navigate to custom return URL on success when provided', async () => {
-    const mockSearchParams = { returnUrl: '/dashboard' };
-    mockUseSearch.mockReturnValue(mockSearchParams);
+    mockUseSearch.mockReturnValue({ returnUrl: '/dashboard' });
 
     const { result } = renderHook(() => useLoginManager());
 
@@ -64,8 +77,7 @@ describe('useLoginManager', () => {
   });
 
   it('should navigate to home when return URL is login page', async () => {
-    const mockSearchParams = { returnUrl: '/auth/login' };
-    mockUseSearch.mockReturnValue(mockSearchParams);
+    mockUseSearch.mockReturnValue({ returnUrl: '/auth/login' });
 
     const { result } = renderHook(() => useLoginManager());
 
@@ -76,6 +88,21 @@ describe('useLoginManager', () => {
     expect(mockNavigate).toHaveBeenCalledWith({ to: '/' });
   });
 
+  it('should clear tokens when getProfile fails', async () => {
+    mockGetProfile.mockRejectedValue(new Error('Profile failed'));
+
+    const { result } = renderHook(() => useLoginManager());
+
+    await expect(
+      act(async () => {
+        await result.current.onLoginSuccess(defaultPayload);
+      })
+    ).rejects.toThrow('Profile failed');
+
+    expect(authStorage.getToken()).toBeNull();
+    expect(mockNavigate).not.toHaveBeenCalled();
+  });
+
   it('should handle login error correctly', async () => {
     const { result } = renderHook(() => useLoginManager());
 
@@ -83,8 +110,7 @@ describe('useLoginManager', () => {
       result.current.onLoginError(new Error('Network error'));
     });
 
-    // Should not store tokens or dispatch user
-    expect(localStorage.getItem(AUTH_CONSTANTS.ACCESS_TOKEN)).toBeNull();
+    expect(authStorage.getToken()).toBeNull();
     expect(mockDispatch).not.toHaveBeenCalled();
     expect(mockNavigate).not.toHaveBeenCalled();
   });

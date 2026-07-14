@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useLocation } from '@tanstack/react-router';
 import { isAuthenticated } from '../utils/auth.utils';
-import type { AuthGuardProps } from '../models/guards.model';
+import type { AuthGuardProps } from '../types';
 import { AUTH_ROUTES, ROUTE_PREFIX } from '../constants';
 import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 
@@ -24,7 +24,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
       
       const returnUrl = shouldStoreReturnUrl ? location.pathname : undefined;
       
-      navigate({ 
+      void navigate({ 
         to: redirectTo,
         search: returnUrl ? { returnUrl } : undefined,
         replace: true 

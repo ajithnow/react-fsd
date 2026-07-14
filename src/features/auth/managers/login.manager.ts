@@ -7,9 +7,10 @@ import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 import { AppDispatch } from '@/core/store';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/shared/hooks/useToast';
-import { AxiosError } from 'axios';
 import { logger } from '@/core/services/logger.service';
-import type { User } from '../models/auth.model';
+import { getErrorMessage } from '@/shared/utils/getErrorMessage';
+import type { LoginResponse } from '../types';
+import authService from '../services';
 
 export const useLoginManager = () => {
   const { t } = useTranslation('auth');
@@ -17,48 +18,41 @@ export const useLoginManager = () => {
   const navigate = useNavigate();
   const searchParams = useSearch({ strict: false }) as { returnUrl?: string };
   const { notify } = useToast();
+  const { getProfile } = authService.useProfileService();
 
   const onLoginSuccess = async ({
-    token,
-    user: apiUser,
+    accessToken,
     refreshToken,
-  }: {
-    token: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    user: Record<string, any>;
-    refreshToken: string;
-  }) => {
-    // Use the centralized auth storage
-    authStorage.setToken(token);
+  }: LoginResponse) => {
+    authStorage.setToken(accessToken);
     authStorage.setRefreshToken(refreshToken);
 
-    // Use the user data from API response and add email if not present
-    const user = {
-      ...apiUser,
-      Email: apiUser.Email,
-      Status: 'active' as const,
-      // Ensure permissions are set from the API response safely without `any`
-      permissions: (apiUser as unknown as { permissions?: string[] }).permissions || [],
-    } as unknown as User;
-    
-    authStorage.setUser(user);
-    dispatch(setUser(user));
+    try {
+      const user = await getProfile();
+      dispatch(setUser(user));
+    } catch (error) {
+      authStorage.clearTokens();
+      dispatch(setUser(null));
+      throw error;
+    }
 
-    // Get return URL from search params
     const returnUrl = searchParams.returnUrl;
     const destination =
       returnUrl && returnUrl !== AUTH_ROUTES.LOGIN
         ? returnUrl
         : ROUTE_CONSTANTS.ROOT;
 
-    notify(t('login.successLogin'), { position: 'bottom-right' }, "success");
+    notify(t('login.successLogin'), { position: 'bottom-right' }, 'success');
     await navigate({ to: destination });
   };
 
   const onLoginError = (error: unknown) => {
-    const errorMessage = error instanceof AxiosError ? error.message : t('login.loginFailedError');
     logger.error('Login failed in manager', error, 'LoginManager');
-    notify(errorMessage, { position: 'bottom-right' }, "error");
+    notify(
+      getErrorMessage(error, t('login.loginFailedError')),
+      { position: 'bottom-right' },
+      'error'
+    );
   };
 
   return {

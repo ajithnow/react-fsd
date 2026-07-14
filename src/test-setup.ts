@@ -1,36 +1,24 @@
-// Test setup file for Jest
-// Mock import.meta for Vite compatibility
+import '@testing-library/jest-dom/vitest';
+import { vi } from 'vitest';
 
-// Mock environment variables for Jest
-process.env.VITE_FEATURE_FLAGS = undefined;
+window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
-// Import jest-dom matchers for all tests
-import '@testing-library/jest-dom';
-
-// Mock scrollIntoView for Radix UI components
-window.HTMLElement.prototype.scrollIntoView = jest.fn();
-
-// Mock ResizeObserver for Radix UI components
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
 }));
 
-// Mock matchMedia for all tests
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: vi.fn().mockImplementation((query: string) => ({
     matches: false,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // Deprecated
-    removeListener: jest.fn(), // Deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
   })),
 });
-
-// Additional test utilities can go here
-export {};

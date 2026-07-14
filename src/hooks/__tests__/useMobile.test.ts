@@ -3,15 +3,15 @@ import { useIsMobile } from './../useMobile';
 
 // Create a more robust matchMedia mock
 const createMatchMediaMock = (matches: boolean) => {
-  return jest.fn().mockImplementation((query: string) => ({
+  return vi.fn().mockImplementation((query: string) => ({
     matches,
     media: query,
     onchange: null,
-    addListener: jest.fn(), // Deprecated
-    removeListener: jest.fn(), // Deprecated
-    addEventListener: jest.fn(),
-    removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
+    addListener: vi.fn(), // Deprecated
+    removeListener: vi.fn(), // Deprecated
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
   }));
 };
 
@@ -50,7 +50,7 @@ describe('useIsMobile', () => {
     window.innerWidth = 900;
     let changeHandler: (() => void) | undefined;
     
-    window.matchMedia = jest.fn().mockImplementation((query: string) => {
+    window.matchMedia = vi.fn().mockImplementation((query: string) => {
       return {
         matches: window.innerWidth < 768,
         media: query,
@@ -60,11 +60,11 @@ describe('useIsMobile', () => {
         ) => {
           changeHandler = cb as () => void;
         },
-        removeEventListener: jest.fn(),
-        addListener: jest.fn(),
-        removeListener: jest.fn(),
+        removeEventListener: vi.fn(),
+        addListener: vi.fn(),
+        removeListener: vi.fn(),
         onchange: null,
-        dispatchEvent: jest.fn(),
+        dispatchEvent: vi.fn(),
       } as unknown as MediaQueryList;
     });
 

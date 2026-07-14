@@ -4,7 +4,7 @@ import {
 } from '@/lib/shadcn/components/ui/sidebar';
 import { AppSidebar } from '../AppSidebar';
 import { TopBar } from '../TopBar';
-import { AppLayoutProps } from './appLayout.models';
+import { AppLayoutProps } from './appLayout.types';
 import { useDocumentTitle } from '@/shared/hooks/useDocumentTitle';
 import { useTranslation } from 'react-i18next';
 

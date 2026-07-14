@@ -27,7 +27,8 @@ import { useUserFormManager } from '@/features/users/managers/userform.manager';
 import { useAlertDialog } from '@/shared/components';
 import { UserActionDialog } from '@/features/users/components/UserActionDialogs/UserActionDialogs';
 import { getUserTypeData } from '@/features/users';
-import { authStorage } from '@/features/auth/utils';
+import { selectAuthUser } from '@/features/auth/stores/auth.slice';
+import { useSelector } from 'react-redux';
 
 export const UserDetailPage: React.FC = () => {
   const navigate = useNavigate();
@@ -36,6 +37,7 @@ export const UserDetailPage: React.FC = () => {
   const params = useParams({ strict: false });
   const id = params.id as string;
   const { t } = useTranslation('users');
+  const sessionUser = useSelector(selectAuthUser);
 
   const typeData = useMemo(() => getUserTypeData(t), [t]);
 
@@ -62,10 +64,10 @@ export const UserDetailPage: React.FC = () => {
     navigate({ to: '/users/$id/edit', params: { id } });
   };
 
-  const checkSameUser = useCallback((email: string) => {
-    const user = authStorage.getUser() as { Email?: string } | undefined;
-    return user?.Email === email;
-  }, []);
+  const checkSameUser = useCallback(
+    (email: string) => sessionUser?.email === email,
+    [sessionUser]
+  );
 
   const deleteDialog = useAlertDialog();
 

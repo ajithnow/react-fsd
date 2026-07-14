@@ -21,8 +21,9 @@ import { Button } from '@/lib/shadcn/components/ui/button';
 import { Card, CardContent } from '@/lib/shadcn/components/ui/card';
 import { UserFormProps, UserFormSchema, FormData } from '@/features/users';
 import { SharedAlertDialog, useAlertDialog } from '@/shared/components';
-import { authStorage } from '@/features/auth/utils';
-import { ROLES } from '@/shared/lib/rbac';
+import { selectAuthUser } from '@/features/auth/stores/auth.slice';
+import { USER_TYPES } from '@/features/users/constants/users.constants';
+import { useSelector } from 'react-redux';
 
 export const UserForm: React.FC<
   UserFormProps & { onDirtyChange?: (dirty: boolean) => void }
@@ -37,14 +38,14 @@ export const UserForm: React.FC<
 }) => {
   const { userSchema } = UserFormSchema();
   const { isOpen, showAlert, hideAlert } = useAlertDialog();
-  const loggedUser = authStorage.getUser() as { Email?: string } | undefined;
+  const loggedUser = useSelector(selectAuthUser);
 
   const checkSameUser = useCallback(
-    (email?: string) => loggedUser?.Email === email,
+    (email?: string) => loggedUser?.email === email,
     [loggedUser]
   );
 
-  const isAdmin = useCallback(() => user?.Role === ROLES.SUPER_ADMIN, [user]);
+  const isAdmin = useCallback(() => user?.Role === USER_TYPES.ADMIN, [user]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(userSchema),
@@ -199,11 +200,11 @@ useEffect(() => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="POWER_ADMIN">
-                                {translate('users.form.powerUser')}
+                              <SelectItem value={USER_TYPES.EDITOR}>
+                                {translate('users.form.editor')}
                               </SelectItem>
-                              <SelectItem value="NORMAL_USER">
-                                {translate('users.form.normalUser')}
+                              <SelectItem value={USER_TYPES.VIEWER}>
+                                {translate('users.form.viewer')}
                               </SelectItem>
                             </SelectContent>
                           </Select>

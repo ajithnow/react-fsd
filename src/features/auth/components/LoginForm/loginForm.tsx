@@ -14,7 +14,7 @@ import {
 import { Input } from '@/lib/shadcn/components/ui/input';
 import { Button } from '@/lib/shadcn/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/lib/shadcn/components/ui/card';
-import type { LoginFormProps, LoginFormValues } from '../../models/auth.model';
+import type { LoginFormProps, LoginFormValues } from '../../types';
 import useAuthSchema from '../../schema/auth.schema';
 import { useTranslation } from 'react-i18next';
 
@@ -26,7 +26,7 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: '',
     },
   });
@@ -59,14 +59,15 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
             >
               <FormField
                 control={form.control}
-                name="username"
+                name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>{t('login.usernameLabel')}</FormLabel>
+                    <FormLabel>{t('login.emailLabel')}</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder={t('login.usernamePlaceholder')}
-                        autoComplete="username"
+                        type="email"
+                        placeholder={t('login.emailPlaceholder')}
+                        autoComplete="email"
                         disabled={isLoading}
                         {...field}
                       />
@@ -119,17 +120,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSubmit, isLoading }) => 
                   )}
                   {t('login.loginButton', 'Sign In')}
                 </Button>
-
-                {/* <div className="text-center">
-                  <Button
-                    type="button"
-                    variant="default"
-                    size="lg"
-                    disabled={true}
-                  >
-                    {t('login.forgotPassword', 'Forgot your password?')}
-                  </Button>
-                </div> */}
               </div>
             </form>
           </Form>

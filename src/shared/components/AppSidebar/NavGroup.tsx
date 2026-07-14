@@ -26,7 +26,7 @@ import type {
   NavItem,
   NavLink,
   NavCollapsible,
-} from './appSidebar.models';
+} from './appSidebar.types';
 
 function checkIsActive(href: string, item: NavItem): boolean {
   if ('url' in item && item.url) {

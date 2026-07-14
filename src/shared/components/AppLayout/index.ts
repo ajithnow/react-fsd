@@ -1,3 +1,3 @@
 export { AppLayout } from './AppLayout';
-export * from './appLayout.models';
+export * from './appLayout.types';
 export * from './sidebarHelpers';

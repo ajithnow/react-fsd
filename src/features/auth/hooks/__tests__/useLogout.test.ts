@@ -1,31 +1,32 @@
+import { type MockedFunction } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useLogout } from '../useLogout';
 import { useLogoutManager } from '../../managers/logout.manager';
 import { useSelector } from 'react-redux';
 
 // Mock the logout manager
-jest.mock('../../managers/logout.manager', () => ({
-  useLogoutManager: jest.fn(),
+vi.mock('../../managers/logout.manager', () => ({
+  useLogoutManager: vi.fn(),
 }));
 
 // Mock react-redux
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(),
-  useDispatch: jest.fn(),
+vi.mock('react-redux', () => ({
+  useSelector: vi.fn(),
+  useDispatch: vi.fn(),
 }));
 
-const mockUseLogoutManager = useLogoutManager as jest.MockedFunction<
+const mockUseLogoutManager = useLogoutManager as MockedFunction<
   typeof useLogoutManager
 >;
-const mockUseSelector = useSelector as unknown as jest.Mock;
+const mockUseSelector = useSelector as unknown as vi.Mock;
 
 describe('useLogout', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockUseSelector.mockReturnValue(null); // No user logged in by default
     mockUseLogoutManager.mockReturnValue({
-      logoutUser: jest.fn(),
-      quickLogout: jest.fn(),
+      logoutUser: vi.fn(),
+      quickLogout: vi.fn(),
       isPending: false,
       error: null,
       canLogout: false,
@@ -58,8 +59,8 @@ describe('useLogout', () => {
 
   it('should expose loading state from logout manager', () => {
     mockUseLogoutManager.mockReturnValue({
-      logoutUser: jest.fn(),
-      quickLogout: jest.fn(),
+      logoutUser: vi.fn(),
+      quickLogout: vi.fn(),
       isPending: true,
       error: null,
       canLogout: true,

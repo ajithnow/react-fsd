@@ -4,71 +4,81 @@ import axios, { AxiosError, AxiosResponse, InternalAxiosRequestConfig } from 'ax
 import { API_ENDPOINTS } from './endpoints';
 import { storageService } from '@/shared/utils/storage.service';
 import { logger } from '@/core/services/logger.service';
+import { AUTH_CONSTANTS } from '@/features/auth/constants/auth.constants';
+import type { LoginResponse } from '@/features/auth/types';
 
 const API_BASE_URL = ENV.API_BASE_URL;
-const MOCK_API_BASE_URL = ENV.MOCK_API_BASE_URL;
 
-declare module 'axios' {
-  export interface AxiosRequestConfig {
-    isMock?: boolean;
-  }
-}
+const AUTH_PATHS_SKIP_REFRESH = [
+  API_ENDPOINTS.AUTH.LOGIN,
+  API_ENDPOINTS.AUTH.REFRESH_TOKEN,
+  API_ENDPOINTS.AUTH.LOGOUT,
+];
 
-// Create the base API client factory
-const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
+const getAuthStorageKeys = () => {
+  const constants = constantsRegistry.getAll() as Record<
+    string,
+    Record<string, string> | undefined
+  >;
+  const authConstants = constants.AUTH as Record<string, string> | undefined;
+  return {
+    accessToken: authConstants?.ACCESS_TOKEN || AUTH_CONSTANTS.ACCESS_TOKEN,
+    refreshToken: authConstants?.REFRESH_TOKEN || AUTH_CONSTANTS.REFRESH_TOKEN,
+  };
+};
+
+const shouldSkipRefresh = (url?: string): boolean => {
+  if (!url) return false;
+  return AUTH_PATHS_SKIP_REFRESH.some((path) => url.includes(path));
+};
+
+const createApiClient = () => {
   const client = axios.create({
-    baseURL: defaultIsMock ? MOCK_API_BASE_URL : API_BASE_URL, 
+    baseURL: API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
   });
 
-  // Request interceptor - Handle per-endpoint mocking and add auth token
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      // Per-endpoint mocking override
-      if (config.isMock !== undefined) {
-        config.baseURL = config.isMock ? MOCK_API_BASE_URL : API_BASE_URL;
-      }
-
-      const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
-      const authConstants = constants.AUTH as Record<string, string> | undefined;
-      const token = storageService.getItem<string>(authConstants?.ACCESS_TOKEN || 'accessToken');
+      const { accessToken } = getAuthStorageKeys();
+      const token = storageService.getItem<string>(accessToken);
 
       if (token) {
         config.headers.Authorization = `Bearer ${token}`;
       }
       return config;
     },
-    (error: AxiosError) => {
-      return Promise.reject(error);
-    }
+    (error: AxiosError) => Promise.reject(error)
   );
 
-  // Response interceptor - Handle errors and token refresh
   client.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
-      const originalRequest = error.config as InternalAxiosRequestConfig & { _retry?: boolean };
-      const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
-      const authConstants = constants.AUTH as Record<string, string> | undefined;
+      const originalRequest = error.config as InternalAxiosRequestConfig & {
+        _retry?: boolean;
+      };
+      const { accessToken, refreshToken: refreshKey } = getAuthStorageKeys();
+      const requestUrl = originalRequest?.url ?? '';
 
-      // Handle 401 Unauthorized with token refresh
-      if (error.response?.status === 401 && !originalRequest._retry) {
+      if (
+        error.response?.status === 401 &&
+        originalRequest &&
+        !originalRequest._retry &&
+        !shouldSkipRefresh(requestUrl)
+      ) {
         originalRequest._retry = true;
 
         try {
-          const refreshToken = storageService.getItem<string>(
-            authConstants?.REFRESH_TOKEN || 'refreshToken'
-          );
+          const refreshToken = storageService.getItem<string>(refreshKey);
 
           if (!refreshToken) {
             throw new Error('No refresh token available');
           }
 
-          // Use a separate axios instance to avoid interceptor loops
-          const refreshResponse = await axios.post(
+          const { data } = await axios.post<LoginResponse>(
             `${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH_TOKEN}`,
             { refreshToken },
             {
@@ -78,32 +88,25 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
             }
           );
 
-          const newAccessToken = refreshResponse.data?.accessToken;
+          storageService.setItem(accessToken, data.accessToken);
 
-          if (!newAccessToken) {
-            throw new Error('Invalid refresh response');
+          if (data.refreshToken) {
+            storageService.setItem(refreshKey, data.refreshToken);
           }
 
-          // Update stored token
-          storageService.setItem(
-            authConstants?.ACCESS_TOKEN || 'accessToken',
-            newAccessToken
-          );
+          originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
 
-          // Update the original request with new token
-          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-
-          // Retry the original request
           return client(originalRequest);
         } catch (refreshError) {
           logger.error('Token refresh failed', refreshError, 'API');
 
-          // Clear tokens and redirect to login
-          storageService.removeItem(authConstants?.ACCESS_TOKEN || 'accessToken');
-          storageService.removeItem(authConstants?.REFRESH_TOKEN || 'refreshToken');
+          storageService.removeItem(accessToken);
+          storageService.removeItem(refreshKey);
 
-          // Redirect to login - you might want to use your router here
-          if (typeof window !== 'undefined') {
+          if (
+            typeof window !== 'undefined' &&
+            !window.location.pathname.startsWith('/auth/')
+          ) {
             window.location.href = '/auth/login';
           }
 
@@ -111,14 +114,12 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
         }
       }
 
-      // Handle other HTTP errors
       if (error.response) {
         const status = error.response.status;
-        const data = error.response.data;
+        const responseData = error.response.data;
 
-        logger.error(`API Error ${status}`, data, 'API');
+        logger.error(`API Error ${status}`, responseData, 'API');
 
-        // You can add more specific error handling here
         switch (status) {
           case 403:
             logger.warn('Forbidden: Insufficient permissions', null, 'API');
@@ -133,7 +134,6 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
             logger.info(`HTTP status ${status}`, null, 'API');
         }
       } else if (error.request) {
-        // Network error
         logger.error('Network error - no response received', null, 'API');
       } else {
         logger.error('Request setup error', error.message, 'API');
@@ -146,9 +146,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
   return client;
 };
 
-// Create default instance
 const apiClient = createApiClient();
 
-// Export both the factory and default instance
 export { createApiClient };
 export default apiClient;

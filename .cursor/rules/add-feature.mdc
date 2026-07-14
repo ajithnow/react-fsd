@@ -1,0 +1,50 @@
+---
+description: How to add a new FSD feature module (config, routes, sidebar, permissions)
+globs: src/features/**/*
+alwaysApply: false
+---
+
+# Add a feature module
+
+When adding a new domain feature, follow Feature-Sliced Design and register through bootstrap — do **not** hardcode routes or sidebar into shared hooks.
+
+Full checklist: `.agents/rules/add-feature.md`
+
+## Discovery
+
+`src/main.tsx` loads every `src/features/*/config.ts` via `import.meta.glob`.  
+Adding `config.ts` is enough — no edits to `main.tsx`.
+
+## Required layout
+
+```text
+src/features/<name>/
+  config.ts
+  constants/
+  routes/
+  pages/
+  locales/en.json + de.json + index.ts
+  sidebar.ts
+  index.ts
+```
+
+Reference: `src/features/bookings/`.
+
+## `config.ts`
+
+```ts
+const config: FeatureConfig = {
+  routes: featureRoutes,
+  locales: { ns: '<name>', resources: featureLocales },
+  sidebar: featureSidebar,
+}
+export default config
+```
+
+## Rules
+
+1. Feature owns routes, permission strings, and sidebar.
+2. Session permissions come from `/api/auth/me` only — authorization is permission-based (not roles).
+3. Gate routes with `hasPermission` + redirect to `/`. UI: `<Can>` or `useRBAC()`.
+4. Sidebar `permission` is filtered at assembly; respects `VITE_RBAC_ENABLED=false`.
+5. Locales via `config.locales` with feature `ns`.

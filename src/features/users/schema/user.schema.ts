@@ -12,7 +12,7 @@ export function UserFormSchema() {
     lastName: validateName(t('users.form.lastName')),
     email: validateEmail(),
     // password: validatePassword(),
-    role: z.enum(['NORMAL_USER', 'POWER_ADMIN', 'SUPER_ADMIN']),
+    role: z.enum(['admin', 'editor', 'viewer']),
   });
 
   return { userSchema };

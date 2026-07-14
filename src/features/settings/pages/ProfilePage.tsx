@@ -31,10 +31,10 @@ export const ProfilePage: React.FC = () => {
   useEffect(() => {
     if (profileQuery.data) {
       form.reset({
-        firstName: profileQuery.data.FirstName,
-        lastName: profileQuery.data.LastName,
-        email: profileQuery.data.Email,
-        role: profileQuery.data.Role,
+        firstName: profileQuery.data.firstName,
+        lastName: profileQuery.data.lastName,
+        email: profileQuery.data.email,
+        role: profileQuery.data.role,
       });
     }
   }, [profileQuery.data, form]);

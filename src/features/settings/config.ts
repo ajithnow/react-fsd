@@ -1,12 +1,12 @@
 import type { FeatureConfig } from '@/core/registry'
 import settingsRoutes from './routes/settings.route'
 import settingsLocales from './locales'
-import { settingsHandlers } from './mocks'
+import { settingsSidebar } from './sidebar'
 
 const config: FeatureConfig = {
   routes: settingsRoutes,
   locales: { ns: 'settings', resources: settingsLocales },
-  handlers: settingsHandlers,
+  sidebar: settingsSidebar,
 }
 
 export default config

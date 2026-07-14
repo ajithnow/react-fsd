@@ -1,28 +1,28 @@
+import { type MockedFunction } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { GuestGuard } from '../GuestGuard';
 import * as authUtils from '../../utils/auth.utils';
 
 // Mock the auth utils
-jest.mock('../../utils/auth.utils', () => ({
-  isAuthenticated: jest.fn(),
+vi.mock('../../utils/auth.utils', () => ({
+  isAuthenticated: vi.fn(),
 }));
 
 // Mock TanStack Router hooks
-const mockNavigate = jest.fn();
+const mockNavigate = vi.fn();
 const mockSearch: Record<string, unknown> = {};
 
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
   useSearch: () => mockSearch,
 }));
 
 // Get the mocked function
-const mockIsAuthenticated = authUtils.isAuthenticated as jest.MockedFunction<typeof authUtils.isAuthenticated>;
+const mockIsAuthenticated = authUtils.isAuthenticated as MockedFunction<typeof authUtils.isAuthenticated>;
 
 describe('GuestGuard', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     Object.keys(mockSearch).forEach(key => delete mockSearch[key]);
   });
 

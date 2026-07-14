@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
-import { User, AuthState, LoginCredentials } from '../models/auth.model';
+import { User, AuthState, LoginCredentials } from '../types';
 import { API_ENDPOINTS } from '@/core/api/endpoints';
 import { logger } from '@/core/services/logger.service';
 
@@ -51,9 +51,6 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.isLoading = false;
       state.error = null;
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('auth_refresh_token');
-      localStorage.removeItem('auth_user');
     },
     clearError: (state) => {
       state.error = null;
@@ -81,4 +78,8 @@ const authSlice = createSlice({
 });
 
 export const { setUser, logout, clearError, setLoading } = authSlice.actions;
+
+/** Session user from Redux — single source of truth for RBAC checks. */
+export const selectAuthUser = (state: { auth: AuthState }) => state.auth.user;
+
 export default authSlice.reducer;

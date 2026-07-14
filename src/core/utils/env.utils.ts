@@ -2,15 +2,9 @@
 // For Jest tests, this will use process.env
 // For Vite builds, Vite will replace `process.env.*` variables with static values.
 
-// Common environment variable getters
 export const ENV = {
   get API_BASE_URL() {
-    const url = process.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
-    return url;
-  },
-
-  get MOCK_API_BASE_URL() {
-    const url = process.env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000/api';
+    const url = process.env.VITE_API_BASE_URL || 'http://localhost:5000';
     return url;
   },
 
@@ -19,7 +13,6 @@ export const ENV = {
   },
 
   get MODE() {
-    // In Vite, use MODE, in Jest use NODE_ENV
     return process.env.MODE || process.env.NODE_ENV || 'development';
   },
 
@@ -39,7 +32,10 @@ export const ENV = {
     return process.env.VITE_I18N_DEBUG || 'false';
   },
 
-  get MSW_ENABLED() {
-    return process.env.VITE_MSW_ENABLED === 'true';
+  /** When false, all RBAC permission/role checks allow access. Default: true. */
+  get RBAC_ENABLED() {
+    const value = process.env.VITE_RBAC_ENABLED;
+    if (value === undefined || value === '') return true;
+    return value !== 'false' && value !== '0';
   },
 };

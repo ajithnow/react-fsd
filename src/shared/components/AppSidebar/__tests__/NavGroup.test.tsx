@@ -1,11 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { NavGroup } from '../NavGroup';
-import { NavItem, NavCollapsible, NavLink } from '../appSidebar.models';
+import { NavItem, NavCollapsible, NavLink } from '../appSidebar.types';
 import { Home, Settings, Users } from 'lucide-react';
 
 // Mock TanStack Router
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   Link: ({
     to,
     children,
@@ -28,7 +27,7 @@ jest.mock('@tanstack/react-router', () => ({
       </a>
     );
   },
-  useRouterState: jest.fn(config => {
+  useRouterState: vi.fn(config => {
     if (config?.select) {
       return config.select({
         location: {
@@ -47,7 +46,7 @@ jest.mock('@tanstack/react-router', () => ({
 }));
 
 // Mock shadcn/ui components
-jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
+vi.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   SidebarGroup: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="sidebar-group">{children}</div>
   ),
@@ -122,19 +121,19 @@ jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   SidebarMenuSubItem: ({ children }: { children: React.ReactNode }) => (
     <li data-testid="sidebar-menu-sub-item">{children}</li>
   ),
-  useSidebar: jest.fn(() => ({
+  useSidebar: vi.fn(() => ({
     isMobile: false,
     state: 'expanded',
     open: true,
-    setOpen: jest.fn(),
+    setOpen: vi.fn(),
     openMobile: false,
-    setOpenMobile: jest.fn(),
-    toggleSidebar: jest.fn(),
+    setOpenMobile: vi.fn(),
+    toggleSidebar: vi.fn(),
   })),
 }));
 
 // Mock dropdown menu components
-jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
+vi.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dropdown-menu">{children}</div>
   ),
@@ -188,14 +187,14 @@ jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
 }));
 
 // Mock NavBadge component
-jest.mock('../NavBadge', () => ({
+vi.mock('../NavBadge', () => ({
   NavBadge: ({ children }: { children: React.ReactNode }) => (
     <span data-testid="nav-badge">{children}</span>
   ),
 }));
 
 // Mock lucide-react icons
-jest.mock('lucide-react', () => ({
+vi.mock('lucide-react', () => ({
   ChevronRight: () => <svg data-testid="chevron-right-icon" />,
   Home: () => <svg data-testid="home-icon" />,
   Settings: () => <svg data-testid="settings-icon" />,
@@ -232,7 +231,7 @@ describe('NavGroup', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render nav group with title', () => {

@@ -3,29 +3,29 @@ import { useUnsavedChangesBlocker } from '../useUnsavedChangesBlocker';
 import { useNavigate } from '@tanstack/react-router';
 import { useAlertDialog } from '@/shared/components';
 
-jest.mock('@tanstack/react-router', () => ({
-  useNavigate: jest.fn(),
-  useBlocker: jest.fn(),
+vi.mock('@tanstack/react-router', () => ({
+  useNavigate: vi.fn(),
+  useBlocker: vi.fn(),
 }));
 
 type UseAlertDialogReturn = ReturnType<typeof useAlertDialog>;
 
 const createMockConfirmDialog = (): UseAlertDialogReturn => ({
   isOpen: false,
-  setIsOpen: jest.fn(),
-  showAlert: jest.fn(),
-  hideAlert: jest.fn(),
+  setIsOpen: vi.fn(),
+  showAlert: vi.fn(),
+  hideAlert: vi.fn(),
 });
 
 describe('useUnsavedChangesBlocker', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('does not attach beforeunload if not dirty', () => {
     const confirmDialog = createMockConfirmDialog();
-    const addSpy = jest.spyOn(window, 'addEventListener');
-    const removeSpy = jest.spyOn(window, 'removeEventListener');
+    const addSpy = vi.spyOn(window, 'addEventListener');
+    const removeSpy = vi.spyOn(window, 'removeEventListener');
 
     const { unmount } = renderHook(() =>
       useUnsavedChangesBlocker({ isDirty: false, confirmDialog })
@@ -44,8 +44,8 @@ describe('useUnsavedChangesBlocker', () => {
 
   it('attaches beforeunload if dirty', () => {
     const confirmDialog = createMockConfirmDialog();
-    const addSpy = jest.spyOn(window, 'addEventListener');
-    const removeSpy = jest.spyOn(window, 'removeEventListener');
+    const addSpy = vi.spyOn(window, 'addEventListener');
+    const removeSpy = vi.spyOn(window, 'removeEventListener');
 
     const { unmount } = renderHook(() =>
       useUnsavedChangesBlocker({ isDirty: true, confirmDialog })
@@ -61,9 +61,9 @@ describe('useUnsavedChangesBlocker', () => {
 
   it('handleConfirmLeave should close dialog and navigate', () => {
     const confirmDialog = createMockConfirmDialog();
-    const navigate = jest.fn();
+    const navigate = vi.fn();
 
-    (useNavigate as jest.Mock).mockReturnValue(navigate);
+    (useNavigate as vi.Mock).mockReturnValue(navigate);
 
     const { result } = renderHook(() =>
       useUnsavedChangesBlocker({ isDirty: true, confirmDialog })

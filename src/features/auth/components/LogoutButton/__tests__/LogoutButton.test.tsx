@@ -1,14 +1,14 @@
+import { type MockedFunction } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { LogoutButton } from '../LogoutButton';
 
 // Mock LogOut icon from lucide-react
-jest.mock('lucide-react', () => ({
+vi.mock('lucide-react', () => ({
   LogOut: () => <svg data-testid="logout-icon" />,
 }));
 
 // Mock Button component
-jest.mock('../../../../../shared/components/Button', () => ({
+vi.mock('../../../../../shared/components/Button', () => ({
   Button: ({
     children,
     onClick,
@@ -32,33 +32,33 @@ jest.mock('../../../../../shared/components/Button', () => ({
 }));
 
 // Mock logout manager
-const mockLogoutUser = jest.fn();
+const mockLogoutUser = vi.fn();
 
-jest.mock('../../../managers/logout.manager', () => ({
-  useLogoutManager: jest.fn(() => ({
+vi.mock('../../../managers/logout.manager', () => ({
+  useLogoutManager: vi.fn(() => ({
     logoutUser: mockLogoutUser,
     isPending: false,
     canLogout: true,
-    quickLogout: jest.fn(),
+    quickLogout: vi.fn(),
     error: null,
   })),
 }));
 
 // Import the mocked function
 import { useLogoutManager } from '../../../managers/logout.manager';
-const mockUseLogoutManager = useLogoutManager as jest.MockedFunction<
+const mockUseLogoutManager = useLogoutManager as MockedFunction<
   typeof useLogoutManager
 >;
 
 describe('LogoutButton', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // Reset to default mock state
     mockUseLogoutManager.mockReturnValue({
       logoutUser: mockLogoutUser,
       isPending: false,
       canLogout: true,
-      quickLogout: jest.fn(),
+      quickLogout: vi.fn(),
       error: null,
     });
   });
@@ -104,7 +104,7 @@ describe('LogoutButton', () => {
       logoutUser: mockLogoutUser,
       isPending: true,
       canLogout: true,
-      quickLogout: jest.fn(),
+      quickLogout: vi.fn(),
       error: null,
     });
 
@@ -118,7 +118,7 @@ describe('LogoutButton', () => {
       logoutUser: mockLogoutUser,
       isPending: false,
       canLogout: false,
-      quickLogout: jest.fn(),
+      quickLogout: vi.fn(),
       error: null,
     });
 
@@ -131,7 +131,7 @@ describe('LogoutButton', () => {
       logoutUser: mockLogoutUser,
       isPending: true,
       canLogout: true,
-      quickLogout: jest.fn(),
+      quickLogout: vi.fn(),
       error: null,
     });
 
@@ -145,7 +145,7 @@ describe('LogoutButton', () => {
   });
 
   it('should handle logout error gracefully', async () => {
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation();
     mockLogoutUser.mockRejectedValue(new Error('Logout failed'));
 
     render(<LogoutButton />);

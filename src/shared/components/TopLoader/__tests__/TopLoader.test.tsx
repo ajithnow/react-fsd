@@ -2,28 +2,28 @@ import { render, act, waitFor } from '@testing-library/react';
 import { TopLoader } from '../TopLoader'; // Adjust path as necessary
 
 // Mock the router
-const mockSubscribe = jest.fn();
-const mockUnsubscribe = jest.fn();
+const mockSubscribe = vi.fn();
+const mockUnsubscribe = vi.fn();
 
-jest.mock('@tanstack/react-router', () => ({
-  useRouter: jest.fn(() => ({
+vi.mock('@tanstack/react-router', () => ({
+  useRouter: vi.fn(() => ({
     subscribe: mockSubscribe,
   })),
 }));
 
 // Mock the cn utility
-jest.mock('@/lib/utils', () => ({
-  cn: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
+vi.mock('@/lib/utils', () => ({
+  cn: vi.fn((...classes) => classes.filter(Boolean).join(' ')),
 }));
 
-// Mock timers
-jest.useFakeTimers();
+// Mock timers — advance time so RTL waitFor can resolve under fake timers
+vi.useFakeTimers({ shouldAdvanceTime: true });
 
 describe('TopLoader', () => {
   let onBeforeLoadHandler: () => void;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockSubscribe.mockImplementation((event: string, handler: () => void) => {
       if (event === 'onBeforeLoad') {
         onBeforeLoadHandler = handler;
@@ -34,13 +34,13 @@ describe('TopLoader', () => {
 
   afterEach(() => {
     // Ensure all timers are cleared after each test
-    jest.runOnlyPendingTimers();
-    jest.clearAllTimers();
-    jest.clearAllMocks();
+    vi.runOnlyPendingTimers();
+    vi.clearAllTimers();
+    vi.clearAllMocks();
   });
 
   afterAll(() => {
-    jest.useRealTimers(); // Restore real timers after all tests
+    vi.useRealTimers(); // Restore real timers after all tests
   });
 
   it('renders nothing when not loading', () => {
@@ -125,7 +125,7 @@ describe('TopLoader', () => {
   });
 
   it('respects custom speed prop', async () => {
-    const setIntervalSpy = jest.spyOn(global, 'setInterval');
+    const setIntervalSpy = vi.spyOn(global, 'setInterval');
 
     render(<TopLoader speed={50} />);
 
@@ -183,17 +183,15 @@ describe('TopLoader', () => {
     expect(mockUnsubscribe).toHaveBeenCalledTimes(2);
     // Also verify that any active timers are cleared by advancing them
     act(() => {
-      jest.runOnlyPendingTimers(); // Ensure any scheduled timers are processed
+      vi.runOnlyPendingTimers(); // Ensure any scheduled timers are processed
     });
     // While we can't directly assert setInterval/setTimeout were cleared without spying
     // on clearInterval/clearTimeout, the lack of `act` warnings after unmount suggests cleanup.
   });
 
   it('applies cn utility for className merging', async () => {
-    // Get the mocked cn function
-    const { cn } = jest.requireMock('@/lib/utils');
-    // Clear previous calls to cn
-    cn.mockClear();
+    const { cn } = await import('@/lib/utils');
+    vi.mocked(cn).mockClear();
 
     render(<TopLoader className="custom" />);
 

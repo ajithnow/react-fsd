@@ -7,7 +7,7 @@ import {
   SelectValue,
 } from '../../../lib/shadcn/components/ui/select';
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from 'lucide-react';
-import { DataTablePaginationProps } from './dataTable.model';
+import { DataTablePaginationProps } from './dataTable.types';
 import { useTranslation } from 'react-i18next';
 
 export function DataTablePagination({

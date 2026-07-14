@@ -1,284 +1,81 @@
-import { describe, it, expect } from '@jest/globals';
 import {
   getAllPermissionsForUser,
   hasPermission,
   hasAnyPermission,
   hasAllPermissions,
-  isRoleHigherThan,
   getMissingPermissions,
-  canAccessFeature,
-  hasRole,
-  hasAnyRole,
-  ROLES,
+  setRbacEnabled,
+  isRbacEnabled,
 } from '../utils';
-import { AUTH_PERMISSIONS } from '@/features/auth/constants/permissions.constants';
-import { USER_PERMISSIONS } from '@/features/users/constants/permissions.constants';
+import type { User } from '../types';
 
-import type { User } from '../models';
-
-// Mock users for testing
 const adminUser: User = {
-  Role: ROLES.SUPER_ADMIN,
-  permissions: [USER_PERMISSIONS.USER_READ, USER_PERMISSIONS.USER_CREATE, AUTH_PERMISSIONS.ADMIN_DASHBOARD],
+  permissions: ['admin:dashboard', 'profile:read', 'users:read', 'users:create'],
 };
 
-const managerUser: User = {
-  Role: ROLES.POWER_ADMIN,
-  permissions: [USER_PERMISSIONS.USER_READ, USER_PERMISSIONS.USER_UPDATE],
+const viewerUser: User = {
+  permissions: ['profile:read'],
 };
 
-const regularUser: User = {
-  Role: ROLES.NORMAL_USER,
-  permissions: [AUTH_PERMISSIONS.PROFILE_READ],
-};
+describe('RBAC Utils', () => {
+  beforeEach(() => {
+    setRbacEnabled(true);
+  });
 
-const userWithExtraPermissions: User = {
-  Role: ROLES.NORMAL_USER,
-  permissions: [AUTH_PERMISSIONS.PROFILE_READ, AUTH_PERMISSIONS.ADMIN_DASHBOARD],
-};
-
-describe('RBAC Utils - Comprehensive Tests', () => {
+  afterEach(() => {
+    setRbacEnabled(undefined);
+  });
 
   describe('getAllPermissionsForUser', () => {
-    it('should return permissions for admin user', () => {
-      const permissions = getAllPermissionsForUser(adminUser);
-
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions.length).toBeGreaterThan(0);
-      expect(permissions).toContain(USER_PERMISSIONS.USER_READ);
+    it('returns empty for null user', () => {
+      expect(getAllPermissionsForUser(null)).toEqual([]);
     });
 
-    it('should return permissions for regular user', () => {
-      const permissions = getAllPermissionsForUser(regularUser);
-
-      expect(Array.isArray(permissions)).toBe(true);
-      expect(permissions).toContain(AUTH_PERMISSIONS.PROFILE_READ);
-    });
-
-    it('should return combined permissions', () => {
-      const permissions = getAllPermissionsForUser(userWithExtraPermissions);
-
-      expect(permissions).toContain(AUTH_PERMISSIONS.PROFILE_READ); 
-      expect(permissions).toContain(AUTH_PERMISSIONS.ADMIN_DASHBOARD);
+    it('returns user permissions', () => {
+      expect(getAllPermissionsForUser(adminUser)).toContain('users:read');
+      expect(getAllPermissionsForUser(viewerUser)).toContain('profile:read');
     });
   });
 
   describe('hasPermission', () => {
-    it('should return false for null user', () => {
-      expect(hasPermission(null, USER_PERMISSIONS.USER_READ)).toBe(false);
+    it('denies null user', () => {
+      expect(hasPermission(null, 'users:read')).toBe(false);
     });
 
-    it('should return true when admin has permission', () => {
-      expect(hasPermission(adminUser, USER_PERMISSIONS.USER_READ)).toBe(true);
+    it('allows when present and denies when missing', () => {
+      expect(hasPermission(adminUser, 'users:read')).toBe(true);
+      expect(hasPermission(viewerUser, 'users:create')).toBe(false);
     });
+  });
 
-    it('should return true when user has permission through role', () => {
-      expect(hasPermission(regularUser, AUTH_PERMISSIONS.PROFILE_READ)).toBe(true);
-    });
-
-    it('should return false when user lacks permission', () => {
-      expect(hasPermission(regularUser, USER_PERMISSIONS.USER_CREATE)).toBe(false);
-    });
-
-    it('should return true when user has extra permissions', () => {
+  describe('hasAnyPermission / hasAllPermissions', () => {
+    it('checks combinations', () => {
       expect(
-        hasPermission(userWithExtraPermissions, AUTH_PERMISSIONS.ADMIN_DASHBOARD)
+        hasAnyPermission(viewerUser, ['users:create', 'profile:read'])
       ).toBe(true);
-    });
-  });
-
-  describe('hasAnyPermission', () => {
-    it('should return true when user has at least one permission', () => {
-      const permissions = [USER_PERMISSIONS.USER_CREATE, AUTH_PERMISSIONS.PROFILE_READ];
-
-      expect(hasAnyPermission(adminUser, permissions)).toBe(true);
-      expect(hasAnyPermission(regularUser, permissions)).toBe(true);
-    });
-
-    it('should return false when user has none of the permissions', () => {
-      const permissions = [
-        USER_PERMISSIONS.USER_CREATE,
-        AUTH_PERMISSIONS.ADMIN_DASHBOARD,
-      ];
-
-      expect(hasAnyPermission(regularUser, permissions)).toBe(false);
-    });
-
-    it('should return false for null user', () => {
-      expect(hasAnyPermission(null, [USER_PERMISSIONS.USER_READ])).toBe(false);
-    });
-
-    it('should return false for empty permissions array', () => {
-      expect(hasAnyPermission(adminUser, [])).toBe(false);
-    });
-  });
-
-  describe('hasAllPermissions', () => {
-    it('should return true when user has all permissions', () => {
-      const permissions = [USER_PERMISSIONS.USER_CREATE, USER_PERMISSIONS.USER_READ];
-
-      expect(hasAllPermissions(adminUser, permissions)).toBe(true);
-    });
-
-    it('should return false when user is missing some permissions', () => {
-      const permissions = [USER_PERMISSIONS.USER_READ, AUTH_PERMISSIONS.ADMIN_DASHBOARD];
-
-      expect(hasAllPermissions(managerUser, permissions)).toBe(false); // Missing admin dashboard
-    });
-
-    it('should return false for null user', () => {
-      expect(hasAllPermissions(null, [USER_PERMISSIONS.USER_READ])).toBe(false);
-    });
-
-    it('should return true for empty permissions array', () => {
-      expect(hasAllPermissions(adminUser, [])).toBe(true);
-    });
-  });
-
-  describe('isRoleHigherThan', () => {
-    it('should correctly compare role hierarchy', () => {
-      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.NORMAL_USER)).toBe(true);
-      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, ROLES.NORMAL_USER)).toBe(true);
-      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, ROLES.POWER_ADMIN)).toBe(true);
-    });
-
-    it('should return false for equal or lower roles', () => {
-      expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.POWER_ADMIN)).toBe(
-        false
+      expect(hasAllPermissions(adminUser, ['users:read', 'users:create'])).toBe(
+        true
       );
-      expect(isRoleHigherThan(ROLES.POWER_ADMIN, ROLES.SUPER_ADMIN)).toBe(
-        false
-      );
-      expect(isRoleHigherThan(ROLES.NORMAL_USER, ROLES.NORMAL_USER)).toBe(
-        false
-      );
-    });
-
-    it('should handle unknown roles gracefully', () => {
-      expect(isRoleHigherThan('unknown', ROLES.NORMAL_USER)).toBe(false);
-      expect(isRoleHigherThan(ROLES.SUPER_ADMIN, 'unknown')).toBe(true);
-      expect(isRoleHigherThan('unknown1', 'unknown2')).toBe(false);
+      expect(
+        hasAllPermissions(viewerUser, ['profile:read', 'users:create'])
+      ).toBe(false);
     });
   });
 
   describe('getMissingPermissions', () => {
-    it('should return missing permissions for user', () => {
-      const required = [USER_PERMISSIONS.USER_CREATE, AUTH_PERMISSIONS.PROFILE_READ];
-      const missing = getMissingPermissions(regularUser, required);
-
-      expect(missing).toContain(USER_PERMISSIONS.USER_CREATE);
-      expect(missing).not.toContain(AUTH_PERMISSIONS.PROFILE_READ);
-    });
-
-    it('should return empty array when user has all permissions', () => {
-      const required = [USER_PERMISSIONS.USER_CREATE, USER_PERMISSIONS.USER_READ];
-      const missing = getMissingPermissions(adminUser, required);
-
-      expect(missing).toEqual([]);
-    });
-
-    it('should return all permissions for null user', () => {
-      const required = [USER_PERMISSIONS.USER_READ, AUTH_PERMISSIONS.PROFILE_READ];
-      const missing = getMissingPermissions(null, required);
-
-      expect(missing).toEqual(required);
-    });
-
-    it('should handle empty required permissions', () => {
-      const missing = getMissingPermissions(regularUser, []);
-
-      expect(missing).toEqual([]);
+    it('returns missing perms', () => {
+      expect(
+        getMissingPermissions(viewerUser, ['users:create', 'profile:read'])
+      ).toEqual(['users:create']);
     });
   });
 
-  describe('canAccessFeature', () => {
-    it('should return true when user has any required permission', () => {
-      const featurePerms = [
-        USER_PERMISSIONS.USER_READ,
-        AUTH_PERMISSIONS.ADMIN_DASHBOARD,
-      ];
-
-      expect(canAccessFeature(adminUser, featurePerms)).toBe(true); // Has both
-      expect(canAccessFeature(managerUser, featurePerms)).toBe(true); // Has USERS_READ
-    });
-
-    it('should return false when user has no required permissions', () => {
-      const featurePerms = [
-        USER_PERMISSIONS.USER_CREATE,
-        AUTH_PERMISSIONS.ADMIN_DASHBOARD,
-      ];
-
-      expect(canAccessFeature(regularUser, featurePerms)).toBe(false);
-    });
-
-    it('should return false for null user', () => {
-      expect(canAccessFeature(null, [USER_PERMISSIONS.USER_READ])).toBe(false);
-    });
-
-    it('should return false for empty feature permissions', () => {
-      expect(canAccessFeature(adminUser, [])).toBe(false);
-    });
-  });
-
-  describe('hasRole', () => {
-    it('should return true when user has the role', () => {
-      expect(hasRole(adminUser, ROLES.SUPER_ADMIN)).toBe(true);
-      expect(hasRole(regularUser, ROLES.NORMAL_USER)).toBe(true);
-      expect(hasRole(managerUser, ROLES.POWER_ADMIN)).toBe(true);
-    });
-
-    it('should return false when user does not have the role', () => {
-      expect(hasRole(adminUser, ROLES.NORMAL_USER)).toBe(false);
-      expect(hasRole(regularUser, ROLES.SUPER_ADMIN)).toBe(false);
-      expect(hasRole(managerUser, ROLES.NORMAL_USER)).toBe(false);
-    });
-
-    it('should return false for null user', () => {
-      expect(hasRole(null, ROLES.SUPER_ADMIN)).toBe(false);
-    });
-  });
-
-  describe('hasAnyRole', () => {
-    it('should return true when user has any of the roles', () => {
-      const roles = [ROLES.SUPER_ADMIN, ROLES.POWER_ADMIN];
-
-      expect(hasAnyRole(adminUser, roles)).toBe(true);
-      expect(hasAnyRole(managerUser, roles)).toBe(true);
-    });
-
-    it('should return false when user has none of the roles', () => {
-      const roles = [ROLES.SUPER_ADMIN, ROLES.POWER_ADMIN];
-
-      expect(hasAnyRole(regularUser, roles)).toBe(false);
-    });
-
-    it('should return false for null user', () => {
-      expect(hasAnyRole(null, [ROLES.SUPER_ADMIN])).toBe(false);
-    });
-
-    it('should return false for empty roles array', () => {
-      expect(hasAnyRole(adminUser, [])).toBe(false);
-    });
-
-    it('should handle single role in array', () => {
-      expect(hasAnyRole(adminUser, [ROLES.SUPER_ADMIN])).toBe(true);
-      expect(hasAnyRole(adminUser, [ROLES.NORMAL_USER])).toBe(false);
-    });
-  });
-  
-  describe('Constants', () => {
-    it('should have ROLES defined', () => {
-      expect(ROLES).toBeDefined();
-      expect(ROLES.SUPER_ADMIN).toBe('SUPER_ADMIN');
-      expect(ROLES.POWER_ADMIN).toBe('POWER_ADMIN');
-      expect(ROLES.NORMAL_USER).toBe('NORMAL_USER');
-    });
-
-    it('should have consistent permission strings', () => {
-      expect(USER_PERMISSIONS.USER_READ).toBe('user:read');
-      expect(USER_PERMISSIONS.USER_CREATE).toBe('user:create');
-      expect(AUTH_PERMISSIONS.PROFILE_READ).toBe('profile:read');
-      expect(AUTH_PERMISSIONS.ADMIN_DASHBOARD).toBe('admin:dashboard');
+  describe('RBAC_ENABLED bypass', () => {
+    it('allows all checks when disabled', () => {
+      setRbacEnabled(false);
+      expect(isRbacEnabled()).toBe(false);
+      expect(hasPermission(null, 'users:read')).toBe(true);
+      expect(getMissingPermissions(null, ['users:read'])).toEqual([]);
     });
   });
 });

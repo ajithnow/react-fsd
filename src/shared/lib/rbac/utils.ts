@@ -1,77 +1,60 @@
-import type { Role, User, Permission } from './models';
+import type { User, Permission } from './types';
+import { ENV } from '@/core/utils/env.utils';
 
-// Roles definition for app hierarchy
-export const ROLES = {
-  SUPER_ADMIN: 'SUPER_ADMIN',
-  POWER_ADMIN: 'POWER_ADMIN',
-  NORMAL_USER: 'NORMAL_USER',
-} as const;
+let rbacEnabledOverride: boolean | undefined;
 
-// Utility to get all permissions for a user
+/** Override `VITE_RBAC_ENABLED` at runtime (tests / local toggles). Pass `undefined` to clear. */
+export const setRbacEnabled = (enabled: boolean | undefined): void => {
+  rbacEnabledOverride = enabled;
+};
+
+/** `VITE_RBAC_ENABLED=false` (or override) bypasses all permission checks. */
+export const isRbacEnabled = (): boolean => {
+  if (rbacEnabledOverride !== undefined) return rbacEnabledOverride;
+  return ENV.RBAC_ENABLED;
+};
+
 export const getAllPermissionsForUser = (user: User | null): Permission[] => {
   if (!user) return [];
-  return user.permissions || [];
+  return user.permissions ?? [];
 };
 
-/**
- * Check if a user has a specific permission
- */
-export const hasPermission = (user: User | null, permission: Permission): boolean => {
+export const hasPermission = (
+  user: User | null,
+  permission: Permission
+): boolean => {
+  if (!isRbacEnabled()) return true;
   if (!user) return false;
-  const userPermissions = getAllPermissionsForUser(user);
-  return userPermissions.includes(permission);
+  return getAllPermissionsForUser(user).includes(permission);
 };
 
-/**
- * Check if a user has any of the specified permissions
- */
-export const hasAnyPermission = (user: User | null, permissions: Permission[]): boolean => {
+export const hasAnyPermission = (
+  user: User | null,
+  permissions: Permission[]
+): boolean => {
+  if (!isRbacEnabled()) return true;
   if (!user || permissions.length === 0) return false;
   const userPerms = getAllPermissionsForUser(user);
   return permissions.some(p => userPerms.includes(p));
 };
 
-/**
- * Check if a user has all of the specified permissions
- */
-export const hasAllPermissions = (user: User | null, permissions: Permission[]): boolean => {
+export const hasAllPermissions = (
+  user: User | null,
+  permissions: Permission[]
+): boolean => {
+  if (!isRbacEnabled()) return true;
   if (!user) return false;
   if (!permissions.length) return true;
   const userPerms = getAllPermissionsForUser(user);
   return permissions.every(p => userPerms.includes(p));
 };
 
-/**
- * Check if a user has a specific role
- */
-export const hasRole = (user: User | null, role: Role): boolean => {
-  if (!user) return false;
-  return user.Role === role;
-};
-
-/**
- * Check if a user has any of the specified roles
- */
-export const hasAnyRole = (user: User | null, roles: Role[]): boolean => {
-  if (!user || !roles.length) return false;
-  return roles.includes(user.Role);
-};
-
-export const isRoleHigherThan = (role1: Role, role2: Role): boolean => {
-  const hierarchy: Record<string, number> = {
-    [ROLES.SUPER_ADMIN]: 3,
-    [ROLES.POWER_ADMIN]: 2,
-    [ROLES.NORMAL_USER]: 1,
-  };
-  return (hierarchy[role1] || 0) > (hierarchy[role2] || 0);
-};
-
-export const getMissingPermissions = (user: User | null, requiredPermissions: Permission[]): Permission[] => {
+export const getMissingPermissions = (
+  user: User | null,
+  requiredPermissions: Permission[]
+): Permission[] => {
+  if (!isRbacEnabled()) return [];
   if (!user) return requiredPermissions;
   const userPermissions = getAllPermissionsForUser(user);
   return requiredPermissions.filter(p => !userPermissions.includes(p));
-};
-
-export const canAccessFeature = (user: User | null, featurePermissions: Permission[]): boolean => {
-  return hasAnyPermission(user, featurePermissions);
 };

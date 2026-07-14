@@ -1,6 +1,6 @@
 import { ENV } from '@/core/utils/env.utils';
 
-import { LogLevel, LogData } from './logger.models';
+import { LogLevel, LogData } from './logger.types';
 
 class LoggerService {
   private isDevelopment = ENV.IS_DEV;

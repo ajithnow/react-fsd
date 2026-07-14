@@ -1,15 +1,22 @@
 {
   "login": {
     "title": "Melden Sie sich bei Ihrem Konto an",
-    "usernameLabel": "Benutzername",
-    "usernamePlaceholder": "Geben Sie Ihren Benutzernamen ein",
+    "subtitle": "Melden Sie sich an, um fortzufahren",
+    "emailLabel": "E-Mail",
+    "emailPlaceholder": "sie@beispiel.de",
     "passwordLabel": "Passwort",
     "passwordPlaceholder": "••••••••",
     "loginButton": "Anmelden",
     "loadingButton": "Anmeldung läuft...",
-    "usernameRequired": "Benutzername ist erforderlich",
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein",
     "passwordRequired": "Passwort ist erforderlich",
     "loginFailedError": "Anmeldung fehlgeschlagen. Bitte überprüfen Sie Ihre Zugangsdaten.",
-    "successLogin": "Anmeldung erfolgreich"
+    "successLogin": "Anmeldung erfolgreich",
+    "pageTitle": "Anmeldung | Admin Dashboard",
+    "welcomeBack": "Willkommen zurück",
+    "signInPrompt": "Melden Sie sich an, um fortzufahren",
+    "welcomeText": "Admin Dashboard",
+    "welcomeSubText": "Verwalten Sie Ihre Anwendung und Benutzer."
   }
 }

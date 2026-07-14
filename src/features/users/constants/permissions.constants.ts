@@ -1,14 +1,8 @@
-// User feature permissions
-
+/** User feature permissions — owned by this module (`resource:action`). */
 export const USER_PERMISSIONS = {
-  // User management
-  USER_READ: 'user:read',
-  USER_CREATE: 'user:create',
-  USER_UPDATE: 'user:update',
-  USER_DELETE: 'user:delete',
-  USER_EXPORT: 'user:export',
-
-  // User reports
-  USER_REPORTS_VIEW: 'user:reports_view',
-  USER_REPORTS_EXPORT: 'user:reports_export',
+  USER_READ: 'users:read',
+  USER_CREATE: 'users:create',
+  USER_UPDATE: 'users:update',
+  USER_DELETE: 'users:delete',
+  USER_EXPORT: 'users:export',
 } as const;

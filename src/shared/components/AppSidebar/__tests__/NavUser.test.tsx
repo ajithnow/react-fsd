@@ -1,17 +1,16 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { NavUser } from '../NavUser';
-import { User } from '../appSidebar.models';
+import { User } from '../appSidebar.types';
 
 // Mock react-i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => key,
   }),
 }));
 
 // Mock TanStack Router
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   Link: ({
     children,
     to,
@@ -37,19 +36,19 @@ jest.mock('@tanstack/react-router', () => ({
 }));
 
 // Mock the logout manager
-const mockLogoutUser = jest.fn();
-jest.mock('../../../../features/auth/managers/logout.manager', () => ({
-  useLogoutManager: jest.fn(() => ({
+const mockLogoutUser = vi.fn();
+vi.mock('../../../../features/auth/managers/logout.manager', () => ({
+  useLogoutManager: vi.fn(() => ({
     logoutUser: mockLogoutUser,
     isPending: false,
     canLogout: true,
-    quickLogout: jest.fn(),
+    quickLogout: vi.fn(),
     error: null,
   })),
 }));
 
 // Mock shadcn/ui components
-jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
+vi.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   SidebarMenu: ({ children }: { children: React.ReactNode }) => (
     <ul data-testid="sidebar-menu">{children}</ul>
   ),
@@ -90,19 +89,19 @@ jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   SidebarMenuItem: ({ children }: { children: React.ReactNode }) => (
     <li data-testid="sidebar-menu-item">{children}</li>
   ),
-  useSidebar: jest.fn(() => ({
+  useSidebar: vi.fn(() => ({
     isMobile: false,
     state: 'expanded',
     open: true,
-    setOpen: jest.fn(),
+    setOpen: vi.fn(),
     openMobile: false,
-    setOpenMobile: jest.fn(),
-    toggleSidebar: jest.fn(),
+    setOpenMobile: vi.fn(),
+    toggleSidebar: vi.fn(),
   })),
 }));
 
 // Mock dropdown menu components
-jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
+vi.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="dropdown-menu">{children}</div>
   ),
@@ -174,7 +173,7 @@ jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
 }));
 
 // Mock lucide-react icons
-jest.mock('lucide-react', () => ({
+vi.mock('lucide-react', () => ({
   ChevronsUpDown: () => <svg data-testid="chevrons-up-down-icon" />,
   User: () => <svg data-testid="user-icon" />,
   CreditCard: () => <svg data-testid="credit-card-icon" />,
@@ -191,7 +190,7 @@ describe('NavUser', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render user information', () => {

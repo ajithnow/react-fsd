@@ -6,7 +6,7 @@ import type {
   RouteRecord,
   ModuleRoutes,
   CrudRouteNames,
-} from '../models/route.model';
+} from '../types';
 // AUTH_ROUTES removed to break circular dependency
 
 

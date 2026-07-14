@@ -1,20 +1,23 @@
 import { USER_TYPES } from '@/features/users/constants/users.constants';
 
-export type TranslateFn = (key: string, options?: Record<string, unknown>) => string;
+export type TranslateFn = (
+  key: string,
+  options?: Record<string, unknown>
+) => string;
 
 export function getUserTypeData(t: TranslateFn) {
   return {
-    [USER_TYPES.POWER_ADMIN]: {
+    [USER_TYPES.EDITOR]: {
       className: 'bg-blue-100 text-blue-800 border-blue-200',
-      label: t('users.powerAdmin') ?? 'PowerAdmin',
+      label: t('users.editor') ?? 'Editor',
     },
-    [USER_TYPES.NORMAL_USER]: {
+    [USER_TYPES.VIEWER]: {
       className: 'bg-gray-100 text-gray-800 border-gray-200',
-      label: t('users.normalUser') ?? 'NormalUser',
+      label: t('users.viewer') ?? 'Viewer',
     },
-    [USER_TYPES.SUPER_ADMIN]: {
+    [USER_TYPES.ADMIN]: {
       className: 'bg-yellow-100 text-yellow-800 border-yellow-200',
-      label: t('users.superAdmin') ?? 'SuperAdmin',
+      label: t('users.admin') ?? 'Admin',
     },
   } as const;
 }

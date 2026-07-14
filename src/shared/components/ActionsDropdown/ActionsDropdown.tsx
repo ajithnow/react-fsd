@@ -9,7 +9,7 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "../../../lib/shadcn/components/ui/dropdown-menu";
-import { ActionItem, ActionsDropdownProps } from './actionDropdown.model';
+import { ActionItem, ActionsDropdownProps } from './actionDropdown.types';
 
 export const ActionsDropdown: React.FC<ActionsDropdownProps> = ({
   actions,

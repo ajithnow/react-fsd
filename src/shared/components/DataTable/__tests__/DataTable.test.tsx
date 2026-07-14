@@ -1,7 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { DataTable } from '../DataTable';
-import { DataTableColumn } from '../dataTable.model';
+import { DataTableColumn } from '../dataTable.types';
 
 interface TestData extends Record<string, unknown> {
   id: number;
@@ -42,7 +41,7 @@ describe('DataTable', () => {
   });
 
   it('handles sorting when a sortable header is clicked', () => {
-    const mockOnSortChange = jest.fn();
+    const mockOnSortChange = vi.fn();
     render(
       <DataTable
         data={mockData}
@@ -60,7 +59,7 @@ describe('DataTable', () => {
   });
 
   it('does not sort when a non-sortable header is clicked', () => {
-    const mockOnSortChange = jest.fn();
+    const mockOnSortChange = vi.fn();
     render(
       <DataTable
         data={mockData}
@@ -99,7 +98,7 @@ describe('DataTable', () => {
   });
 
   it('handles sorting with multiple clicks (asc -> desc -> clear)', () => {
-    const mockOnSortChange = jest.fn();
+    const mockOnSortChange = vi.fn();
     render(
       <DataTable
         data={mockData}
@@ -167,7 +166,7 @@ describe('DataTable', () => {
   });
 
   it('calls onFilterChange when filters change', () => {
-    const mockOnFilterChange = jest.fn();
+    const mockOnFilterChange = vi.fn();
     render(
       <DataTable
         data={mockData}
@@ -186,7 +185,7 @@ describe('DataTable', () => {
   });
 
   it('handles clear filters functionality', () => {
-    const mockOnFilterChange = jest.fn();
+    const mockOnFilterChange = vi.fn();
     render(
       <DataTable
         data={mockData}

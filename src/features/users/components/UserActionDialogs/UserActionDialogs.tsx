@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { SharedAlertDialog } from '@/shared/components';
-import type { UserActionDialogProps } from '../../models/user.model';
+import type { UserActionDialogProps } from '../../types';
 
 export const UserActionDialog: React.FC<UserActionDialogProps> = ({
   type,

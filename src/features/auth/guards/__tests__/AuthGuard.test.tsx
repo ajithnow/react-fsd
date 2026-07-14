@@ -1,28 +1,28 @@
+import { type MockedFunction } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { AuthGuard } from '../AuthGuard';
 import * as authUtils from '../../utils/auth.utils';
 
 // Mock the auth utils
-jest.mock('../../utils/auth.utils', () => ({
-  isAuthenticated: jest.fn(),
+vi.mock('../../utils/auth.utils', () => ({
+  isAuthenticated: vi.fn(),
 }));
 
 // Mock TanStack Router hooks
-const mockNavigate = jest.fn();
+const mockNavigate = vi.fn();
 const mockLocation = { pathname: '/dashboard' };
 
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
   useLocation: () => mockLocation,
 }));
 
 // Get the mocked function
-const mockIsAuthenticated = authUtils.isAuthenticated as jest.MockedFunction<typeof authUtils.isAuthenticated>;
+const mockIsAuthenticated = authUtils.isAuthenticated as MockedFunction<typeof authUtils.isAuthenticated>;
 
 describe('AuthGuard', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockLocation.pathname = '/dashboard';
   });
 

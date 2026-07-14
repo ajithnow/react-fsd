@@ -26,7 +26,7 @@ export const useLogoutManager = () => {
       dispatch(setUser(null));
 
       // Navigate to login page
-      navigate({
+      void navigate({
         to: AUTH_ROUTES.LOGIN,
         replace: true,
       });
@@ -36,7 +36,7 @@ export const useLogoutManager = () => {
 
       authStorage.clearTokens();
       dispatch(setUser(null));
-      navigate({
+      void navigate({
         to: AUTH_ROUTES.LOGIN,
         replace: true,
       });
@@ -47,7 +47,7 @@ export const useLogoutManager = () => {
     // For quick logout without API call (e.g., when offline)
     authStorage.clearTokens();
     dispatch(setUser(null));
-    navigate({
+    void navigate({
       to: AUTH_ROUTES.LOGIN,
       replace: true,
     });

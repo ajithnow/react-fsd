@@ -10,7 +10,7 @@ import {
   SharedAlertDialog,
 } from '@/shared/components';
 import { useUserFormManager } from '@/features/users/managers/userform.manager';
-import type { FormData } from '../models';
+import type { FormData } from '../types';
 import { useUnsavedChangesBlocker } from '@/shared';
 
 export const UserEditPage: React.FC = () => {

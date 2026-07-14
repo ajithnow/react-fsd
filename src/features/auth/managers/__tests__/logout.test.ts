@@ -1,8 +1,9 @@
+import { type MockedFunction } from 'vitest';
 // Mock auth storage first
-jest.mock('../../utils', () => ({
+vi.mock('../../utils', () => ({
   authStorage: {
-    getRefreshToken: jest.fn(),
-    clearTokens: jest.fn(),
+    getRefreshToken: vi.fn(),
+    clearTokens: vi.fn(),
   },
 }));
 
@@ -12,16 +13,16 @@ import { AUTH_ROUTES } from '../../constants';
 import { authStorage } from '../../utils';
 
 // Mock functions
-const mockGetRefreshToken = authStorage.getRefreshToken as jest.MockedFunction<
+const mockGetRefreshToken = authStorage.getRefreshToken as MockedFunction<
   typeof authStorage.getRefreshToken
 >;
-const mockClearTokens = authStorage.clearTokens as jest.MockedFunction<
+const mockClearTokens = authStorage.clearTokens as MockedFunction<
   typeof authStorage.clearTokens
 >;
 
 // Mock the logout query
-const mockLogoutMutation = jest.fn();
-jest.mock('../../queries/logout.query', () => ({
+const mockLogoutMutation = vi.fn();
+vi.mock('../../queries/logout.query', () => ({
   useLogoutMutation: () => ({
     mutateAsync: mockLogoutMutation,
     isPending: false,
@@ -30,25 +31,25 @@ jest.mock('../../queries/logout.query', () => ({
 }));
 
 // Mock react-redux
-const mockDispatch = jest.fn();
+const mockDispatch = vi.fn();
 const mockUser = { id: 1, name: 'Test User', email: 'test@example.com' };
 let mockCurrentUser: typeof mockUser | null = mockUser;
 
-jest.mock('react-redux', () => ({
+vi.mock('react-redux', () => ({
   useDispatch: () => mockDispatch,
   useSelector: (fn: (state: { auth: { user: unknown } }) => unknown) => 
     fn({ auth: { user: mockCurrentUser } }),
 }));
 
 // Mock navigation
-const mockNavigate = jest.fn();
-jest.mock('@tanstack/react-router', () => ({
+const mockNavigate = vi.fn();
+vi.mock('@tanstack/react-router', () => ({
   useNavigate: () => mockNavigate,
 }));
 
 describe('useLogoutManager', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockCurrentUser = mockUser;
     mockLogoutMutation.mockResolvedValue({});
     mockGetRefreshToken.mockReturnValue('fake-refresh-token');
@@ -77,7 +78,7 @@ describe('useLogoutManager', () => {
 
   it('should logout user even when API call fails', async () => {
     mockLogoutMutation.mockRejectedValue(new Error('API Error'));
-    const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation();
 
     const { result } = renderHook(() => useLogoutManager());
 

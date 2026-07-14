@@ -2,7 +2,7 @@ import {
   SidebarData,
   NavGroup,
   NavItem,
-} from '../AppSidebar/appSidebar.models';
+} from '../AppSidebar/appSidebar.types';
 
 /**
  * Helper function to create sidebar data

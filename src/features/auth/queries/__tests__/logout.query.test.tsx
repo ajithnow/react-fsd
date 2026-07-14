@@ -1,13 +1,13 @@
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useLogoutMutation } from '../logout.query';
 
 // Mock auth service
-const mockLogout = jest.fn() as jest.MockedFunction<
+const mockLogout = vi.fn() as MockedFunction<
   (refreshToken: string) => Promise<unknown>
 >;
-jest.mock('../../services', () => ({
+vi.mock('../../services', () => ({
   __esModule: true,
   default: {
     useLogoutService: () => ({
@@ -35,7 +35,7 @@ const createWrapper = () => {
 
 describe('useLogoutMutation', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return mutation function', () => {

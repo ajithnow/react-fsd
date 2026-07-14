@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { AuthLayout } from '../AuthLayout';
 
 // Mock image imports
-jest.mock('@/assets/images/logo.png', () => 'test-logo.png');
+vi.mock('@/assets/images/logo.svg', () => ({
+  default: 'test-logo.svg',
+}));
 
 // Mock i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {
@@ -30,12 +31,12 @@ describe('AuthLayout (fresh)', () => {
   });
 
   it('renders the branding section with logo and description', () => {
-    render(
+    const { container } = render(
       <AuthLayout>
         <div>Login Form</div>
       </AuthLayout>
     );
-    expect(screen.getByAltText('Application Logo')).toBeInTheDocument();
+    expect(container.querySelectorAll('img[src="test-logo.svg"]').length).toBeGreaterThanOrEqual(1);
     expect(screen.getByText('Your journey to amazing experiences starts here. Join our community today.')).toBeInTheDocument();
   });
 
