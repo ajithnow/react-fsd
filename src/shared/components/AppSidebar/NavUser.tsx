@@ -1,14 +1,8 @@
 import React from 'react';
-import {
-  ChevronsUpDown,
-  User as UserIcon,
-  //Bell,
-  LogOut,
-} from 'lucide-react';
+import { ChevronsUpDown, User as UserIcon, LogOut } from 'lucide-react';
 import {
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -78,21 +72,6 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {/* <DropdownMenuGroup>
-              <DropdownMenuItem asChild>
-                <Link to="/settings/account">
-                  <UserIcon />
-                  Profile
-                </Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem asChild>
-                <Link to="/settings/notifications">
-                  <Bell />
-                  Notifications
-                </Link>
-              </DropdownMenuItem>
-            </DropdownMenuGroup>
-            <DropdownMenuSeparator /> */}
             <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
               <LogOut />
               {isPending ? t('auth.loggingOut') : t('auth.logOut')}

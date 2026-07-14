@@ -1,12 +1,12 @@
 ---
-description: How to add a new FSD feature module (config, routes, sidebar, rolePermissions)
+description: How to add a new FSD feature module (config, routes, sidebar, permissions)
 globs: src/features/**/*
 alwaysApply: false
 ---
 
 # Add a feature module
 
-When adding a new domain feature, follow Feature-Sliced Design and register through bootstrap — do **not** hardcode routes, sidebar, or role permissions into auth/shared hooks.
+When adding a new domain feature, follow Feature-Sliced Design and register through bootstrap — do **not** hardcode routes or sidebar into shared hooks.
 
 Full checklist: `.agents/rules/add-feature.md`
 
@@ -25,7 +25,6 @@ src/features/<name>/
   pages/
   locales/en.json + de.json + index.ts
   sidebar.ts
-  rolePermissions.ts
   index.ts
 ```
 
@@ -38,15 +37,14 @@ const config: FeatureConfig = {
   routes: featureRoutes,
   locales: { ns: '<name>', resources: featureLocales },
   sidebar: featureSidebar,
-  rolePermissions: featureRolePerms,
 }
 export default config
 ```
 
 ## Rules
 
-1. Feature owns routes, permissions, sidebar, and `rolePermissions` — never patch auth’s role map for feature perms.
-2. Permissions are `resource:action`. Gate routes with `hasPermission` + redirect to `/`.
-3. Sidebar `permission` is filtered at assembly (Redux user); respects `VITE_RBAC_ENABLED=false`.
-4. Locales via `config.locales` with feature `ns`.
-5. `/me` permissions win; `rolePermissions` is fallback only.
+1. Feature owns routes, permission strings, and sidebar.
+2. Session permissions come from `/api/auth/me` only — authorization is permission-based (not roles).
+3. Gate routes with `hasPermission` + redirect to `/`. UI: `<Can>` or `useRBAC()`.
+4. Sidebar `permission` is filtered at assembly; respects `VITE_RBAC_ENABLED=false`.
+5. Locales via `config.locales` with feature `ns`.

@@ -29,9 +29,3 @@ export type UseUnsavedChangesBlockerProps = {
   isDirty: boolean;
   confirmDialog: UseAlertDialogReturn;
 };
-
-export type PdfPreviewProps = {
-  url: string;
-  onClose?: () => void;
-  translate: (key: string) => string;
-};

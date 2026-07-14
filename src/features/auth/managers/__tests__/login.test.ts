@@ -1,7 +1,6 @@
 import { useLoginManager } from '../login.manager';
 import { authStorage } from '../../utils';
 import { renderHook, act } from '@testing-library/react';
-import { ROLES } from '@/shared/lib/rbac';
 
 const mockGetProfile = vi.fn();
 
@@ -38,8 +37,8 @@ describe('useLoginManager', () => {
     email: 'john@example.com',
     firstName: 'John',
     lastName: 'Doe',
-    role: ROLES.VIEWER,
-    roles: [ROLES.VIEWER],
+    role: 'viewer',
+    roles: ['viewer'],
     name: 'John Doe',
     permissions: [],
     status: 'active',

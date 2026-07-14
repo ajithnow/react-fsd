@@ -1,7 +1,6 @@
 import type { MeResponse, User } from './types';
-import { resolvePermissions } from './constants';
 
-/** Build session user from `/me`. */
+/** Build session user from `/me`. Permissions come from the API only. */
 export function toUser(me: MeResponse): User {
   const roles = me.roles?.length ? me.roles : me.role ? [me.role] : [];
   const role = me.role ?? roles[0] ?? '';
@@ -19,7 +18,7 @@ export function toUser(me: MeResponse): User {
     lastName: me.lastName,
     role,
     roles,
-    permissions: resolvePermissions(role, me.permissions),
+    permissions: me.permissions?.length ? [...me.permissions] : [],
     status: me.status ?? 'active',
   };
 }

@@ -29,7 +29,6 @@ export const useLoginManager = () => {
 
     try {
       const user = await getProfile();
-      authStorage.setUser(user);
       dispatch(setUser(user));
     } catch (error) {
       authStorage.clearTokens();

@@ -48,6 +48,4 @@ export interface FeatureConfig {
   constants?: ConstantsConfig
   guards?: GuardConfig
   sidebar?: SidebarConfig
-  /** Feature-owned additions to the fallback role → permission map. */
-  rolePermissions?: Record<string, readonly string[]>
 }

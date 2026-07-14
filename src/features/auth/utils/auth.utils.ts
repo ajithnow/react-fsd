@@ -5,7 +5,9 @@ import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
 export const AUTH_TOKEN_KEY = AUTH_CONSTANTS.ACCESS_TOKEN;
 export const AUTH_REFRESH_TOKEN_KEY = AUTH_CONSTANTS.REFRESH_TOKEN;
-export const AUTH_USER_KEY = 'auth_user';
+
+/** Legacy key — user now lives only in Redux; removed on bootstrap / logout. */
+const LEGACY_AUTH_USER_KEY = 'auth_user';
 
 export const authStorage = {
   getToken: (): string | null => {
@@ -26,21 +28,18 @@ export const authStorage = {
 
   removeToken: (): void => {
     storageService.removeItem(AUTH_TOKEN_KEY);
-    storageService.removeItem(AUTH_USER_KEY);
+    storageService.removeItem(LEGACY_AUTH_USER_KEY);
   },
 
   clearTokens: (): void => {
     storageService.removeItem(AUTH_TOKEN_KEY);
     storageService.removeItem(AUTH_REFRESH_TOKEN_KEY);
-    storageService.removeItem(AUTH_USER_KEY);
+    storageService.removeItem(LEGACY_AUTH_USER_KEY);
   },
 
-  getUser: <T = unknown>(): T | null => {
-    return storageService.getItem<T>(AUTH_USER_KEY);
-  },
-
-  setUser: <T = unknown>(user: T): void => {
-    storageService.setItem(AUTH_USER_KEY, user);
+  /** Drop pre-migration `auth_user` copy if still present. */
+  purgeLegacyUser: (): void => {
+    storageService.removeItem(LEGACY_AUTH_USER_KEY);
   },
 };
 

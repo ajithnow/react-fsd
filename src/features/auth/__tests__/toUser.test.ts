@@ -1,27 +1,17 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { toUser } from '../toUser';
-import {
-  resolvePermissions,
-  setRolePermissions,
-  DEFAULT_ROLE_PERMISSIONS,
-  AUTH_PERMISSIONS,
-} from '../constants';
-import { ROLES } from '@/shared/lib/rbac';
 import type { MeResponse } from '../types';
 
 describe('toUser', () => {
-  beforeEach(() => {
-    setRolePermissions({ ...DEFAULT_ROLE_PERMISSIONS });
-  });
-
-  it('maps /me into a session user and resolves permissions from role', () => {
+  it('maps /me into a session user with API permissions', () => {
     const me: MeResponse = {
       id: '42',
       firstName: 'Ada',
       lastName: 'Admin',
       email: 'ada@example.com',
-      role: ROLES.ADMIN,
+      role: 'admin',
       status: 'active',
+      permissions: ['admin:dashboard', 'users:read'],
     };
 
     const user = toUser(me);
@@ -32,24 +22,32 @@ describe('toUser', () => {
       lastName: 'Admin',
       email: 'ada@example.com',
       name: 'Ada Admin',
-      role: ROLES.ADMIN,
-      roles: [ROLES.ADMIN],
+      role: 'admin',
+      roles: ['admin'],
       status: 'active',
+      permissions: ['admin:dashboard', 'users:read'],
     });
-    expect(user.permissions).toEqual(
-      expect.arrayContaining([AUTH_PERMISSIONS.ADMIN_DASHBOARD])
-    );
   });
 
-  it('prefers API permissions over the role map', () => {
+  it('uses empty permissions when /me omits them', () => {
     const user = toUser({
       id: '1',
       email: 'v@example.com',
-      role: ROLES.VIEWER,
-      permissions: [AUTH_PERMISSIONS.ADMIN_SYSTEM_LOGS],
+      role: 'viewer',
     });
 
-    expect(user.permissions).toEqual([AUTH_PERMISSIONS.ADMIN_SYSTEM_LOGS]);
+    expect(user.permissions).toEqual([]);
+  });
+
+  it('keeps API permissions as provided', () => {
+    const user = toUser({
+      id: '1',
+      email: 'v@example.com',
+      role: 'viewer',
+      permissions: ['admin:system_logs'],
+    });
+
+    expect(user.permissions).toEqual(['admin:system_logs']);
   });
 
   it('uses roles[] and fullName when role/name are omitted', () => {
@@ -71,36 +69,5 @@ describe('toUser', () => {
       permissions: ['users:read', 'admin:dashboard'],
       status: 'Active',
     });
-  });
-});
-
-describe('resolvePermissions', () => {
-  beforeEach(() => {
-    setRolePermissions({ ...DEFAULT_ROLE_PERMISSIONS });
-  });
-
-  it('returns empty array for unknown roles without API perms', () => {
-    expect(resolvePermissions('Unknown')).toEqual([]);
-  });
-
-  it('uses custom role maps when set', () => {
-    setRolePermissions({ Ops: ['profiles:approve'] });
-    expect(resolvePermissions('Ops')).toEqual(['profiles:approve']);
-  });
-
-  it('merges feature contributions into the fallback map', async () => {
-    const { mergeRolePermissions } = await import(
-      '../constants/rolePermissions.constants'
-    );
-    setRolePermissions({ ...DEFAULT_ROLE_PERMISSIONS });
-    mergeRolePermissions({
-      [ROLES.VIEWER]: ['bookings:read'],
-    });
-    expect(resolvePermissions(ROLES.VIEWER)).toEqual(
-      expect.arrayContaining([
-        AUTH_PERMISSIONS.PROFILE_READ,
-        'bookings:read',
-      ])
-    );
   });
 });

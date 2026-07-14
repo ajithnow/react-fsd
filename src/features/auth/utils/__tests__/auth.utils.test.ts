@@ -2,7 +2,6 @@ import {
   authStorage,
   isAuthenticated,
   AUTH_TOKEN_KEY,
-  AUTH_USER_KEY,
 } from '../auth.utils';
 
 // Mock localStorage — storageService JSON-serializes values
@@ -70,11 +69,11 @@ describe('authStorage', () => {
   });
 
   describe('removeToken', () => {
-    it('should remove both token and user from localStorage', () => {
+    it('should remove token and legacy auth_user from localStorage', () => {
       authStorage.removeToken();
 
       expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(AUTH_TOKEN_KEY);
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(AUTH_USER_KEY);
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('auth_user');
     });
 
     it('should handle localStorage errors silently', () => {
@@ -86,92 +85,11 @@ describe('authStorage', () => {
     });
   });
 
-  describe('getUser', () => {
-    it('should return parsed user from localStorage', () => {
-      const user = { id: 1, name: 'John' };
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(user));
+  describe('purgeLegacyUser', () => {
+    it('should remove legacy auth_user key', () => {
+      authStorage.purgeLegacyUser();
 
-      const result = authStorage.getUser();
-
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith(AUTH_USER_KEY);
-      expect(result).toEqual(user);
-    });
-
-    it('should return null when no user exists', () => {
-      mockLocalStorage.getItem.mockReturnValue(null);
-
-      const result = authStorage.getUser();
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when JSON parsing fails', () => {
-      mockLocalStorage.getItem.mockReturnValue('invalid json');
-
-      const result = authStorage.getUser();
-
-      expect(result).toBeNull();
-    });
-
-    it('should return null when localStorage throws error', () => {
-      mockLocalStorage.getItem.mockImplementation(() => {
-        throw new Error('localStorage error');
-      });
-
-      const result = authStorage.getUser();
-
-      expect(result).toBeNull();
-    });
-
-    it('should handle typed user objects', () => {
-      interface TestUser {
-        id: number;
-        email: string;
-      }
-
-      const user: TestUser = { id: 1, email: 'test@example.com' };
-      mockLocalStorage.getItem.mockReturnValue(JSON.stringify(user));
-
-      const result = authStorage.getUser<TestUser>();
-
-      expect(result).toEqual(user);
-    });
-  });
-
-  describe('setUser', () => {
-    it('should set stringified user in localStorage', () => {
-      const user = { id: 1, name: 'John' };
-
-      authStorage.setUser(user);
-
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        AUTH_USER_KEY,
-        JSON.stringify(user)
-      );
-    });
-
-    it('should handle localStorage errors silently', () => {
-      mockLocalStorage.setItem.mockImplementation(() => {
-        throw new Error('localStorage error');
-      });
-
-      expect(() => authStorage.setUser({ id: 1 })).not.toThrow();
-    });
-
-    it('should handle typed user objects', () => {
-      interface TestUser {
-        id: number;
-        email: string;
-      }
-
-      const user: TestUser = { id: 1, email: 'test@example.com' };
-
-      authStorage.setUser<TestUser>(user);
-
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        AUTH_USER_KEY,
-        JSON.stringify(user)
-      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('auth_user');
     });
   });
 });

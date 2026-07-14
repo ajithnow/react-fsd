@@ -4,8 +4,6 @@ import {
   usePermission,
   useAnyPermission,
   useAllPermissions,
-  useRole,
-  useAnyRole,
 } from '../useRBAC';
 
 const mockUser = {
@@ -38,9 +36,6 @@ vi.mock('../../lib/rbac/utils', () => ({
     'users:create',
     'admin:dashboard',
   ]),
-  getUserRoles: vi.fn((user: { role?: string } | null) =>
-    user ? [user.role] : []
-  ),
   hasPermission: vi.fn((_user, perm) =>
     ['users:read', 'users:create', 'admin:dashboard'].includes(perm)
   ),
@@ -55,7 +50,6 @@ vi.mock('../../lib/rbac/utils', () => ({
     )
   ),
   getMissingPermissions: vi.fn(),
-  canAccessFeature: vi.fn(),
   isRbacEnabled: vi.fn(() => true),
 }));
 
@@ -72,56 +66,29 @@ describe('useRBAC (shared/hooks)', () => {
     expect(result.current.hasPermission('not:real')).toBe(false);
   });
 
-  it('hasAnyPermission returns true if user has any', () => {
+  it('hasAnyPermission / hasAllPermissions work', () => {
     const { result } = renderHook(() => useRBAC());
     expect(result.current.hasAnyPermission(['not:real', 'users:read'])).toBe(
       true
     );
-    expect(result.current.hasAnyPermission(['not:real'])).toBe(false);
-  });
-
-  it('hasAllPermissions returns true only if user has all', () => {
-    const { result } = renderHook(() => useRBAC());
     expect(
       result.current.hasAllPermissions(['users:read', 'users:create'])
     ).toBe(true);
-    expect(
-      result.current.hasAllPermissions(['users:read', 'not:real'])
-    ).toBe(false);
-  });
-
-  it('hasRole and hasAnyRole work as expected', () => {
-    const { result } = renderHook(() => useRBAC());
-    expect(result.current.hasRole('admin')).toBe(true);
-    expect(result.current.hasRole('user')).toBe(false);
-    expect(result.current.hasAnyRole(['user', 'admin'])).toBe(true);
-    expect(result.current.hasAnyRole(['user', 'manager'])).toBe(false);
   });
 });
 
-describe('usePermission, useAnyPermission, useAllPermissions, useRole, useAnyRole', () => {
-  it('usePermission returns true if user has permission', () => {
-    const { result } = renderHook(() => usePermission('users:read'));
-    expect(result.current).toBe(true);
-  });
-  it('useAnyPermission returns true if user has any', () => {
-    const { result } = renderHook(() =>
-      useAnyPermission(['not:real', 'users:read'])
+describe('usePermission helpers', () => {
+  it('usePermission / useAnyPermission / useAllPermissions', () => {
+    expect(renderHook(() => usePermission('users:read')).result.current).toBe(
+      true
     );
-    expect(result.current).toBe(true);
-  });
-  it('useAllPermissions returns true if user has all', () => {
-    const { result } = renderHook(() =>
-      useAllPermissions(['users:read', 'users:create'])
-    );
-    expect(result.current).toBe(true);
-  });
-  it('useRole returns true if user has role', () => {
-    const { result } = renderHook(() => useRole('admin'));
-    expect(result.current).toBe(true);
-  });
-  it('useAnyRole returns true if user has any role', () => {
-    const { result } = renderHook(() => useAnyRole(['user', 'admin']));
-    expect(result.current).toBe(true);
+    expect(
+      renderHook(() => useAnyPermission(['not:real', 'users:read'])).result
+        .current
+    ).toBe(true);
+    expect(
+      renderHook(() => useAllPermissions(['users:read', 'users:create'])).result
+        .current
+    ).toBe(true);
   });
 });

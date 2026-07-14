@@ -1,6 +1,6 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
-import { 
-  persistStore, 
+import {
+  persistStore,
   persistReducer,
   FLUSH,
   REHYDRATE,
@@ -9,7 +9,7 @@ import {
   PURGE,
   REGISTER,
 } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
+import storage from 'redux-persist/lib/storage';
 import authReducer from '@/features/auth/stores/auth.slice.ts';
 
 const rootReducer = combineReducers({
@@ -17,18 +17,23 @@ const rootReducer = combineReducers({
   // Add other slices here
 });
 
+/**
+ * v2: stop persisting auth.user — tokens live in authStorage;
+ * session identity is loaded from `/me` in SessionBootstrap.
+ */
 const persistConfig = {
   key: 'root',
-  version: 1,
+  version: 2,
   storage,
-  whitelist: ['auth'], // persistent state
+  whitelist: [] as string[],
+  migrate: async () => undefined,
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],

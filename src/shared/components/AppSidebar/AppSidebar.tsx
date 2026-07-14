@@ -7,16 +7,14 @@ import {
 } from '@/lib/shadcn/components/ui/sidebar';
 import { NavGroup } from './NavGroup';
 import { NavUser } from './NavUser';
-import { sidebarData as defaultSidebarData } from './data';
 import { SidebarData } from './appSidebar.types';
 import { useTranslation } from 'react-i18next';
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {
-  data?: SidebarData;
+  data: SidebarData;
 }
 
 export const AppSidebar = ({ data, ...props }: AppSidebarProps) => {
-  const sidebarData = data || defaultSidebarData;
   const { t } = useTranslation('shared');
 
   return (
@@ -38,12 +36,12 @@ export const AppSidebar = ({ data, ...props }: AppSidebarProps) => {
         </div>
       </SidebarHeader>
       <SidebarContent>
-        {sidebarData.navGroups.map(group => (
+        {data.navGroups.map(group => (
           <NavGroup key={group.title} {...group} />
         ))}
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={sidebarData.user} />
+        <NavUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>

@@ -108,9 +108,6 @@ export default defineConfig(({ mode }) => {
       'process.env.VITE_API_BASE_URL': JSON.stringify(
         env.VITE_API_BASE_URL || 'http://localhost:3000/api'
       ),
-      'process.env.VITE_FEATURE_FLAGS': JSON.stringify(
-        env.VITE_FEATURE_FLAGS || '{}'
-      ),
       'process.env.VITE_I18N_DEBUG': JSON.stringify(
         env.VITE_I18N_DEBUG || 'false'
       ),

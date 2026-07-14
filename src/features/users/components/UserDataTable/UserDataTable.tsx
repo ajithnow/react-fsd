@@ -16,7 +16,6 @@ import { UserRecord } from '../../types';
 import { Badge } from '@/lib/shadcn/components/ui/badge';
 import { TextCell } from '@/shared/components/TextCell/TextCell';
 import useRoleLabels from '@/shared/hooks/useRoleLabels';
-import { authStorage } from '@/features/auth/utils';
 
 export const UserDataTable: React.FC<UserDataTableProps> = ({
   users,
@@ -38,13 +37,13 @@ export const UserDataTable: React.FC<UserDataTableProps> = ({
   const navigate = useNavigate();
 
   const { t } = useTranslation('users');
-  const { hasPermission } = useRBAC();
+  const { hasPermission, user: sessionUser } = useRBAC();
   const { typeData, statusData } = useRoleLabels();
 
-  const checkSameUser = useCallback((email: string) => {
-    const user = authStorage.getUser() as { email?: string } | undefined;
-    return user?.email === email;
-  }, []);
+  const checkSameUser = useCallback(
+    (email: string) => sessionUser?.email === email,
+    [sessionUser]
+  );
 
   const renderRole = useCallback(
     (user: AdminUser) => {

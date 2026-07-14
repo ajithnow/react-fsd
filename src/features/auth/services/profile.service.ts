@@ -7,13 +7,11 @@ import type { MeResponse, User } from '../types';
  * Fetches session identity from `/me`.
  * Do not decode opaque bearer tokens for role/permissions.
  */
-const useProfileService = () => {
-  const getProfile = async (): Promise<User> => {
-    const { data } = await apiClient.get<{ data: MeResponse }>(ENDPOINTS.ME);
-    return toUser(data.data);
-  };
+export async function getProfile(): Promise<User> {
+  const { data } = await apiClient.get<{ data: MeResponse }>(ENDPOINTS.ME);
+  return toUser(data.data);
+}
 
-  return { getProfile };
-};
+const useProfileService = () => ({ getProfile });
 
 export default useProfileService;

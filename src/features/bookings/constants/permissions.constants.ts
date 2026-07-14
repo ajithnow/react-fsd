@@ -1,6 +1,5 @@
-import { PERMISSIONS } from '@/shared/lib/rbac';
-
+/** Bookings feature permissions — owned by this module (`resource:action`). */
 export const BOOKING_PERMISSIONS = {
-  READ: PERMISSIONS.BOOKINGS_READ,
-  MANAGE: PERMISSIONS.BOOKINGS_MANAGE,
+  READ: 'bookings:read',
+  MANAGE: 'bookings:manage',
 } as const;

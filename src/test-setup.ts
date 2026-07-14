@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { vi } from 'vitest';
 
-process.env.VITE_FEATURE_FLAGS = undefined;
-
 window.HTMLElement.prototype.scrollIntoView = vi.fn();
 
 global.ResizeObserver = vi.fn().mockImplementation(() => ({

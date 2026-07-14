@@ -2,8 +2,6 @@ import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import apiClient from '@/core/api';
 import useProfileService from '../profile.service';
 import { ENDPOINTS } from '../../constants';
-import { ROLES } from '@/shared/lib/rbac';
-import { AUTH_PERMISSIONS } from '../../constants/permissions.constants';
 
 vi.mock('@/core/api');
 const mockApiClient = apiClient as Mocked<typeof apiClient>;
@@ -21,7 +19,7 @@ describe('Profile Service', () => {
           firstName: 'Ada',
           lastName: 'Admin',
           email: 'ada@example.com',
-          role: ROLES.ADMIN,
+          role: 'admin',
         },
       },
     });
@@ -31,7 +29,25 @@ describe('Profile Service', () => {
 
     expect(mockApiClient.get).toHaveBeenCalledWith(ENDPOINTS.ME);
     expect(user.email).toBe('ada@example.com');
-    expect(user.role).toBe(ROLES.ADMIN);
-    expect(user.permissions).toContain(AUTH_PERMISSIONS.ADMIN_DASHBOARD);
+    expect(user.role).toBe('admin');
+    expect(user.permissions).toEqual([]);
+  });
+
+  it('keeps permissions returned by /me', async () => {
+    mockApiClient.get.mockResolvedValue({
+      data: {
+        data: {
+          id: '42',
+          email: 'ada@example.com',
+          role: 'admin',
+          permissions: ['admin:dashboard'],
+        },
+      },
+    });
+
+    const { getProfile } = useProfileService();
+    const user = await getProfile();
+
+    expect(user.permissions).toEqual(['admin:dashboard']);
   });
 });

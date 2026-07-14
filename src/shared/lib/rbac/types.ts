@@ -1,23 +1,12 @@
 export type Permission = string;
 
+/** Optional identity metadata from `/me` — not used for authorization. */
 export type Role = string;
 
-export type RolePermissions = {
-  role: Role;
-  permissions: Permission[];
-};
-
-/** Session identity used by RBAC. */
+/** Minimal identity shape for permission checks. */
 export type User = {
-  role: Role;
-  roles: Role[];
   permissions: Permission[];
-};
-
-export type PermissionGuardProps = {
-  children: React.ReactNode;
-  permission?: Permission;
-  permissions?: Permission[];
-  requireAll?: boolean;
-  fallback?: React.ReactNode;
+  /** Present on session users; ignored by permission helpers. */
+  role?: Role;
+  roles?: Role[];
 };
