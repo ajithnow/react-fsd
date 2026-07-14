@@ -17,10 +17,11 @@ describe('Profile Service', () => {
     mockApiClient.get.mockResolvedValue({
       data: {
         data: {
+          id: '42',
           firstName: 'Ada',
           lastName: 'Admin',
           email: 'ada@example.com',
-          role: ROLES.SUPER_ADMIN,
+          role: ROLES.ADMIN,
         },
       },
     });
@@ -29,8 +30,8 @@ describe('Profile Service', () => {
     const user = await getProfile();
 
     expect(mockApiClient.get).toHaveBeenCalledWith(ENDPOINTS.ME);
-    expect(user.Email).toBe('ada@example.com');
-    expect(user.Role).toBe(ROLES.SUPER_ADMIN);
+    expect(user.email).toBe('ada@example.com');
+    expect(user.role).toBe(ROLES.ADMIN);
     expect(user.permissions).toContain(AUTH_PERMISSIONS.ADMIN_DASHBOARD);
   });
 });

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { AppSidebar } from '../AppSidebar';
-import { SidebarData, NavItem, User } from '../appSidebar.models';
+import { SidebarData, NavItem, User } from '../appSidebar.types';
 import { Home, Settings, Users } from 'lucide-react';
 
 // Mock the shadcn/ui sidebar components

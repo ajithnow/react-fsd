@@ -21,7 +21,7 @@ import {
   useSidebar,
 } from '@/lib/shadcn/components/ui/sidebar';
 import { useLogoutManager } from '../../../features/auth/managers/logout.manager';
-import type { User } from './appSidebar.models';
+import type { User } from './appSidebar.types';
 import { useTranslation } from 'react-i18next';
 
 interface NavUserProps {

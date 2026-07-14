@@ -37,14 +37,14 @@ export const UserForm: React.FC<
 }) => {
   const { userSchema } = UserFormSchema();
   const { isOpen, showAlert, hideAlert } = useAlertDialog();
-  const loggedUser = authStorage.getUser() as { Email?: string } | undefined;
+  const loggedUser = authStorage.getUser() as { email?: string } | undefined;
 
   const checkSameUser = useCallback(
-    (email?: string) => loggedUser?.Email === email,
+    (email?: string) => loggedUser?.email === email,
     [loggedUser]
   );
 
-  const isAdmin = useCallback(() => user?.Role === ROLES.SUPER_ADMIN, [user]);
+  const isAdmin = useCallback(() => user?.Role === ROLES.ADMIN, [user]);
 
   const form = useForm<FormData>({
     resolver: zodResolver(userSchema),
@@ -199,11 +199,11 @@ useEffect(() => {
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent>
-                              <SelectItem value="POWER_ADMIN">
-                                {translate('users.form.powerUser')}
+                              <SelectItem value={ROLES.EDITOR}>
+                                {translate('users.form.editor')}
                               </SelectItem>
-                              <SelectItem value="NORMAL_USER">
-                                {translate('users.form.normalUser')}
+                              <SelectItem value={ROLES.VIEWER}>
+                                {translate('users.form.viewer')}
                               </SelectItem>
                             </SelectContent>
                           </Select>

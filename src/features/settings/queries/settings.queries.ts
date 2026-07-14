@@ -7,9 +7,9 @@ import {
 import {
   UpdateProfileRequest,
   ChangePasswordRequest,
-} from '../models/settings.model';
+} from '../types';
 import { useToast } from '@/shared/hooks/useToast';
-import { BackendErrorResponse } from '@/shared';
+import { ApiErrorResponse } from '@/shared';
 import { useTranslation } from 'react-i18next';
 import { useRef, useCallback } from 'react';
 
@@ -66,7 +66,7 @@ export const useSettingsQueries = () => {
         'success'
       );
     },
-    onError: (error: BackendErrorResponse) => {
+    onError: (error: ApiErrorResponse) => {
       console.error('Failed to update profile:', error);
       notify(
         error?.message || 'Failed to update profile',
@@ -78,7 +78,7 @@ export const useSettingsQueries = () => {
 
   const changePasswordMutation = useMutation({
     mutationFn: (data: ChangePasswordRequest) => changePassword(data),
-    onError: (error: BackendErrorResponse) => {
+    onError: (error: ApiErrorResponse) => {
       notify(
         error?.response?.data?.message ?? t('failedToChangePassword'),
         { position: 'bottom-right', duration: 2000 },

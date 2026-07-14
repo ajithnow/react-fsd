@@ -9,7 +9,7 @@ import {
   SelectValue,
 } from '../../../lib/shadcn/components/ui/select';
 import { FilterX } from 'lucide-react';
-import { DataTableFiltersProps, FilterValues } from './dataTable.model';
+import { DataTableFiltersProps, FilterValues } from './dataTable.types';
 import { useTranslation } from 'react-i18next';
 import { MultiSelect } from '../../../lib/shadcn/components/ui/multiselect';
 import { DebouncedInput } from './DebouncedInput';

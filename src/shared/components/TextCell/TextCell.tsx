@@ -1,5 +1,5 @@
 import React from 'react';
-import type { TextCellProps } from './textCell.model';
+import type { TextCellProps } from './textCell.types';
 import { Link } from '@tanstack/react-router';
 export const TextCell: React.FC<TextCellProps> = ({
   value,

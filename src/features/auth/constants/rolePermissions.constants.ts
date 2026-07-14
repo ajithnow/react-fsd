@@ -1,33 +1,38 @@
-import { ROLES } from '@/shared/lib/rbac';
+import { ROLES, PERMISSIONS } from '@/shared/lib/rbac';
 import type { Permission } from '@/shared/lib/rbac';
-import { AUTH_PERMISSIONS } from './permissions.constants';
 
 /**
  * Default role → permission map for the open-source template.
- * Override via `setRolePermissions` or return `permissions` from the me/profile API.
+ *
+ * Host apps should either:
+ * - return `permissions` from `/api/auth/me`, or
+ * - call `setRolePermissions` with their own map
  */
 export const DEFAULT_ROLE_PERMISSIONS: Record<string, Permission[]> = {
-  [ROLES.SUPER_ADMIN]: Object.values(AUTH_PERMISSIONS),
-  [ROLES.POWER_ADMIN]: [
-    AUTH_PERMISSIONS.PROFILE_READ,
-    AUTH_PERMISSIONS.PROFILE_UPDATE,
-    AUTH_PERMISSIONS.USERS_READ,
-    AUTH_PERMISSIONS.USERS_CREATE,
-    AUTH_PERMISSIONS.USERS_UPDATE,
-    AUTH_PERMISSIONS.ADMIN_DASHBOARD,
-    AUTH_PERMISSIONS.SETTINGS_READ,
-    AUTH_PERMISSIONS.SETTINGS_UPDATE,
+  [ROLES.ADMIN]: Object.values(PERMISSIONS),
+  [ROLES.EDITOR]: [
+    PERMISSIONS.PROFILE_READ,
+    PERMISSIONS.PROFILE_UPDATE,
+    PERMISSIONS.USERS_READ,
+    PERMISSIONS.USERS_CREATE,
+    PERMISSIONS.USERS_UPDATE,
+    PERMISSIONS.ADMIN_DASHBOARD,
+    PERMISSIONS.SETTINGS_READ,
+    PERMISSIONS.SETTINGS_UPDATE,
   ],
-  [ROLES.NORMAL_USER]: [
-    AUTH_PERMISSIONS.PROFILE_READ,
-    AUTH_PERMISSIONS.PROFILE_UPDATE,
-    AUTH_PERMISSIONS.SETTINGS_READ,
+  [ROLES.VIEWER]: [
+    PERMISSIONS.PROFILE_READ,
+    PERMISSIONS.SETTINGS_READ,
+    PERMISSIONS.USERS_READ,
+    PERMISSIONS.ADMIN_DASHBOARD,
   ],
 };
 
-let rolePermissions: Record<string, Permission[]> = { ...DEFAULT_ROLE_PERMISSIONS };
+let rolePermissions: Record<string, Permission[]> = {
+  ...DEFAULT_ROLE_PERMISSIONS,
+};
 
-/** Replace the entire role→permission map (e.g. CaptureHire Admin/Ops maps). */
+/** Replace the entire role→permission map for a host project. */
 export const setRolePermissions = (
   next: Record<string, Permission[]>
 ): void => {

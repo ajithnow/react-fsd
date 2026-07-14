@@ -3,7 +3,7 @@ import { Document, Page, pdfjs } from 'react-pdf';
 import pdfWorkerImport from 'pdfjs-dist/build/pdf.worker.min?url'; // Vite/Webpack style import
 
 import Button from '@/shared/components/Button';
-import { PdfPreviewProps } from '@/shared/models';
+import { PdfPreviewProps } from '@/shared/types';
 
 const pdfWorker: string =
   typeof window !== 'undefined' ? (pdfWorkerImport ?? '') : '';

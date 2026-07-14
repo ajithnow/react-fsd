@@ -1,3 +1,3 @@
 export { useFeatureFlags, getFeatureFlagValue } from './features';
-export type { FeatureFlags, FeatureValue } from '../models/featureFlags.model';
+export type { FeatureFlags, FeatureValue } from '../types';
 export { loadFeatureFlags, getFlag } from '../utils/featureFlags.utils';

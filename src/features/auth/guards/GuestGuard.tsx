@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useSearch } from '@tanstack/react-router';
 import { isAuthenticated } from '../utils/auth.utils';
-import type { GuestGuardProps } from '../models/guards.model';
+import type { GuestGuardProps } from '../types';
 
 export const GuestGuard: React.FC<GuestGuardProps> = ({ 
   children, 

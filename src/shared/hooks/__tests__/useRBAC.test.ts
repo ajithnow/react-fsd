@@ -3,12 +3,15 @@ import { renderHook } from '@testing-library/react';
 import { useRBAC, usePermission, useAnyPermission, useAllPermissions, useRole, useAnyRole } from '../useRBAC';
 
 const mockUser = {
-  UserId: '1',
-  Role: 'admin',
-  Email: 'test@test.com',
-  FirstName: 'Test',
-  LastName: 'Test',
-  Status: true
+  id: '1',
+  role: 'admin',
+  roles: ['admin'],
+  email: 'test@test.com',
+  firstName: 'Test',
+  lastName: 'Test',
+  name: 'Test Test',
+  permissions: ['users:read', 'users:create', 'admin:dashboard'],
+  status: 'active',
 };
 
 vi.mock('@/shared/lib/rbac/context', () => ({
@@ -17,6 +20,7 @@ vi.mock('@/shared/lib/rbac/context', () => ({
 
 vi.mock('../../lib/rbac/utils', () => ({
   getAllPermissionsForUser: vi.fn(() => ['users:read', 'users:create', 'admin:dashboard']),
+  getUserRoles: vi.fn((user) => (user ? [user.role] : [])),
   hasPermission: vi.fn((_user, perm) => ['users:read', 'users:create', 'admin:dashboard'].includes(perm)),
   hasAnyPermission: vi.fn((_user, perms) => perms.some((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),
   hasAllPermissions: vi.fn((_user, perms) => perms.every((p: string) => ['users:read', 'users:create', 'admin:dashboard'].includes(p))),

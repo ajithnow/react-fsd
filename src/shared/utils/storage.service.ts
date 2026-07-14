@@ -3,7 +3,7 @@
  * Provides a clean API with type safety and automatic JSON serialization.
  */
 
-import { StorageType } from './storage.models';
+import { StorageType } from './storage.types';
 
 class StorageService {
   private getStorage(type: StorageType): Storage {

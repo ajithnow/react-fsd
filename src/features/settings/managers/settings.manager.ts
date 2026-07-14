@@ -1,7 +1,7 @@
 import {
   ChangePasswordRequest,
   UpdateProfileRequest,
-} from '../models/settings.model';
+} from '../types';
 import { useSettingsQueries } from '../queries/settings.queries';
 
 export const useSettingsManager = () => {

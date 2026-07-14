@@ -9,8 +9,8 @@ import {
   useAlertDialog,
 } from '@/shared/components';
 
-import type { FormData } from '../models';
-import { BackendErrorResponse } from '@/shared/models/common.model';
+import type { FormData } from '../types';
+import type { ApiErrorResponse } from '@/shared/types';
 import { useUnsavedChangesBlocker } from '@/shared';
 import { useCanGoBack, useRouter } from '@tanstack/react-router';
 
@@ -56,7 +56,7 @@ export const UserCreatePage: React.FC = () => {
       <UserForm
         onSubmit={handleSubmit}
         isLoading={isCreating}
-        error={(createError as BackendErrorResponse)?.response?.data?.Message}
+        error={(createError as ApiErrorResponse)?.response?.data?.Message}
         translate={t}
         onDirtyChange={setIsDirty}
       />

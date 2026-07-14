@@ -29,18 +29,20 @@ vi.mock('@tanstack/react-router', () => ({
 
 describe('useLoginManager', () => {
   const defaultPayload = {
-    token: 'fake-token',
+    accessToken: 'fake-token',
     refreshToken: 'fake-refresh',
   };
 
   const profileUser = {
-    Email: 'john@example.com',
-    FirstName: 'John',
-    LastName: 'Doe',
-    Role: ROLES.NORMAL_USER,
-    Name: 'John Doe',
+    id: '1',
+    email: 'john@example.com',
+    firstName: 'John',
+    lastName: 'Doe',
+    role: ROLES.VIEWER,
+    roles: [ROLES.VIEWER],
+    name: 'John Doe',
     permissions: [],
-    Status: 'active',
+    status: 'active',
   };
 
   beforeEach(() => {

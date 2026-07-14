@@ -14,7 +14,7 @@ import { ArrowUpDown, ArrowUp, ArrowDown, Loader2 } from 'lucide-react';
 import { cn } from '../../../lib/utils';
 import { DataTableFilters } from './DataTableFilters';
 import { DataTablePagination } from './DataTablePagination';
-import { DataTableProps, SortConfig, FilterValues } from './dataTable.model';
+import { DataTableProps, SortConfig, FilterValues } from './dataTable.types';
 
 export function DataTable<T extends Record<string, unknown>>({
   data,

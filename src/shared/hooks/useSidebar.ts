@@ -1,4 +1,4 @@
-import { SidebarData } from '../components/AppSidebar/appSidebar.models';
+import { SidebarData } from '../components/AppSidebar/appSidebar.types';
 import {
   createSidebarData,
   createNavGroup,
@@ -17,7 +17,7 @@ import {
   // Bell,
 } from 'lucide-react';
 import { store } from '@/core/store';
-import type { User } from '@/features/auth/models/auth.model.ts';
+import type { User } from '@/features/auth/types';
 import { useRBAC } from '@/shared';
 import { useTranslation } from 'react-i18next';
 
@@ -154,6 +154,8 @@ const hasPermissionForKey = (
   );
 };
 
+import { isRbacEnabled } from '@/shared/lib/rbac';
+
 /**
  * Filter sidebar items based on user permissions
  */
@@ -161,6 +163,8 @@ const filterSidebarItems = (
   items: SidebarItem[],
   userPermissions: string[]
 ): SidebarItem[] => {
+  if (!isRbacEnabled()) return items;
+
   return items.filter(item => {
     // If no permission specified, show item
     if (!item.permission) return true;
@@ -251,8 +255,8 @@ const createUserDataFromAuth = (
   }
 
   return {
-    name: authUser.Name || t('sidebar.user.unknown'),
-    email: authUser.Email || authUser.Name || 'user@example.com',
+    name: authUser.name || t('sidebar.user.unknown'),
+    email: authUser.email || authUser.name || 'user@example.com',
     avatar: '/avatars/user.jpg', // Default avatar, could be extended with authUser.avatar
   };
 };
@@ -363,7 +367,7 @@ export const getSidebarData = (options?: {
 
   // Determine user role from auth user if not explicitly provided
   const actualUserRole =
-    userRole || (authUser?.Role === 'admin' ? 'admin' : 'user');
+    userRole || (authUser?.role === 'admin' ? 'admin' : 'user');
 
   let sidebarData: SidebarData;
 

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataTablePagination } from '../DataTablePagination';
-import { PaginationInfo } from '../dataTable.model';
+import { PaginationInfo } from '../dataTable.types';
 
 // Mock props for testing
 // Mock react-i18next

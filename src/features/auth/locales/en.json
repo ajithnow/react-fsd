@@ -1,13 +1,15 @@
 {
   "login": {
     "title": "Login to your account",
-    "usernameLabel": "Username",
-    "usernamePlaceholder": "Enter your username",
+    "subtitle": "Sign in to your account to continue",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
     "passwordPlaceholder": "••••••••",
     "loginButton": "Login",
     "loadingButton": "Logging In...",
-    "usernameRequired": "Username is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email address",
     "passwordRequired": "Password is required",
     "loginFailedError": "Login failed. Please check your credentials.",
     "successLogin": "Login successful",

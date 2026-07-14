@@ -78,7 +78,7 @@ describe('UserActionDialog', () => {
     FirstName: 'John',
     LastName: 'Doe',
     Email: 'john@example.com',
-    Role: 'NORMAL_USER' as const,
+    Role: 'viewer' as const,
     Status: true,
   };
 

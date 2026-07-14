@@ -114,6 +114,9 @@ export default defineConfig(({ mode }) => {
       'process.env.VITE_I18N_DEBUG': JSON.stringify(
         env.VITE_I18N_DEBUG || 'false'
       ),
+      'process.env.VITE_RBAC_ENABLED': JSON.stringify(
+        env.VITE_RBAC_ENABLED ?? 'true'
+      ),
     },
     test: {
       globals: true,

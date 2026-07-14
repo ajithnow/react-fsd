@@ -7,7 +7,7 @@ import { useUserTableLogic } from '../managers/users.manager';
 import { PageHeader, useAlertDialog } from '@/shared/components';
 import { Button } from '@/lib/shadcn/components/ui/button';
 import { UserActionDialog } from '../components/UserActionDialogs/UserActionDialogs';
-import type { AdminUser } from '../models';
+import type { AdminUser } from '../types';
 import { Can } from '@/shared/lib/rbac';
 import { USER_PERMISSIONS } from '../constants';
 

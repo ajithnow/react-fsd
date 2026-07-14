@@ -7,9 +7,9 @@ import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
 import { AppDispatch } from '@/core/store';
 import { useTranslation } from 'react-i18next';
 import { useToast } from '@/shared/hooks/useToast';
-import { AxiosError } from 'axios';
 import { logger } from '@/core/services/logger.service';
-import type { LoginTokens } from '../models/auth.model';
+import { getErrorMessage } from '@/shared/utils/getErrorMessage';
+import type { LoginResponse } from '../types';
 import authService from '../services';
 
 export const useLoginManager = () => {
@@ -20,9 +20,11 @@ export const useLoginManager = () => {
   const { notify } = useToast();
   const { getProfile } = authService.useProfileService();
 
-  const onLoginSuccess = async ({ token, refreshToken }: LoginTokens) => {
-    // Persist tokens first so the me/profile request is authenticated
-    authStorage.setToken(token);
+  const onLoginSuccess = async ({
+    accessToken,
+    refreshToken,
+  }: LoginResponse) => {
+    authStorage.setToken(accessToken);
     authStorage.setRefreshToken(refreshToken);
 
     try {
@@ -46,12 +48,12 @@ export const useLoginManager = () => {
   };
 
   const onLoginError = (error: unknown) => {
-    const errorMessage =
-      error instanceof AxiosError
-        ? error.message
-        : t('login.loginFailedError');
     logger.error('Login failed in manager', error, 'LoginManager');
-    notify(errorMessage, { position: 'bottom-right' }, 'error');
+    notify(
+      getErrorMessage(error, t('login.loginFailedError')),
+      { position: 'bottom-right' },
+      'error'
+    );
   };
 
   return {

@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataTable } from '../DataTable';
-import { DataTableColumn } from '../dataTable.model';
+import { DataTableColumn } from '../dataTable.types';
 
 interface TestData extends Record<string, unknown> {
   id: number;

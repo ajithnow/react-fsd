@@ -1,4 +1,4 @@
-import { AuthLayoutProps } from '../models/auth.model';
+import { AuthLayoutProps } from '../types';
 import { useTranslation } from 'react-i18next';
 import logoImage from '@/assets/images/logo.png';
 

@@ -8,7 +8,7 @@ import {
 import { NavGroup } from './NavGroup';
 import { NavUser } from './NavUser';
 import { sidebarData as defaultSidebarData } from './data';
-import { SidebarData } from './appSidebar.models';
+import { SidebarData } from './appSidebar.types';
 import { useTranslation } from 'react-i18next';
 
 interface AppSidebarProps extends React.ComponentProps<typeof Sidebar> {

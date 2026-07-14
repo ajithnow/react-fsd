@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NavUser } from '../NavUser';
-import { User } from '../appSidebar.models';
+import { User } from '../appSidebar.types';
 
 // Mock react-i18next
 vi.mock('react-i18next', () => ({

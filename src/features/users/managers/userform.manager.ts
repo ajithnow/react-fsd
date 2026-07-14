@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
 import { useUserMutations } from '../queries/users.query';
-import type { FormData, UpdateUserRequest } from '../models';
+import type { FormData, UpdateUserRequest } from '../types';
 
 export function useUserFormManager(id?: string) {
   const navigate = useNavigate();

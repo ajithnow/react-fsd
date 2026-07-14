@@ -1,23 +1,16 @@
 import apiClient from '@/core/api';
 import { ENDPOINTS } from '@/features/auth/constants';
-import { mapProfileToUser } from '../mappers/profile.mapper';
-import type { User } from '../models/auth.model';
+import { toUser } from '../toUser';
+import type { MeResponse, User } from '../types';
 
 /**
- * Fetches the authenticated user's session profile.
- *
- * Use this instead of decoding JWT role claims — Identity bearer tokens are
- * opaque; role/permissions belong on a me/profile endpoint.
- *
- * Adaptability:
- * - Change `ENDPOINTS.ME` for your API path
- * - Call `setProfileMapper` for a project-specific response shape
- * - Call `setRolePermissions` when the API returns role only
+ * Fetches session identity from `/me`.
+ * Do not decode opaque bearer tokens for role/permissions.
  */
 const useProfileService = () => {
   const getProfile = async (): Promise<User> => {
-    const { data } = await apiClient.get(ENDPOINTS.ME);
-    return mapProfileToUser(data);
+    const { data } = await apiClient.get<{ data: MeResponse }>(ENDPOINTS.ME);
+    return toUser(data.data);
   };
 
   return { getProfile };

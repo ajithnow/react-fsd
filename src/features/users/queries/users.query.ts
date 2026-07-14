@@ -5,10 +5,10 @@ import {
   CreateUserRequest,
   UpdateUserRequest,
   UserFilters,
-} from '../models';
+} from '../types';
 import { useToast } from '@/shared/hooks/useToast';
 import { useTranslation } from 'react-i18next';
-import { BackendErrorResponse } from '@/shared';
+import { ApiErrorResponse } from '@/shared';
 
 export const USER_QUERY_KEYS = {
   all: ['users'] as const,
@@ -57,7 +57,7 @@ export function useUserMutations() {
         );
         invalidateLists();
       },
-      onError: (error: BackendErrorResponse) => {
+      onError: (error: ApiErrorResponse) => {
         notification(error.response?.data?.message || error.message, 'error');
       },
     }),

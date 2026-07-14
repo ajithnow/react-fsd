@@ -1,6 +1,6 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { NavGroup } from '../NavGroup';
-import { NavItem, NavCollapsible, NavLink } from '../appSidebar.models';
+import { NavItem, NavCollapsible, NavLink } from '../appSidebar.types';
 import { Home, Settings, Users } from 'lucide-react';
 
 // Mock TanStack Router

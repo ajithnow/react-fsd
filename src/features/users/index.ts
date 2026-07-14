@@ -12,8 +12,8 @@ export * from './guards';
 // Managers
 export * from './managers';
 
-// Models
-export * from './models';
+// Types
+export * from './types';
 
 // Queries & Hooks
 export * from './queries';

@@ -63,8 +63,8 @@ export const UserDetailPage: React.FC = () => {
   };
 
   const checkSameUser = useCallback((email: string) => {
-    const user = authStorage.getUser() as { Email?: string } | undefined;
-    return user?.Email === email;
+    const user = authStorage.getUser() as { email?: string } | undefined;
+    return user?.email === email;
   }, []);
 
   const deleteDialog = useAlertDialog();

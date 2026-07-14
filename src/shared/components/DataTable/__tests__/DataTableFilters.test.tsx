@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { DataTableFilters } from '../DataTableFilters';
-import { FilterConfig } from '../dataTable.model';
+import { FilterConfig } from '../dataTable.types';
 
 // Mock react-i18next
 vi.mock('react-i18next', () => ({

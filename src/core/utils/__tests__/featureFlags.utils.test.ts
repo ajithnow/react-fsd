@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getFlag } from '../featureFlags.utils';
-import { FeatureFlags } from '../../models/featureFlags.model';
+import { FeatureFlags } from '../../types';
 
 describe('featureFlags.utils', () => {
   beforeEach(() => {

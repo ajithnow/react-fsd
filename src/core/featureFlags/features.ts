@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { FeatureFlags } from '../models/featureFlags.model';
+import { FeatureFlags } from '../types';
 import { loadFeatureFlags, getFlag } from '../utils/featureFlags.utils';
 
 export const useFeatureFlags = () => {

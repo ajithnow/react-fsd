@@ -1,7 +1,7 @@
 import React from 'react';
 import { Loader2 } from 'lucide-react';
 import { Button as ShadcnButton } from '@/lib/shadcn/components/ui/button';
-import type { ButtonProps } from './Button.model';
+import type { ButtonProps } from './Button.types';
 
 export const Button: React.FC<ButtonProps> = ({
   children,

@@ -4,7 +4,7 @@
 
 export const ENV = {
   get API_BASE_URL() {
-    const url = process.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+    const url = process.env.VITE_API_BASE_URL || 'http://localhost:5000';
     return url;
   },
 
@@ -30,5 +30,12 @@ export const ENV = {
 
   get I18N_DEBUG() {
     return process.env.VITE_I18N_DEBUG || 'false';
+  },
+
+  /** When false, all RBAC permission/role checks allow access. Default: true. */
+  get RBAC_ENABLED() {
+    const value = process.env.VITE_RBAC_ENABLED;
+    if (value === undefined || value === '') return true;
+    return value !== 'false' && value !== '0';
   },
 };

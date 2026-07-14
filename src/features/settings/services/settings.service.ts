@@ -1,10 +1,10 @@
-import { User } from '@/features/auth/models/auth.model';
+import { User } from '@/features/auth/types';
 import {
   UserProfile,
   UpdateProfileRequest,
   ChangePasswordRequest,
   ApiResponse,
-} from '../models/settings.model';
+} from '../types';
 import apiClient from '@/core/api';
 import authService from '@/features/auth/services';
 import { ENDPOINTS as AUTH_ENDPOINTS } from '@/features/auth/constants';

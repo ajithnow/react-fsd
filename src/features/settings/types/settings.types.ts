@@ -1,47 +1,47 @@
-import { AdminUser } from '@/features/users';
+import type { AdminUser } from '@/features/users';
 
-export interface UserProfile {
+export type UserProfile = {
   firstName: string;
   lastName: string;
   email: string;
   role: AdminUser['Role'];
-}
+};
 
-export interface UpdateProfileRequest {
+export type UpdateProfileRequest = {
   firstName?: string;
   lastName?: string;
   email?: string;
   bio?: string;
   visibility?: 'public' | 'private';
   urls?: string[];
-}
+};
 
-export interface ChangePasswordRequest {
+export type ChangePasswordRequest = {
   currentPassword: string;
   newPassword: string;
   confirmPassword: string;
-}
+};
 
-export interface NotificationSettings {
+export type NotificationSettings = {
   type: 'all' | 'mentions' | 'none';
   communicationEmails: boolean;
   marketingEmails: boolean;
   securityEmails: boolean;
-}
+};
 
-export interface UpdateNotificationSettingsRequest {
+export type UpdateNotificationSettingsRequest = {
   type?: 'all' | 'mentions' | 'none';
   communicationEmails?: boolean;
   marketingEmails?: boolean;
   securityEmails?: boolean;
-}
+};
 
-export interface ApiResponse<T> {
+export type ApiResponse<T> = {
   data: T;
   message?: string;
-}
+};
 
-export interface ApiError {
+export type ApiError = {
   error: string;
   details?: string[];
-}
+};

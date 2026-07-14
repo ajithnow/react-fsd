@@ -2,7 +2,7 @@ import { render, screen, waitFor, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { IconEdit, IconTrash, IconEye } from '@tabler/icons-react';
 import { ActionsDropdown } from '..';
-import { ActionItem } from '../actionDropdown.model';
+import { ActionItem } from '../actionDropdown.types';
 
 
 describe('ActionsDropdown', () => {

@@ -3,11 +3,13 @@
 import { useRBAC as useRBACContext } from '../lib/rbac/context';
 import {
   getAllPermissionsForUser,
+  getUserRoles,
   hasPermission as sharedHasPermission,
   hasAnyPermission as sharedHasAnyPermission,
   hasAllPermissions as sharedHasAllPermissions,
   getMissingPermissions,
   canAccessFeature,
+  isRbacEnabled,
 } from '../lib/rbac/utils';
 
 export const useRBAC = () => {
@@ -17,14 +19,17 @@ export const useRBAC = () => {
   return {
     user,
     permissions,
-    // Permission/role helpers from shared utils
+    rbacEnabled: isRbacEnabled(),
     hasPermission: (permission: string) =>
       sharedHasPermission(user, permission),
     hasAnyPermission: (perms: string[]) => sharedHasAnyPermission(user, perms),
     hasAllPermissions: (perms: string[]) =>
       sharedHasAllPermissions(user, perms),
-    hasRole: (role: string) => !!user && user.Role === role,
-    hasAnyRole: (roles: string[]) => !!user && roles.includes(user.Role),
+    hasRole: (role: string) =>
+      !isRbacEnabled() || (!!user && getUserRoles(user).includes(role)),
+    hasAnyRole: (roles: string[]) =>
+      !isRbacEnabled() ||
+      (!!user && roles.some((r) => getUserRoles(user).includes(r))),
     getMissingPermissions: (required: string[]) =>
       getMissingPermissions(user, required),
     canAccessFeature: (featurePerms: string[]) =>

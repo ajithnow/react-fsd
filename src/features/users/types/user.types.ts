@@ -1,69 +1,60 @@
 import type { UserStatus, UserType } from '../constants/users.constants';
-import { PaginationInfo, SortConfig, FilterValues } from '@/shared/components';
-import { z } from 'zod';
-import { UserFormSchema } from '../schema';
-// Removed manager import to break circular dependency
-
+import type { PaginationInfo, SortConfig, FilterValues } from '@/shared/components';
+import type { z } from 'zod';
+import type { UserFormSchema } from '../schema';
 
 type UserSchema = ReturnType<typeof UserFormSchema>['userSchema'];
 
-// Base User model for the user management module
-export interface AdminUser {
+export type AdminUser = {
   UserId: string;
   FirstName: string;
   LastName: string;
   Email: string;
-  Role: 'POWER_ADMIN' | 'SUPER_ADMIN' | 'NORMAL_USER';
+  Role: 'admin' | 'editor' | 'viewer';
   Status: boolean;
-}
+};
 
-// Extend AdminUser to satisfy DataTable constraints
 export type UserRecord = AdminUser & Record<string, unknown>;
 
-export interface UserFormProps {
+export type UserFormProps = {
   user?: AdminUser;
   onSubmit: (data: FormData) => void;
   isLoading?: boolean;
   error?: string;
   className?: string;
   translate: (key: string) => string;
-}
+};
 
-// Form data types
-export interface CreateUserRequest {
+export type CreateUserRequest = {
   firstName: string;
   lastName: string;
   email: string;
   role: AdminUser['Role'];
-}
+};
 
-export interface UpdateUserRequest extends Partial<CreateUserRequest> {
+export type UpdateUserRequest = Partial<CreateUserRequest> & {
   userId: string;
-  status?: boolean; // Optional for toggling status
-}
+  status?: boolean;
+};
 
-// UsersManagerState moved to managers/users.manager.ts to break circular dependency
-
-// User list response
-export interface UsersListResponse {
+export type UsersListResponse = {
   message: string;
   data: {
     count: number;
     users: AdminUser[];
   };
-}
+};
 
-// User filters
-export interface UserFilters {
+export type UserFilters = {
   search?: string;
   type?: UserType;
   status?: UserStatus;
   department?: string;
   page?: number;
   limit?: number;
-}
+};
 
-export interface UserDataTableProps {
+export type UserDataTableProps = {
   users: AdminUser[];
   loading?: boolean;
   pagination: PaginationInfo;
@@ -78,22 +69,17 @@ export interface UserDataTableProps {
   onResetPassword?: (user: AdminUser) => void;
   onSuspend?: (user: AdminUser) => void;
   className?: string;
-  onClickUser?: (user:AdminUser) => void;
-}
-
-
+  onClickUser?: (user: AdminUser) => void;
+};
 
 export type FormData = z.infer<UserSchema>;
 
-
-// Shared action types for user dialogs
 export type UserActionType = 'delete' | 'suspend' | 'reset';
 
-// Props for the shared UserActionDialog component
-export interface UserActionDialogProps {
+export type UserActionDialogProps = {
   type: UserActionType;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user?: AdminUser | null;
   onConfirm: () => Promise<void> | void;
-}
+};

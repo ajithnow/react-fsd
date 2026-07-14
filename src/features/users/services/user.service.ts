@@ -6,7 +6,7 @@ import type {
   UpdateUserRequest,
   UsersListResponse,
   UserFilters,
-} from '../models';
+} from '../types';
 import { USER_ENDPOINTS } from '@/features/users';
 
 export const useUserService = () => {

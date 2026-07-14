@@ -1,7 +1,7 @@
 import React from 'react';
 import { ActionsDropdown } from './ActionsDropdown';
 import { IconEdit, IconEye, IconCopy, IconDownload } from '@tabler/icons-react';
-import { ActionItem } from './actionDropdown.model';
+import { ActionItem } from './actionDropdown.types';
 
 export const ActionsDropdownDemo: React.FC = () => {
   const basicActions: ActionItem[] = [

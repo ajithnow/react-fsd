@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavigationProgress } from '@/shared/components';
-import type { GlobalLayoutProps } from '../models';
+import type { GlobalLayoutProps } from '../types';
 import { Toaster } from '@/lib/shadcn/components/ui/sonner';
 
 export const GlobalLayout: React.FC<GlobalLayoutProps> = ({ children }) => {

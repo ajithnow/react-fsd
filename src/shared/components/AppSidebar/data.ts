@@ -6,7 +6,7 @@ import {
   HelpCircle,
   UserIcon,
 } from 'lucide-react';
-import type { SidebarData } from './appSidebar.models';
+import type { SidebarData } from './appSidebar.types';
 
 export const sidebarData: SidebarData = {
   user: {

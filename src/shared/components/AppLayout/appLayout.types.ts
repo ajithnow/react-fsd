@@ -1,4 +1,4 @@
-import { SidebarData } from '../AppSidebar/appSidebar.models';
+import { SidebarData } from '../AppSidebar/appSidebar.types';
 
 export interface AppLayoutProps {
   children: React.ReactNode;

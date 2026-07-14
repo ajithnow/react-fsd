@@ -1,14 +1,10 @@
-// User feature permissions
+import { PERMISSIONS } from '@/shared/lib/rbac';
 
+/** User feature permissions — same `resource:action` namespace as shared RBAC. */
 export const USER_PERMISSIONS = {
-  // User management
-  USER_READ: 'user:read',
-  USER_CREATE: 'user:create',
-  USER_UPDATE: 'user:update',
-  USER_DELETE: 'user:delete',
-  USER_EXPORT: 'user:export',
-
-  // User reports
-  USER_REPORTS_VIEW: 'user:reports_view',
-  USER_REPORTS_EXPORT: 'user:reports_export',
+  USER_READ: PERMISSIONS.USERS_READ,
+  USER_CREATE: PERMISSIONS.USERS_CREATE,
+  USER_UPDATE: PERMISSIONS.USERS_UPDATE,
+  USER_DELETE: PERMISSIONS.USERS_DELETE,
+  USER_EXPORT: PERMISSIONS.USERS_EXPORT,
 } as const;

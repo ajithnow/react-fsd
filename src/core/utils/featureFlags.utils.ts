@@ -1,4 +1,4 @@
-import { FeatureFlags } from '../models/featureFlags.model';
+import { FeatureFlags } from '../types';
 
 const getViteEnvVar = (key: string): string | undefined => {
   // Node.js/Jest environment

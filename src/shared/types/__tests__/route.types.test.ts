@@ -3,7 +3,7 @@ import type {
   RouteRecord,
   CrudRouteNames,
   ModuleRoutes,
-} from '../route.model';
+} from '../route.types';
 
 describe('Route Model Types', () => {
   describe('RouteValues', () => {

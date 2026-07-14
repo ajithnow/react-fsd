@@ -39,7 +39,7 @@ vi.mock('@hookform/resolvers/zod', () => ({
 // Mock react-hook-form
 const mockHandleSubmit = vi.fn(callback => (e?: React.FormEvent) => {
   e?.preventDefault();
-  callback({ username: 'testuser', password: 'password123' });
+  callback({ email: 'admin@example.com', password: 'password123' });
 });
 
 vi.mock('react-hook-form', () => ({
@@ -166,7 +166,7 @@ describe('LoginForm', () => {
 
     await waitFor(() => {
       expect(mockOnSubmit).toHaveBeenCalledWith({
-        username: 'testuser',
+        email: 'admin@example.com',
         password: 'password123',
       });
     });

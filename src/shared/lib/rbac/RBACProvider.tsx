@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import type { RBACProviderProps } from './models';
+import type { RBACProviderProps } from './types';
 import { RBACContext, type RBACContextType } from './context';
 
 export const RBACProvider: React.FC<RBACProviderProps> = ({ 

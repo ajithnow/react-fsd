@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { UserDataTable } from '../UserDataTable';
-import type { AdminUser, UserDataTableProps } from '../../../models/user.model';
+import type { AdminUser, UserDataTableProps } from '../../../types';
 
 
 // hoisted mocks to prevent Jest from attempting to parse binary assets
@@ -133,9 +133,9 @@ vi.mock('@/shared', () => {
 // Mock the users feature constants to avoid importing routes/mocks
 vi.mock('@/features/users', () => ({
   USER_PERMISSIONS: {
-    USER_READ: 'user:read',
-    USER_UPDATE: 'user:update',
-    USER_DELETE: 'user:delete',
+    USER_READ: 'users:read',
+    USER_UPDATE: 'users:update',
+    USER_DELETE: 'users:delete',
   },
   USER_STATUS: {
     ACTIVE: 'active',
@@ -143,9 +143,9 @@ vi.mock('@/features/users', () => ({
     SUSPENDED: 'suspended',
   },
   USER_TYPES: {
-    POWER_ADMIN: 'POWER_ADMIN',
-    NORMAL_USER: 'NORMAL_USER',
-    SUPER_ADMIN: 'SUPER_ADMIN',
+    ADMIN: 'admin',
+    EDITOR: 'editor',
+    VIEWER: 'viewer',
   },
   USER_ROUTES: {
     DETAIL: '/users/:id',
@@ -159,7 +159,7 @@ const mockUsers: AdminUser[] = [
     FirstName: 'Alice',
     LastName: 'Smith',
     Email: 'alice@example.com',
-    Role: 'NORMAL_USER',
+    Role: 'viewer',
     Status: true,
   },
   {
@@ -167,7 +167,7 @@ const mockUsers: AdminUser[] = [
     FirstName: 'Bob',
     LastName: 'Jones',
     Email: 'bob@example.com',
-    Role: 'POWER_ADMIN',
+    Role: 'editor',
     Status: false,
   },
 ];

@@ -10,9 +10,9 @@ import {
   Play,
 } from 'lucide-react';
 import { DataTable, DataTableColumn, ActionsDropdown, useRBAC } from '@/shared';
-import type { AdminUser, UserDataTableProps } from '../../models';
+import type { AdminUser, UserDataTableProps } from '../../types';
 import { USER_PERMISSIONS, USER_STATUS, USER_ROUTES } from '@/features/users';
-import { UserRecord } from '../../models/user.model';
+import { UserRecord } from '../../types';
 import { Badge } from '@/lib/shadcn/components/ui/badge';
 import { TextCell } from '@/shared/components/TextCell/TextCell';
 import useRoleLabels from '@/shared/hooks/useRoleLabels';
@@ -42,8 +42,8 @@ export const UserDataTable: React.FC<UserDataTableProps> = ({
   const { typeData, statusData } = useRoleLabels();
 
   const checkSameUser = useCallback((email: string) => {
-    const user = authStorage.getUser() as { Email?: string } | undefined;
-    return user?.Email === email;
+    const user = authStorage.getUser() as { email?: string } | undefined;
+    return user?.email === email;
   }, []);
 
   const renderRole = useCallback(

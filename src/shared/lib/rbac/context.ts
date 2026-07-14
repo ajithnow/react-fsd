@@ -1,5 +1,5 @@
 import { createContext, useContext } from 'react';
-import type { User } from './models';
+import type { User } from './types';
 
 export interface RBACContextType {
   user: User | null;

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
-import { UseUnsavedChangesBlockerProps } from '../models';
+import { UseUnsavedChangesBlockerProps } from '../types';
 
 
 

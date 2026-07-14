@@ -2,7 +2,7 @@ import {
   createModuleRoutes,
   createCrudRoutes,
 } from '../route.utils';
-import type { RouteValues } from '../../models/route.model';
+import type { RouteValues } from '../../types';
 
 describe('Route Utilities', () => {
   describe('createModuleRoutes', () => {

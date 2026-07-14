@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useEffect } from 'react';
 import { useUserMutations } from '../queries/users.query';
 import { useNavigate } from '@tanstack/react-router';
-import type { AdminUser } from '../models';
+import type { AdminUser } from '../types';
 import type {
   PaginationInfo,
   SortConfig,
