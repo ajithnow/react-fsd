@@ -1,11 +1,11 @@
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 import { useFeatureFlags, useFeatureFlag, getFeatureFlag } from '../featureFlags';
 
 // Mock the core feature flags
-jest.mock('../../../core/featureFlags', () => ({
-  useFeatureFlags: jest.fn(() => ({
-    getFeatureFlag: jest.fn((path: string) => {
+vi.mock('../../../core/featureFlags', () => ({
+  useFeatureFlags: vi.fn(() => ({
+    getFeatureFlag: vi.fn((path: string) => {
       const mockFlags = {
         auth: {
           enabled: true,
@@ -23,8 +23,8 @@ jest.mock('../../../core/featureFlags', () => ({
       }
       return current;
     }),
-    isEnabled: jest.fn((path: string) => path === 'auth.enabled' || path === 'auth.features.login'),
-    getAllFlags: jest.fn(() => ({
+    isEnabled: vi.fn((path: string) => path === 'auth.enabled' || path === 'auth.features.login'),
+    getAllFlags: vi.fn(() => ({
       auth: {
         enabled: true,
         features: {
@@ -45,7 +45,7 @@ jest.mock('../../../core/featureFlags', () => ({
       }
     }
   })),
-  getFeatureFlagValue: jest.fn((path: string) => {
+  getFeatureFlagValue: vi.fn((path: string) => {
     const mockFlags = {
       auth: {
         enabled: true,
@@ -70,12 +70,12 @@ import {
   getFeatureFlagValue 
 } from '../../../core/featureFlags';
 
-const mockUseCoreFeatureFlags = useCoreFeatureFlags as jest.MockedFunction<typeof useCoreFeatureFlags>;
-const mockGetFeatureFlagValue = getFeatureFlagValue as jest.MockedFunction<typeof getFeatureFlagValue>;
+const mockUseCoreFeatureFlags = useCoreFeatureFlags as MockedFunction<typeof useCoreFeatureFlags>;
+const mockGetFeatureFlagValue = getFeatureFlagValue as MockedFunction<typeof getFeatureFlagValue>;
 
 describe('shared/utils/featureFlags', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('useFeatureFlags (re-export)', () => {

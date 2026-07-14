@@ -1,11 +1,10 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { AppSidebar } from '../AppSidebar';
 import { SidebarData, NavItem, User } from '../appSidebar.models';
 import { Home, Settings, Users } from 'lucide-react';
 
 // Mock the shadcn/ui sidebar components
-jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
+vi.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   Sidebar: ({
     children,
     ...props
@@ -30,7 +29,7 @@ jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
 }));
 
 // Mock the Command icon from lucide-react
-jest.mock('lucide-react', () => ({
+vi.mock('lucide-react', () => ({
   Command: () => <svg data-testid="command-icon" />,
   Home: () => <svg data-testid="home-icon" />,
   Settings: () => <svg data-testid="settings-icon" />,
@@ -38,7 +37,7 @@ jest.mock('lucide-react', () => ({
 }));
 
 // Mock the NavGroup component
-jest.mock('../NavGroup', () => ({
+vi.mock('../NavGroup', () => ({
   NavGroup: ({ title, items }: { title: string; items: NavItem[] }) => (
     <div data-testid={`nav-group-${title.toLowerCase()}`}>
       <h3>{title}</h3>
@@ -52,7 +51,7 @@ jest.mock('../NavGroup', () => ({
 }));
 
 // Mock the NavUser component
-jest.mock('../NavUser', () => ({
+vi.mock('../NavUser', () => ({
   NavUser: ({ user }: { user: User }) => (
     <div data-testid="nav-user">
       <span data-testid="user-name">{user.name}</span>
@@ -62,7 +61,7 @@ jest.mock('../NavUser', () => ({
 }));
 
 // Mock the default data
-jest.mock('../data', () => ({
+vi.mock('../data', () => ({
   sidebarData: {
     user: {
       name: 'Default User',

@@ -1,23 +1,24 @@
+import { type MockedFunction } from 'vitest';
 import { renderHook, act } from "@testing-library/react"
 import { useToast } from "../useToast"
 import { toast } from "sonner"
 
-jest.mock("sonner", () => ({
-  toast: Object.assign(jest.fn(), {
-    success: jest.fn(),
-    error: jest.fn(),
-    warning: jest.fn(),
-    info: jest.fn(),
-    message: jest.fn()
+vi.mock("sonner", () => ({
+  toast: Object.assign(vi.fn(), {
+    success: vi.fn(),
+    error: vi.fn(),
+    warning: vi.fn(),
+    info: vi.fn(),
+    message: vi.fn()
   })
 }))
 
-const mockToast = toast as jest.MockedFunction<typeof toast> & {
-  success: jest.MockedFunction<typeof toast.success>;
-  error: jest.MockedFunction<typeof toast.error>;
-  warning: jest.MockedFunction<typeof toast.warning>;
-  info: jest.MockedFunction<typeof toast.info>;
-  message: jest.MockedFunction<typeof toast.message>;
+const mockToast = toast as MockedFunction<typeof toast> & {
+  success: MockedFunction<typeof toast.success>;
+  error: MockedFunction<typeof toast.error>;
+  warning: MockedFunction<typeof toast.warning>;
+  info: MockedFunction<typeof toast.info>;
+  message: MockedFunction<typeof toast.message>;
 };
 
 describe("useToast", () => {

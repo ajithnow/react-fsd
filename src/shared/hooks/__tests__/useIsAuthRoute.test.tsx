@@ -1,7 +1,7 @@
 import { renderHook } from '@testing-library/react';
 let mockPathname = '/auth/login';
 
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   useRouter: () => ({
     state: { location: { pathname: mockPathname } },
   }),
@@ -9,11 +9,11 @@ jest.mock('@tanstack/react-router', () => ({
 import { useIsAuthRoute } from '../useIsAuthRoute';
 
 // Mock isAuthRoute to test only hook logic, not utility logic
-jest.mock('@/features/auth/utils/auth.utils', () => {
-  const actual = jest.requireActual('@/features/auth/utils/auth.utils');
+vi.mock('@/features/auth/utils/auth.utils', () => {
+  const actual = await vi.importActual('@/features/auth/utils/auth.utils');
   return {
     ...actual,
-    isAuthRoute: jest.fn(path => path.startsWith('/auth')),
+    isAuthRoute: vi.fn(path => path.startsWith('/auth')),
   };
 });
 

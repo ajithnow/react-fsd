@@ -1,25 +1,24 @@
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, Mocked } from 'vitest';
 import apiClient from '../../../../core/api';
 import useLogoutService from '../logout.service';
 import { authStorage } from '../../utils';
+import { ENDPOINTS } from '../../constants';
 
-// Mock the API client
-jest.mock('../../../../core/api');
-const mockApiClient = apiClient as jest.Mocked<typeof apiClient>;
+vi.mock('../../../../core/api');
+const mockApiClient = apiClient as Mocked<typeof apiClient>;
 
-// Mock auth storage
-jest.mock('../../utils', () => ({
+vi.mock('../../utils', () => ({
   authStorage: {
-    getToken: jest.fn(),
-    clearStorage: jest.fn(),
+    getToken: vi.fn(),
+    clearStorage: vi.fn(),
   },
 }));
 
-const mockAuthStorage = authStorage as jest.Mocked<typeof authStorage>;
+const mockAuthStorage = authStorage as Mocked<typeof authStorage>;
 
 describe('Logout Service', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should call logout API with refresh token', async () => {
@@ -34,8 +33,8 @@ describe('Logout Service', () => {
     const result = await service.logout(mockRefreshToken);
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/api/portal-admin/logout',
-      { AdminRefreshToken: mockRefreshToken },
+      ENDPOINTS.LOGOUT,
+      { refreshToken: mockRefreshToken },
       {
         headers: {
           Authorization: `Bearer ${mockToken}`,
@@ -56,8 +55,8 @@ describe('Logout Service', () => {
     await service.logout(mockRefreshToken);
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/api/portal-admin/logout',
-      { AdminRefreshToken: mockRefreshToken },
+      ENDPOINTS.LOGOUT,
+      { refreshToken: mockRefreshToken },
       {
         headers: {},
       }
@@ -89,8 +88,8 @@ describe('Logout Service', () => {
     await service.logout();
 
     expect(mockApiClient.post).toHaveBeenCalledWith(
-      '/api/portal-admin/logout',
-      { AdminRefreshToken: '' },
+      ENDPOINTS.LOGOUT,
+      { refreshToken: '' },
       {
         headers: {
           Authorization: `Bearer ${mockToken}`,

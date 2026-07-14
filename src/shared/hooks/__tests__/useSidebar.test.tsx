@@ -3,21 +3,21 @@ import { useSidebarData } from '../useSidebar';
 import * as useRBACModule from '../useRBAC';
 
 // Mock i18n - return key as the translated value
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key }),
 }));
 
 // Mock useRBAC - note: User model uses Name (capital N)
-jest.mock('../useRBAC', () => ({
-  useRBAC: jest.fn(() => ({
+vi.mock('../useRBAC', () => ({
+  useRBAC: vi.fn(() => ({
     user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view', 'customers:view', 'settings:view'] },
     permissions: ['dashboard:view', 'customers:view', 'settings:view'],
   })),
 }));
 
 // Mock useSelector
-jest.mock('react-redux', () => ({
-  useSelector: jest.fn(selector =>
+vi.mock('react-redux', () => ({
+  useSelector: vi.fn(selector =>
     selector({
       auth: {
         user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view'] },
@@ -25,7 +25,7 @@ jest.mock('react-redux', () => ({
       },
     })
   ),
-  useDispatch: jest.fn(() => jest.fn()),
+  useDispatch: vi.fn(() => vi.fn()),
 }));
 
 describe('useSidebarData', () => {
@@ -37,7 +37,7 @@ describe('useSidebarData', () => {
   });
 
   it('returns sidebar data for admin role', () => {
-    jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
+    vi.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
       user: { Name: 'Test User', Email: 'test@example.com', Role: 'admin', permissions: [
         'dashboard:view',
         'customers:view',
@@ -67,7 +67,7 @@ describe('useSidebarData', () => {
     expect(
       result.current.navGroups.some(g => g.title === 'sidebar.groups.main')
     ).toBe(true);
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   it('returns sidebar data for feature-specific config', () => {
@@ -81,7 +81,7 @@ describe('useSidebarData', () => {
 
   it('filters sidebar items based on permissions', () => {
     // Only dashboard permission
-    jest.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
+    vi.spyOn(useRBACModule, 'useRBAC').mockImplementation(() => ({
       user: { Name: 'Test User', Email: 'test@example.com', Role: 'user', permissions: ['dashboard:view'] },
       permissions: ['dashboard:view'],
       hasPermission: () => false,
@@ -102,6 +102,6 @@ describe('useSidebarData', () => {
     expect(
       result.current.navGroups[0].items.some(i => i.title === 'sidebar.customers.title')
     ).toBe(false);
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 });

@@ -1,12 +1,13 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { AuthLayout } from '../AuthLayout';
 
 // Mock image imports
-jest.mock('@/assets/images/logo.png', () => 'test-logo.png');
+vi.mock('@/assets/images/logo.png', () => ({
+  default: 'test-logo.png',
+}));
 
 // Mock i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       const translations: Record<string, string> = {

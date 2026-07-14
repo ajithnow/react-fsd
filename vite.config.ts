@@ -1,3 +1,4 @@
+/// <reference types="vitest/config" />
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
@@ -107,32 +108,41 @@ export default defineConfig(({ mode }) => {
       'process.env.VITE_API_BASE_URL': JSON.stringify(
         env.VITE_API_BASE_URL || 'http://localhost:3000/api'
       ),
-      'process.env.VITE_MOCK_API_BASE_URL': JSON.stringify(
-        env.VITE_MOCK_API_BASE_URL || 'http://localhost:3000/api'
-      ),
       'process.env.VITE_FEATURE_FLAGS': JSON.stringify(
         env.VITE_FEATURE_FLAGS || '{}'
       ),
       'process.env.VITE_I18N_DEBUG': JSON.stringify(
         env.VITE_I18N_DEBUG || 'false'
       ),
-      'process.env.VITE_MSW_ENABLED': JSON.stringify(
-        env.VITE_MSW_ENABLED || 'false'
-      ),
     },
     test: {
       globals: true,
       environment: 'jsdom',
-      setupFiles: ['./src/setupTests.ts'],
+      setupFiles: ['./src/test-setup.ts'],
+      include: ['src/**/__tests__/**/*.{test,spec}.{ts,tsx}'],
+      css: true,
       coverage: {
-        provider: 'istanbul',
+        provider: 'v8',
         reporter: ['text', 'json', 'html'],
         include: ['src/**/*.{ts,tsx}'],
         exclude: [
           'src/**/*.test.{ts,tsx}',
-          'src/setupTests.ts',
+          'src/**/__tests__/**',
+          'src/test-setup.ts',
           'src/main.tsx',
-          'src/vite.config.ts',
+          'src/vite-env.d.ts',
+          'src/lib/**',
+          'src/core/**',
+          'src/**/constants/**',
+          'src/**/pages/**',
+          'src/**/models/**',
+          'src/**/schema/**',
+          'src/**/services/**',
+          'src/**/routes/**',
+          'src/**/locales/**',
+          'src/**/queries/**',
+          'src/**/stores/**',
+          '**/index.{ts,tsx}',
         ],
       },
     },

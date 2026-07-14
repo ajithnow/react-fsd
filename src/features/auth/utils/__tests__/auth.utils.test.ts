@@ -1,10 +1,15 @@
-import { authStorage, isAuthenticated, AUTH_TOKEN_KEY, AUTH_USER_KEY } from '../auth.utils';
+import {
+  authStorage,
+  isAuthenticated,
+  AUTH_TOKEN_KEY,
+  AUTH_USER_KEY,
+} from '../auth.utils';
 
-// Mock localStorage
+// Mock localStorage — storageService JSON-serializes values
 const mockLocalStorage = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
+  getItem: vi.fn(),
+  setItem: vi.fn(),
+  removeItem: vi.fn(),
 };
 
 Object.defineProperty(window, 'localStorage', {
@@ -13,12 +18,12 @@ Object.defineProperty(window, 'localStorage', {
 
 describe('authStorage', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('getToken', () => {
     it('should return token from localStorage', () => {
-      mockLocalStorage.getItem.mockReturnValue('test-token');
+      mockLocalStorage.getItem.mockReturnValue(JSON.stringify('test-token'));
 
       const result = authStorage.getToken();
 
@@ -49,7 +54,10 @@ describe('authStorage', () => {
     it('should set token in localStorage', () => {
       authStorage.setToken('new-token');
 
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(AUTH_TOKEN_KEY, 'new-token');
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        AUTH_TOKEN_KEY,
+        JSON.stringify('new-token')
+      );
     });
 
     it('should handle localStorage errors silently', () => {
@@ -136,7 +144,10 @@ describe('authStorage', () => {
 
       authStorage.setUser(user);
 
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(AUTH_USER_KEY, JSON.stringify(user));
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        AUTH_USER_KEY,
+        JSON.stringify(user)
+      );
     });
 
     it('should handle localStorage errors silently', () => {
@@ -157,18 +168,21 @@ describe('authStorage', () => {
 
       authStorage.setUser<TestUser>(user);
 
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(AUTH_USER_KEY, JSON.stringify(user));
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        AUTH_USER_KEY,
+        JSON.stringify(user)
+      );
     });
   });
 });
 
 describe('isAuthenticated', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should return true when token exists and is valid', () => {
-    mockLocalStorage.getItem.mockReturnValue('valid-token');
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify('valid-token'));
 
     const result = isAuthenticated();
 
@@ -184,7 +198,7 @@ describe('isAuthenticated', () => {
   });
 
   it('should return false when token is empty string', () => {
-    mockLocalStorage.getItem.mockReturnValue('');
+    mockLocalStorage.getItem.mockReturnValue(JSON.stringify(''));
 
     const result = isAuthenticated();
 
@@ -195,22 +209,6 @@ describe('isAuthenticated', () => {
     mockLocalStorage.getItem.mockImplementation(() => {
       throw new Error('localStorage error');
     });
-
-    const result = isAuthenticated();
-
-    expect(result).toBe(false);
-  });
-
-  it('should return false when token length access throws error', () => {
-    // Create a token that throws an error when accessing length
-    const problematicToken = Object.create(null);
-    Object.defineProperty(problematicToken, 'length', {
-      get() {
-        throw new Error('Property access error');
-      }
-    });
-
-    mockLocalStorage.getItem.mockReturnValue(problematicToken);
 
     const result = isAuthenticated();
 

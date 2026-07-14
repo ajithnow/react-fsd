@@ -6,7 +6,7 @@
 
 > A modern React application built with Feature-Sliced Design architecture, TypeScript, and cutting-edge tools for scalable frontend development.
 
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-blue.svg)](https://www.typescriptlang.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.0.4-646cff.svg)](https://vitejs.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.1.11-38bdf8.svg)](https://tailwindcss.com/)
@@ -25,7 +25,6 @@
 - 🚩 **Feature Flags** - Runtime feature toggling and A/B testing
 - 🧪 **Jest + RTL** - Comprehensive testing setup
 - 🌍 **i18next** - Internationalization support
-- 🎭 **MSW** - API mocking for development and testing
 - 📏 **ESLint + Prettier** - Code quality and formatting
 - 🪝 **Husky** - Git hooks for quality assurance
 
@@ -118,7 +117,7 @@ src/
 │   │   ├── constants/          # Feature constants
 │   │   ├── locales/           # i18n translations
 │   │   ├── managers/          # Business logic
-│   │   ├── mocks/             # MSW handlers
+│   │   ├── mappers/           # API → domain mappers
 │   │   ├── models/            # TypeScript types
 │   │   ├── pages/             # Route components
 │   │   ├── queries/           # TanStack Query hooks
@@ -126,16 +125,13 @@ src/
 │   │   ├── schema/            # Validation schemas
 │   │   ├── services/          # API services
 │   │   └── stores/            # State management
-│   ├── configs.ts             # Feature configuration
-│   ├── locales.ts             # Locale aggregation
-│   ├── mocks.ts               # Mock aggregation
-│   └── routes.ts              # Route aggregation
+│   └── config.ts              # Feature-level registry entry
 │
 ├── core/                       # App Infrastructure
 │   ├── api/                   # API configuration
 │   ├── components/            # App-level components
 │   ├── i18n/                  # i18n setup
-│   ├── mock/                  # MSW configuration
+│   ├── registry/              # Centralized feature registries
 │   └── router/                # Router setup
 │
 ├── shared/                     # Shared Resources
@@ -203,7 +199,6 @@ We maintain **80% test coverage** with a comprehensive testing approach:
 
 - **Unit Tests** (70%): Components, utilities, services
 - **Integration Tests** (20%): Feature workflows
-- **E2E Tests** (10%): Critical user journeys
 
 ### Running Tests
 
@@ -396,7 +391,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 - [ ] **Component Library** - Extract reusable components
 - [ ] **Storybook Integration** - Component documentation
-- [ ] **E2E Testing** - Playwright integration
 - [ ] **Performance Monitoring** - Real user metrics
 - [ ] **PWA Support** - Service worker integration
 - [ ] **Micro-frontend** - Module federation setup

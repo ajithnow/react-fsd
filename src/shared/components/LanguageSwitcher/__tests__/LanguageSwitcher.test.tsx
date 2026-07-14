@@ -1,9 +1,9 @@
 // Mock must be hoisted before any imports
-jest.mock('react-i18next', () => ({
-  useTranslation: jest.fn(() => ({
+vi.mock('react-i18next', () => ({
+  useTranslation: vi.fn(() => ({
     i18n: {
       language: 'en',
-      changeLanguage: jest.fn(),
+      changeLanguage: vi.fn(),
     },
   })),
 }));
@@ -13,9 +13,9 @@ import userEvent from '@testing-library/user-event';
 import { LanguageSwitcher } from '../LanguageSwitcher';
 
 const { useTranslation: useTranslationMock } =
-  jest.requireMock('react-i18next');
+  await import('react-i18next');
 
-jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
+vi.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
   DropdownMenu: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
   ),
@@ -39,7 +39,7 @@ jest.mock('@/lib/shadcn/components/ui/dropdown-menu', () => ({
 }));
 
 import type React from 'react';
-jest.mock('@/lib/shadcn/components/ui/button', () => ({
+vi.mock('@/lib/shadcn/components/ui/button', () => ({
   Button: ({ children, ...props }: React.ComponentProps<'button'>) => (
     <button {...props}>{children}</button>
   ),
@@ -55,7 +55,7 @@ describe('LanguageSwitcher', () => {
   });
 
   it('calls changeLanguage when a language is selected', async () => {
-    const changeLanguage = jest.fn();
+    const changeLanguage = vi.fn();
     useTranslationMock.mockReturnValue({
       i18n: {
         language: 'en',

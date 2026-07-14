@@ -1,11 +1,12 @@
 import apiClient from '../../../core/api';
+import { ENDPOINTS } from '../constants';
 import { authStorage } from '../utils';
 
 const useLogoutService = () => {
-  const logoutApi = async (data: { AdminRefreshToken: string }) => {
+  const logoutApi = async (data: { refreshToken: string }) => {
     const token = authStorage.getToken();
 
-    const res = await apiClient.post('/api/portal-admin/logout', data, {
+    const res = await apiClient.post(ENDPOINTS.LOGOUT, data, {
       headers: {
         ...(token && { Authorization: `Bearer ${token}` }),
       },
@@ -15,8 +16,8 @@ const useLogoutService = () => {
   };
 
   return {
-    logout: async (AdminRefreshToken: string = '') => {
-      const response = await logoutApi({ AdminRefreshToken });
+    logout: async (refreshToken: string = '') => {
+      const response = await logoutApi({ refreshToken });
       return response;
     },
   };

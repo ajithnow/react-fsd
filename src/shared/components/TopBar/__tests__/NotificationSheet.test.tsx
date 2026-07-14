@@ -104,7 +104,7 @@ describe('NotificationSheet', () => {
 
   it('should call onMarkAllAsRead when mark all as read button is clicked', async () => {
     const user = userEvent.setup();
-    const onMarkAllAsRead = jest.fn();
+    const onMarkAllAsRead = vi.fn();
     render(<NotificationSheet notifications={mockNotifications} onMarkAllAsRead={onMarkAllAsRead} />);
     
     const trigger = screen.getByRole('button');
@@ -118,7 +118,7 @@ describe('NotificationSheet', () => {
 
   it('should call onMarkAsRead when mark as read button is clicked', async () => {
     const user = userEvent.setup();
-    const onMarkAsRead = jest.fn();
+    const onMarkAsRead = vi.fn();
     render(<NotificationSheet notifications={mockNotifications} onMarkAsRead={onMarkAsRead} />);
     
     const trigger = screen.getByRole('button');
@@ -135,7 +135,7 @@ describe('NotificationSheet', () => {
 
   it('should call onDismiss when dismiss button is clicked', async () => {
     const user = userEvent.setup();
-    const onDismiss = jest.fn();
+    const onDismiss = vi.fn();
     render(<NotificationSheet notifications={mockNotifications} onDismiss={onDismiss} />);
     
     const trigger = screen.getByRole('button');
@@ -152,7 +152,7 @@ describe('NotificationSheet', () => {
 
   it('should call onSeeAll when see all button is clicked', async () => {
     const user = userEvent.setup();
-    const onSeeAll = jest.fn();
+    const onSeeAll = vi.fn();
     render(<NotificationSheet notifications={mockNotifications} onSeeAll={onSeeAll} />);
     
     const trigger = screen.getByRole('button');

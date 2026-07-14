@@ -24,7 +24,7 @@ export const AuthGuard: React.FC<AuthGuardProps> = ({
       
       const returnUrl = shouldStoreReturnUrl ? location.pathname : undefined;
       
-      navigate({ 
+      void navigate({ 
         to: redirectTo,
         search: returnUrl ? { returnUrl } : undefined,
         replace: true 

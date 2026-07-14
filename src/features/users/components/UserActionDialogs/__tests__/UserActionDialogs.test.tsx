@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { UserActionDialog } from '../UserActionDialogs';
 // Mock translations used by the dialog so tests assert friendly text
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string) => {
       if (key.includes('deleteConfirm')) return 'Delete';
@@ -19,7 +19,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock the underlying shadcn alert dialog components used by SharedAlertDialog
-jest.mock('../../../../../lib/shadcn/components/ui/alert-dialog', () => ({
+vi.mock('../../../../../lib/shadcn/components/ui/alert-dialog', () => ({
   AlertDialog: ({
     children,
     open,
@@ -83,12 +83,12 @@ describe('UserActionDialog', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders delete variant and handles confirm/cancel', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
 
     render(
       <UserActionDialog
@@ -114,8 +114,8 @@ describe('UserActionDialog', () => {
   });
 
   it('does not render when open is false', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
 
     render(
       <UserActionDialog
@@ -131,8 +131,8 @@ describe('UserActionDialog', () => {
   });
 
   it('renders user name and email inside dialog', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
 
     render(
       <UserActionDialog
@@ -149,8 +149,8 @@ describe('UserActionDialog', () => {
   });
 
   it('renders reset variant and calls confirm', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
 
     render(
       <UserActionDialog
@@ -171,8 +171,8 @@ describe('UserActionDialog', () => {
   });
 
   it('renders suspend variant with unsuspend title when status is false', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
     const suspendedUser = { ...user, status: false };
 
     render(
@@ -192,8 +192,8 @@ describe('UserActionDialog', () => {
   });
 
   it('suspend variant for active user triggers confirm and close', () => {
-    const onConfirm = jest.fn();
-    const onOpenChange = jest.fn();
+    const onConfirm = vi.fn();
+    const onOpenChange = vi.fn();
 
     render(
       <UserActionDialog

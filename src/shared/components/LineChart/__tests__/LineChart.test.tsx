@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { LineChart, LineChartProps } from '../LineChart';
 
 // Define proper types for mock props
@@ -79,15 +78,15 @@ interface MockReferenceLineProps {
 }
 
 // Mock the AnimatedDot component
-jest.mock('../AnimatedDot', () => {
+vi.mock('../AnimatedDot', () => {
   return function MockAnimatedDot(props: MockAnimatedDotProps) {
     return <circle data-testid="animated-dot" {...props} />;
   };
 });
 
 // Mock Recharts components
-jest.mock('recharts', () => ({
-  ...jest.requireActual('recharts'),
+vi.mock('recharts', () => ({
+  ...await vi.importActual('recharts'),
   ResponsiveContainer: ({
     children,
     width,
@@ -189,7 +188,7 @@ describe('LineChart Component', () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   describe('Rendering', () => {
@@ -320,7 +319,7 @@ describe('LineChart Component', () => {
 
   describe('Gradient Definition', () => {
     it('renders without SVG gradient errors', () => {
-      const consoleSpy = jest
+      const consoleSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
 

@@ -82,16 +82,6 @@ Defined in: [core/utils/env.utils.ts:6](https://github.com/ajithnow/react-fsd/bl
 
 `string`
 
-### MSW\_ENABLED
-
-#### Get Signature
-
-> **get** **MSW\_ENABLED**(): `boolean`
-
-##### Returns
-
-`boolean`
-
 ### NODE\_ENV
 
 #### Get Signature

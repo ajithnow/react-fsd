@@ -1,10 +1,9 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { LoginForm } from '../LoginForm';
+import { LoginForm } from '../loginForm';
 
 // Mock lucide-react icons
-jest.mock('lucide-react', () => ({
+vi.mock('lucide-react', () => ({
   Lock: () => <svg data-testid="lock-icon" />,
   User: () => <svg data-testid="user-icon" />,
   Eye: () => <svg data-testid="eye-icon" />,
@@ -13,45 +12,45 @@ jest.mock('lucide-react', () => ({
 }));
 
 // Mock react-i18next
-const mockT = jest.fn((key: string, fallback?: string) => fallback || key);
+const mockT = vi.fn((key: string, fallback?: string) => fallback || key);
 
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: mockT,
   }),
 }));
 
 // Mock the auth schema hook
-jest.mock('../../../schema/auth.schema', () => ({
+vi.mock('../../../schema/auth.schema', () => ({
   __esModule: true,
-  default: jest.fn(() => ({
+  default: vi.fn(() => ({
     login: {
-      parse: jest.fn(),
-      safeParse: jest.fn(),
+      parse: vi.fn(),
+      safeParse: vi.fn(),
     },
   })),
 }));
 
 // Mock zodResolver
-jest.mock('@hookform/resolvers/zod', () => ({
-  zodResolver: jest.fn(() => jest.fn()),
+vi.mock('@hookform/resolvers/zod', () => ({
+  zodResolver: vi.fn(() => vi.fn()),
 }));
 
 // Mock react-hook-form
-const mockHandleSubmit = jest.fn(callback => (e?: React.FormEvent) => {
+const mockHandleSubmit = vi.fn(callback => (e?: React.FormEvent) => {
   e?.preventDefault();
   callback({ username: 'testuser', password: 'password123' });
 });
 
-jest.mock('react-hook-form', () => ({
-  useForm: jest.fn(() => ({
+vi.mock('react-hook-form', () => ({
+  useForm: vi.fn(() => ({
     handleSubmit: mockHandleSubmit,
     control: {},
   })),
 }));
 
 // Mock shadcn/ui components
-jest.mock('@/lib/shadcn/components/ui/form', () => ({
+vi.mock('@/lib/shadcn/components/ui/form', () => ({
   Form: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   FormField: ({
     render,
@@ -60,16 +59,16 @@ jest.mock('@/lib/shadcn/components/ui/form', () => ({
       field: {
         name: string;
         value: string;
-        onChange: jest.Mock;
-        onBlur: jest.Mock;
+        onChange: vi.Mock;
+        onBlur: vi.Mock;
       };
     }) => React.ReactNode;
   }) => {
     const field = {
       name: 'test',
       value: '',
-      onChange: jest.fn(),
-      onBlur: jest.fn(),
+      onChange: vi.fn(),
+      onBlur: vi.fn(),
     };
     return <div>{render({ field })}</div>;
   },
@@ -85,7 +84,7 @@ jest.mock('@/lib/shadcn/components/ui/form', () => ({
   FormMessage: () => <div />,
 }));
 
-jest.mock('@/lib/shadcn/components/ui/input', () => ({
+vi.mock('@/lib/shadcn/components/ui/input', () => ({
   Input: React.forwardRef<
     HTMLInputElement,
     React.InputHTMLAttributes<HTMLInputElement>
@@ -98,7 +97,7 @@ jest.mock('@/lib/shadcn/components/ui/input', () => ({
   )),
 }));
 
-jest.mock('@/lib/shadcn/components/ui/button', () => ({
+vi.mock('@/lib/shadcn/components/ui/button', () => ({
   Button: ({
     children,
     type,
@@ -119,7 +118,7 @@ jest.mock('@/lib/shadcn/components/ui/button', () => ({
   ),
 }));
 
-jest.mock('@/lib/shadcn/components/ui/card', () => ({
+vi.mock('@/lib/shadcn/components/ui/card', () => ({
   Card: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
   CardContent: ({ children }: { children: React.ReactNode }) => (
     <div>{children}</div>
@@ -136,14 +135,14 @@ jest.mock('@/lib/shadcn/components/ui/card', () => ({
 }));
 
 describe('LoginForm', () => {
-  const mockOnSubmit = jest.fn();
+  const mockOnSubmit = vi.fn();
   const defaultProps = {
     onSubmit: mockOnSubmit,
     isLoading: false,
   };
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render login form', () => {

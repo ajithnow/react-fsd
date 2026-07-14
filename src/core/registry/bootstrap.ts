@@ -1,6 +1,5 @@
 import {
   localeRegistry,
-  mockRegistry,
   constantsRegistry,
   guardsRegistry,
 } from './index';
@@ -10,8 +9,6 @@ import type { AnyRoute } from '@tanstack/react-router';
 export function bootstrapFeatures(modules: Record<string, { default: FeatureConfig }>) {
   const featureRoutes: AnyRoute[] = [];
 
-  // Register shared/common locales first (if any provided in the future, or handled separately)
-  
   Object.entries(modules).forEach(([path, module]) => {
     const config = module.default;
 
@@ -20,7 +17,6 @@ export function bootstrapFeatures(modules: Record<string, { default: FeatureConf
     try {
       if (config.routes?.length) featureRoutes.push(...config.routes);
       if (config.locales) localeRegistry.register(config.locales);
-      if (config.handlers?.length) mockRegistry.register(config.handlers);
       if (config.constants) constantsRegistry.register(config.constants);
       if (config.guards) guardsRegistry.register(config.guards);
     } catch (e) {

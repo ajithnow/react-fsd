@@ -3,7 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PdfPreview } from '../PdfPreview';
 
 // Mock react-pdf
-jest.mock('react-pdf', () => ({
+vi.mock('react-pdf', () => ({
   Document: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="document">{children}</div>
   ),
@@ -12,39 +12,39 @@ jest.mock('react-pdf', () => ({
 }));
 
 // Mock Button
-jest.mock('@/shared/components/Button', () => ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
+vi.mock('@/shared/components/Button', () => ({ children, onClick }: { children: React.ReactNode; onClick?: () => void }) => (
   <button onClick={onClick}>{children}</button>
 ));
 
 // Mock pdf worker import
-jest.mock('pdfjs-dist/build/pdf.worker.min?url', () => '', { virtual: true });
+vi.mock('pdfjs-dist/build/pdf.worker.min?url', () => '', { virtual: true });
 
 // Mock fetch
 const mockBlob = new Blob(['dummy pdf content'], { type: 'application/pdf' });
-global.fetch = jest.fn(() =>
+global.fetch = vi.fn(() =>
   Promise.resolve({
     ok: true,
     blob: () => Promise.resolve(mockBlob),
   })
-) as jest.Mock;
+) as vi.Mock;
 
 describe('PdfPreview', () => {
   const mockUrl = 'https://example.com/test.pdf';
-  const onCloseMock = jest.fn();
+  const onCloseMock = vi.fn();
   const translateMock = (key: string) => key;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders loading initially', () => {
-    (global.fetch as jest.Mock) = jest.fn(() => new Promise(() => {}));
+    (global.fetch as vi.Mock) = vi.fn(() => new Promise(() => {}));
     render(<PdfPreview url={mockUrl} onClose={onCloseMock} translate={translateMock} />);
     expect(screen.getByText('notification.label.loadPdf')).toBeInTheDocument();
   });
 
   it('renders PDF after successful fetch', async () => {
-    (global.fetch as jest.Mock) = jest.fn(() =>
+    (global.fetch as vi.Mock) = vi.fn(() =>
       Promise.resolve({ ok: true, blob: () => Promise.resolve(mockBlob) })
     );
 
@@ -55,7 +55,7 @@ describe('PdfPreview', () => {
   });
 
   it('calls onClose when close button is clicked', async () => {
-    (global.fetch as jest.Mock) = jest.fn(() =>
+    (global.fetch as vi.Mock) = vi.fn(() =>
       Promise.resolve({ ok: true, blob: () => Promise.resolve(mockBlob) })
     );
 

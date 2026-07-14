@@ -1,13 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import { AppLayoutWrapper } from '../AppLayoutWrapper';
+import { useSidebarData } from '../../../hooks/useSidebar';
 
-// Mock the router outlet
-jest.mock('@tanstack/react-router', () => ({
+vi.mock('@tanstack/react-router', () => ({
   Outlet: () => <div data-testid="router-outlet">Router Outlet</div>,
 }));
 
-// Mock the AppLayout component
-jest.mock('..', () => ({
+vi.mock('..', () => ({
   AppLayout: ({
     children,
     sidebarData,
@@ -21,7 +20,6 @@ jest.mock('..', () => ({
   ),
 }));
 
-// Mock the useSidebarData hook
 const mockSidebarData = {
   items: [
     { id: 'dashboard', label: 'Dashboard', href: '/dashboard' },
@@ -30,11 +28,17 @@ const mockSidebarData = {
   loading: false,
 };
 
-jest.mock('../../../hooks/useSidebar', () => ({
-  useSidebarData: jest.fn(() => mockSidebarData),
+vi.mock('../../../hooks/useSidebar', () => ({
+  useSidebarData: vi.fn(() => mockSidebarData),
 }));
 
+const mockedUseSidebarData = vi.mocked(useSidebarData);
+
 describe('AppLayoutWrapper', () => {
+  beforeEach(() => {
+    mockedUseSidebarData.mockReturnValue(mockSidebarData);
+  });
+
   it('renders AppLayout with sidebar data', () => {
     render(<AppLayoutWrapper />);
 
@@ -59,8 +63,7 @@ describe('AppLayoutWrapper', () => {
       loading: true,
     };
 
-    const { useSidebarData } = jest.requireMock('../../../hooks/useSidebar');
-    useSidebarData.mockReturnValue(customSidebarData);
+    mockedUseSidebarData.mockReturnValue(customSidebarData);
 
     render(<AppLayoutWrapper />);
 
@@ -77,8 +80,7 @@ describe('AppLayoutWrapper', () => {
       loading: true,
     };
 
-    const { useSidebarData } = jest.requireMock('../../../hooks/useSidebar');
-    useSidebarData.mockReturnValue(loadingSidebarData);
+    mockedUseSidebarData.mockReturnValue(loadingSidebarData);
 
     render(<AppLayoutWrapper />);
 

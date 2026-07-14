@@ -11,13 +11,13 @@ describe('ActionsDropdown', () => {
       id: 'view',
       label: 'View',
       icon: <IconEye size={16} data-testid="view-icon" />,
-      onClick: jest.fn(),
+      onClick: vi.fn(),
     },
     {
       id: 'edit',
       label: 'Edit',
       icon: <IconEdit size={16} data-testid="edit-icon" />,
-      onClick: jest.fn(),
+      onClick: vi.fn(),
     },
     {
       id: 'delete',
@@ -25,7 +25,7 @@ describe('ActionsDropdown', () => {
       icon: <IconTrash size={16} data-testid="delete-icon" />,
       variant: 'destructive',
       separator: true,
-      onClick: jest.fn(),
+      onClick: vi.fn(),
     },
   ];
 
@@ -56,7 +56,7 @@ describe('ActionsDropdown', () => {
 
   it('calls onClick handler when action is clicked', async () => {
     const user = userEvent.setup();
-    const mockAction = jest.fn();
+    const mockAction = vi.fn();
     const actions: ActionItem[] = [
       {
         id: 'test',
@@ -109,7 +109,7 @@ describe('ActionsDropdown', () => {
         id: 'destructive-test',
         label: 'Destructive Action',
         variant: 'destructive',
-        onClick: jest.fn(),
+        onClick: vi.fn(),
       },
     ];
     
@@ -159,13 +159,13 @@ describe('ActionsDropdown', () => {
       {
         id: 'first',
         label: 'First Action',
-        onClick: jest.fn(),
+        onClick: vi.fn(),
       },
       {
         id: 'second',
         label: 'Second Action',
         separator: true,
-        onClick: jest.fn(),
+        onClick: vi.fn(),
       },
     ];
     

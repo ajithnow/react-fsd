@@ -1,10 +1,9 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { DataTableFilters } from '../DataTableFilters';
 import { FilterConfig } from '../dataTable.model';
 
 // Mock react-i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({
     t: (key: string, options?: { defaultValue?: string; count?: number; [key: string]: unknown }) => {
       if (options?.defaultValue) {
@@ -20,7 +19,7 @@ jest.mock('react-i18next', () => ({
 }));
 
 // Mock props for testing
-const mockOnFilterChange = jest.fn();
+const mockOnFilterChange = vi.fn();
 
 const filters: FilterConfig[] = [
   {
@@ -60,7 +59,7 @@ const filters: FilterConfig[] = [
 
 describe('DataTableFilters', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('renders text and select filters correctly', () => {
@@ -117,7 +116,7 @@ describe('DataTableFilters', () => {
   });
 
   it('clears filters when the "Clear" button is clicked', () => {
-    const mockClear = jest.fn();
+    const mockClear = vi.fn();
     render(
       <DataTableFilters
         filters={filters}

@@ -4,9 +4,8 @@ import { USER_ENDPOINTS } from '@/features/users/constants/endpoints.constants';
 export const API_ENDPOINTS = {
   AUTH: {
     ...AUTH_ENDPOINTS,
-    LOGIN_LEGACY: '/api/auth/login',
-    REFRESH_TOKEN: '/api/portal-admin/refresh-token/refresh-token',
+    LOGIN_LEGACY: AUTH_ENDPOINTS.LOGIN,
+    REFRESH_TOKEN: AUTH_ENDPOINTS.REFRESH,
   },
   USERS: USER_ENDPOINTS,
-  // Add other feature endpoints here as they are discovered/created
 } as const;

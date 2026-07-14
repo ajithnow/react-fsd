@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { useRoleLabels } from '../useRoleLabels';
 
 // Mock react-i18next
-jest.mock('react-i18next', () => ({
+vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (k: string) => `i18n:${k}` }),
 }));
 

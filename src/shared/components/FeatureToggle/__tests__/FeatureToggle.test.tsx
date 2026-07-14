@@ -1,18 +1,18 @@
 import { render, screen } from '@testing-library/react';
-import { describe, it, expect, jest, beforeEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, MockedFunction } from 'vitest';
 import { FeatureToggle } from '../FeatureToggle';
 
 // Mock the feature flags hook
-jest.mock('../../../utils/featureFlags', () => ({
-  useFeatureFlag: jest.fn()
+vi.mock('../../../utils/featureFlags', () => ({
+  useFeatureFlag: vi.fn()
 }));
 
 import { useFeatureFlag } from '../../../utils/featureFlags';
-const mockUseFeatureFlag = useFeatureFlag as jest.MockedFunction<typeof useFeatureFlag>;
+const mockUseFeatureFlag = useFeatureFlag as MockedFunction<typeof useFeatureFlag>;
 
 describe('FeatureToggle', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render children when feature is enabled', () => {

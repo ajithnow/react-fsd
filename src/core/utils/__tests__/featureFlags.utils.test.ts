@@ -1,14 +1,14 @@
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { getFlag } from '../featureFlags.utils';
 import { FeatureFlags } from '../../models/featureFlags.model';
 
 describe('featureFlags.utils', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('getFlag', () => {
@@ -34,7 +34,7 @@ describe('featureFlags.utils', () => {
     });
 
     it('should return false and warn for non-existent flags', () => {
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
       const result = getFlag(mockFlags, 'nonExistent');
       
@@ -45,7 +45,7 @@ describe('featureFlags.utils', () => {
     });
 
     it('should return false and warn for non-existent nested flags', () => {
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
       const result = getFlag(mockFlags, 'auth.features.nonExistent');
       
@@ -66,7 +66,7 @@ describe('featureFlags.utils', () => {
     });
 
     it('should handle undefined intermediate paths gracefully', () => {
-      const consoleSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+      const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
       
       const result = getFlag(mockFlags, 'nonExistent.nested.path');
       

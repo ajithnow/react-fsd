@@ -2,22 +2,22 @@ import { render, waitFor, act } from '@testing-library/react';
 import { ProgressBar } from '../ProgressBar';
 
 // Mock the router
-const mockSubscribe = jest.fn();
-const mockUnsubscribe = jest.fn();
+const mockSubscribe = vi.fn();
+const mockUnsubscribe = vi.fn();
 
-jest.mock('@tanstack/react-router', () => ({
-  useRouter: jest.fn(() => ({
+vi.mock('@tanstack/react-router', () => ({
+  useRouter: vi.fn(() => ({
     subscribe: mockSubscribe,
   })),
 }));
 
 // Mock the cn utility
-jest.mock('@/lib/utils', () => ({
-  cn: jest.fn((...classes) => classes.filter(Boolean).join(' ')),
+vi.mock('@/lib/utils', () => ({
+  cn: vi.fn((...classes) => classes.filter(Boolean).join(' ')),
 }));
 
 // Mock timers
-jest.useFakeTimers();
+vi.useFakeTimers();
 
 describe('ProgressBar', () => {
   // These will hold the handlers passed to the mocked `subscribe` function
@@ -25,7 +25,7 @@ describe('ProgressBar', () => {
   let onLoadHandler: () => void;
 
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     // When the component subscribes, we capture the handlers to trigger them manually in tests.
     mockSubscribe.mockImplementation((event: string, handler: () => void) => {
       if (event === 'onBeforeLoad') {
@@ -40,10 +40,10 @@ describe('ProgressBar', () => {
 
   afterEach(() => {
     // It's good practice to run pending timers and restore real timers after each test.
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
+    vi.runOnlyPendingTimers();
+    vi.useRealTimers();
     // Re-apply fake timers for the next test
-    jest.useFakeTimers();
+    vi.useFakeTimers();
   });
 
   it('renders nothing when not loading', () => {

@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { NavBadge } from '../NavBadge';
 
 // Mock the cn utility function
-jest.mock('@/lib/utils', () => ({
+vi.mock('@/lib/utils', () => ({
   cn: (...args: (string | undefined)[]) => args.filter(Boolean).join(' '),
 }));
 

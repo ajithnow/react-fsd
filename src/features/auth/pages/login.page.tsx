@@ -12,10 +12,13 @@ export const LoginPage: React.FC = () => {
   const { t } = useTranslation('auth');
   useDocumentTitle(t('login.pageTitle'), 'FSD Admin - Login');
 
-  const handleLogin = async (credentials: { username: string; password: string; }) => {
+  const handleLogin = async (credentials: {
+    username: string;
+    password: string;
+  }) => {
     try {
-      const data = await login(credentials);
-      await onLoginSuccess(data);
+      const tokens = await login(credentials);
+      await onLoginSuccess(tokens);
     } catch (error) {
       onLoginError(error);
     }

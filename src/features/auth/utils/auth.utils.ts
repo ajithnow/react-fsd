@@ -1,93 +1,52 @@
 // Auth token management utilities
+import { storageService } from '@/shared/utils/storage.service';
 import { AUTH_ROUTES } from '../constants/routes.constants';
+import { AUTH_CONSTANTS } from '../constants/auth.constants';
 
-export const AUTH_TOKEN_KEY = 'auth_token';
-
-export const AUTH_REFRESH_TOKEN_KEY = 'auth_refresh_token';
+export const AUTH_TOKEN_KEY = AUTH_CONSTANTS.ACCESS_TOKEN;
+export const AUTH_REFRESH_TOKEN_KEY = AUTH_CONSTANTS.REFRESH_TOKEN;
 export const AUTH_USER_KEY = 'auth_user';
 
 export const authStorage = {
   getToken: (): string | null => {
-    try {
-      return localStorage.getItem(AUTH_TOKEN_KEY);
-    } catch {
-      return null;
-    }
+    return storageService.getItem<string>(AUTH_TOKEN_KEY);
   },
 
   setToken: (token: string): void => {
-    try {
-      localStorage.setItem(AUTH_TOKEN_KEY, token);
-    } catch {
-      // Handle localStorage errors silently
-    }
+    storageService.setItem(AUTH_TOKEN_KEY, token);
   },
 
   getRefreshToken: (): string | null => {
-    try {
-      return localStorage.getItem(AUTH_REFRESH_TOKEN_KEY);
-    } catch {
-      return null;
-    }
+    return storageService.getItem<string>(AUTH_REFRESH_TOKEN_KEY);
   },
 
   setRefreshToken: (token: string): void => {
-    try {
-      localStorage.setItem(AUTH_REFRESH_TOKEN_KEY, token);
-    } catch {
-      // Handle localStorage errors silently
-    }
+    storageService.setItem(AUTH_REFRESH_TOKEN_KEY, token);
   },
 
   removeToken: (): void => {
-    try {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      localStorage.removeItem(AUTH_USER_KEY);
-    } catch {
-      // Handle localStorage errors silently
-    }
+    storageService.removeItem(AUTH_TOKEN_KEY);
+    storageService.removeItem(AUTH_USER_KEY);
   },
 
   clearTokens: (): void => {
-    try {
-      localStorage.removeItem(AUTH_TOKEN_KEY);
-      localStorage.removeItem(AUTH_REFRESH_TOKEN_KEY);
-      localStorage.removeItem(AUTH_USER_KEY);
-    } catch {
-      // Handle localStorage errors silently
-    }
+    storageService.removeItem(AUTH_TOKEN_KEY);
+    storageService.removeItem(AUTH_REFRESH_TOKEN_KEY);
+    storageService.removeItem(AUTH_USER_KEY);
   },
 
   getUser: <T = unknown>(): T | null => {
-    try {
-      const user = localStorage.getItem(AUTH_USER_KEY);
-      return user ? JSON.parse(user) : null;
-    } catch {
-      return null;
-    }
+    return storageService.getItem<T>(AUTH_USER_KEY);
   },
 
   setUser: <T = unknown>(user: T): void => {
-    try {
-      localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
-    } catch {
-      // Handle localStorage errors silently
-    }
+    storageService.setItem(AUTH_USER_KEY, user);
   },
 };
 
 export const isAuthenticated = (): boolean => {
   const token = authStorage.getToken();
-  if (!token) return false;
-
-  // Add token validation logic here if needed
-  // For example, check if token is expired
-  try {
-    // Basic token presence check
-    return token.length > 0;
-  } catch {
-    return false;
-  }
+  return typeof token === 'string' && token.length > 0;
 };
 
 /**
@@ -99,4 +58,3 @@ export function isAuthRoute(path: string): boolean {
   const authRoutes = Object.values(AUTH_ROUTES);
   return authRoutes.some(route => path.startsWith(route));
 }
-

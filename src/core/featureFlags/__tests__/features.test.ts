@@ -1,10 +1,10 @@
 import { renderHook } from '@testing-library/react';
-import { describe, it, expect, jest, beforeEach, afterEach } from '@jest/globals';
+import { describe, it, expect, vi, beforeEach, afterEach, MockedFunction } from 'vitest';
 import { useFeatureFlags, getFeatureFlagValue } from '../index';
 
 // Mock the utils
-jest.mock('../../utils/featureFlags.utils', () => ({
-  loadFeatureFlags: jest.fn(() => ({
+vi.mock('../../utils/featureFlags.utils', () => ({
+  loadFeatureFlags: vi.fn(() => ({
     auth: {
       enabled: true,
       features: {
@@ -14,7 +14,7 @@ jest.mock('../../utils/featureFlags.utils', () => ({
       }
     }
   })),
-  getFlag: jest.fn((flags, path: string) => {
+  getFlag: vi.fn((flags, path: string) => {
     const keys = path.split('.');
     let current: unknown = flags;
     
@@ -31,16 +31,16 @@ jest.mock('../../utils/featureFlags.utils', () => ({
 
 import { loadFeatureFlags, getFlag } from '../../utils/featureFlags.utils';
 
-const mockLoadFeatureFlags = loadFeatureFlags as jest.MockedFunction<typeof loadFeatureFlags>;
-const mockGetFlag = getFlag as jest.MockedFunction<typeof getFlag>;
+const mockLoadFeatureFlags = loadFeatureFlags as MockedFunction<typeof loadFeatureFlags>;
+const mockGetFlag = getFlag as MockedFunction<typeof getFlag>;
 
 describe('featureFlags.service', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   afterEach(() => {
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe('useFeatureFlags', () => {

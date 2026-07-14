@@ -1,20 +1,20 @@
 import { render } from '@testing-library/react';
+import { useRouterState } from '@tanstack/react-router';
+import { useRef } from 'react';
 import { NavigationProgress } from '../NavigationProgress';
 
-// Mock the router state hook
 const mockRouterState = {
   status: 'idle',
 };
 
-jest.mock('@tanstack/react-router', () => ({
-  useRouterState: jest.fn(() => mockRouterState),
+vi.mock('@tanstack/react-router', () => ({
+  useRouterState: vi.fn(() => mockRouterState),
 }));
 
-// Mock the LoadingBar component and its ref
-const mockContinuousStart = jest.fn();
-const mockComplete = jest.fn();
+const mockContinuousStart = vi.fn();
+const mockComplete = vi.fn();
 
-jest.mock('react-top-loading-bar', () => {
+vi.mock('react-top-loading-bar', () => {
   const MockLoadingBar = ({
     color,
     height,
@@ -38,23 +38,33 @@ jest.mock('react-top-loading-bar', () => {
   };
 });
 
-// Mock useRef to return our mock methods
-jest.mock('react', () => ({
-  ...jest.requireActual('react'),
-  useRef: () => ({
-    current: {
-      continuousStart: mockContinuousStart,
-      complete: mockComplete,
-    },
-  }),
-}));
+vi.mock('react', async importOriginal => {
+  const actual = await importOriginal<typeof import('react')>();
+  return {
+    ...actual,
+    useRef: vi.fn(() => ({
+      current: {
+        continuousStart: mockContinuousStart,
+        complete: mockComplete,
+      },
+    })),
+  };
+});
+
+const mockedUseRouterState = vi.mocked(useRouterState);
+const mockedUseRef = vi.mocked(useRef);
 
 describe('NavigationProgress', () => {
-  const { useRouterState } = jest.requireMock('@tanstack/react-router');
-
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
     mockRouterState.status = 'idle';
+    mockedUseRouterState.mockReturnValue(mockRouterState as never);
+    mockedUseRef.mockReturnValue({
+      current: {
+        continuousStart: mockContinuousStart,
+        complete: mockComplete,
+      },
+    } as never);
   });
 
   it('renders with default props', () => {
@@ -79,7 +89,7 @@ describe('NavigationProgress', () => {
   });
 
   it('starts loading when router status is pending', () => {
-    useRouterState.mockReturnValue({ status: 'pending' });
+    mockedUseRouterState.mockReturnValue({ status: 'pending' } as never);
 
     render(<NavigationProgress />);
 
@@ -88,7 +98,7 @@ describe('NavigationProgress', () => {
   });
 
   it('completes loading when router status is not pending', () => {
-    useRouterState.mockReturnValue({ status: 'idle' });
+    mockedUseRouterState.mockReturnValue({ status: 'idle' } as never);
 
     render(<NavigationProgress />);
 
@@ -97,22 +107,21 @@ describe('NavigationProgress', () => {
   });
 
   it('completes loading when router status changes from pending to idle', () => {
-    useRouterState.mockReturnValue({ status: 'pending' });
+    mockedUseRouterState.mockReturnValue({ status: 'pending' } as never);
 
     const { rerender } = render(<NavigationProgress />);
 
     expect(mockContinuousStart).toHaveBeenCalledTimes(1);
     expect(mockComplete).not.toHaveBeenCalled();
 
-    // Change status to idle
-    useRouterState.mockReturnValue({ status: 'idle' });
+    mockedUseRouterState.mockReturnValue({ status: 'idle' } as never);
     rerender(<NavigationProgress />);
 
     expect(mockComplete).toHaveBeenCalledTimes(1);
   });
 
   it('handles success status', () => {
-    useRouterState.mockReturnValue({ status: 'success' });
+    mockedUseRouterState.mockReturnValue({ status: 'success' } as never);
 
     render(<NavigationProgress />);
 
@@ -121,7 +130,7 @@ describe('NavigationProgress', () => {
   });
 
   it('handles error status', () => {
-    useRouterState.mockReturnValue({ status: 'error' });
+    mockedUseRouterState.mockReturnValue({ status: 'error' } as never);
 
     render(<NavigationProgress />);
 
@@ -130,14 +139,9 @@ describe('NavigationProgress', () => {
   });
 
   it('handles missing ref gracefully', () => {
-    // Mock useRef to return null
-    const mockUseRef = jest.fn(() => ({ current: null }));
-    const reactModule = jest.requireMock('react');
-    jest.spyOn(reactModule, 'useRef').mockImplementation(mockUseRef);
+    mockedUseRef.mockReturnValue({ current: null } as never);
+    mockedUseRouterState.mockReturnValue({ status: 'pending' } as never);
 
-    useRouterState.mockReturnValue({ status: 'pending' });
-
-    // Should not throw an error
     expect(() => render(<NavigationProgress />)).not.toThrow();
   });
 });

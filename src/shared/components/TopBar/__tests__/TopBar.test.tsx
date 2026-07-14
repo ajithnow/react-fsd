@@ -1,19 +1,18 @@
-import React from 'react';
 import { render, screen } from '@testing-library/react';
 import { TopBar } from '../TopBar';
 
 // Mock child components
-jest.mock('@/lib/shadcn/components/ui/sidebar', () => ({
+vi.mock('@/lib/shadcn/components/ui/sidebar', () => ({
   SidebarTrigger: () => <button data-testid="sidebar-trigger">Toggle Sidebar</button>,
 }));
 
-jest.mock('../../LanguageSwitcher', () => ({
+vi.mock('../../LanguageSwitcher', () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher">Language Switcher</div>,
 }));
 
 describe('TopBar', () => {
   beforeEach(() => {
-    jest.clearAllMocks();
+    vi.clearAllMocks();
   });
 
   it('should render all main elements', () => {

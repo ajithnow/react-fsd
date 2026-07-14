@@ -12,7 +12,23 @@ export interface LoginFormProps {
   isLoading: boolean;
 }
 
-export interface User extends RBACUser{  Name: string, FirstName?: string, LastName?: string, Email?: string };
+export interface User extends RBACUser {
+  Name: string;
+  FirstName?: string;
+  LastName?: string;
+  Email?: string;
+  /** Optional stable id from the me/profile API */
+  Id?: string;
+  /** Account lifecycle status from the me/profile API */
+  Status?: string;
+}
+
+/** Tokens-only login result — identity comes from getProfile / me. */
+export interface LoginTokens {
+  token: string;
+  refreshToken: string;
+  expiresIn?: string;
+}
 
 export interface AuthState {
   user: User | null;

@@ -22,7 +22,7 @@ export const GuestGuard: React.FC<GuestGuardProps> = ({
       const isAuthReturnUrl = returnUrl && returnUrl.startsWith('/auth/');
       const destination = returnUrl && !isAuthReturnUrl ? returnUrl : redirectTo;
       
-      navigate({ 
+      void navigate({ 
         to: destination,
         replace: true 
       });

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { PermissionGuard, RoleGuard, ConditionalRender } from '../RBACGuards';
 
-jest.mock('../../../hooks/useRBAC.ts', () => ({
+vi.mock('../../../hooks/useRBAC.ts', () => ({
   useRBAC: () => ({
     hasPermission: (perm: string) => perm === 'allowed',
     hasAnyPermission: (perms: string[]) => perms.includes('allowed'),

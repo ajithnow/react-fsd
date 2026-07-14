@@ -6,32 +6,18 @@ import { storageService } from '@/shared/utils/storage.service';
 import { logger } from '@/core/services/logger.service';
 
 const API_BASE_URL = ENV.API_BASE_URL;
-const MOCK_API_BASE_URL = ENV.MOCK_API_BASE_URL;
 
-declare module 'axios' {
-  export interface AxiosRequestConfig {
-    isMock?: boolean;
-  }
-}
-
-// Create the base API client factory
-const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
+const createApiClient = () => {
   const client = axios.create({
-    baseURL: defaultIsMock ? MOCK_API_BASE_URL : API_BASE_URL, 
+    baseURL: API_BASE_URL,
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
   });
 
-  // Request interceptor - Handle per-endpoint mocking and add auth token
   client.interceptors.request.use(
     (config: InternalAxiosRequestConfig) => {
-      // Per-endpoint mocking override
-      if (config.isMock !== undefined) {
-        config.baseURL = config.isMock ? MOCK_API_BASE_URL : API_BASE_URL;
-      }
-
       const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
       const authConstants = constants.AUTH as Record<string, string> | undefined;
       const token = storageService.getItem<string>(authConstants?.ACCESS_TOKEN || 'accessToken');
@@ -46,7 +32,6 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
     }
   );
 
-  // Response interceptor - Handle errors and token refresh
   client.interceptors.response.use(
     (response: AxiosResponse) => response,
     async (error: AxiosError) => {
@@ -54,7 +39,6 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
       const constants = constantsRegistry.getAll() as Record<string, Record<string, string> | undefined>;
       const authConstants = constants.AUTH as Record<string, string> | undefined;
 
-      // Handle 401 Unauthorized with token refresh
       if (error.response?.status === 401 && !originalRequest._retry) {
         originalRequest._retry = true;
 
@@ -67,7 +51,6 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
             throw new Error('No refresh token available');
           }
 
-          // Use a separate axios instance to avoid interceptor loops
           const refreshResponse = await axios.post(
             `${API_BASE_URL}${API_ENDPOINTS.AUTH.REFRESH_TOKEN}`,
             { refreshToken },
@@ -84,25 +67,20 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
             throw new Error('Invalid refresh response');
           }
 
-          // Update stored token
           storageService.setItem(
             authConstants?.ACCESS_TOKEN || 'accessToken',
             newAccessToken
           );
 
-          // Update the original request with new token
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
 
-          // Retry the original request
           return client(originalRequest);
         } catch (refreshError) {
           logger.error('Token refresh failed', refreshError, 'API');
 
-          // Clear tokens and redirect to login
           storageService.removeItem(authConstants?.ACCESS_TOKEN || 'accessToken');
           storageService.removeItem(authConstants?.REFRESH_TOKEN || 'refreshToken');
 
-          // Redirect to login - you might want to use your router here
           if (typeof window !== 'undefined') {
             window.location.href = '/auth/login';
           }
@@ -111,14 +89,12 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
         }
       }
 
-      // Handle other HTTP errors
       if (error.response) {
         const status = error.response.status;
         const data = error.response.data;
 
         logger.error(`API Error ${status}`, data, 'API');
 
-        // You can add more specific error handling here
         switch (status) {
           case 403:
             logger.warn('Forbidden: Insufficient permissions', null, 'API');
@@ -133,7 +109,6 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
             logger.info(`HTTP status ${status}`, null, 'API');
         }
       } else if (error.request) {
-        // Network error
         logger.error('Network error - no response received', null, 'API');
       } else {
         logger.error('Request setup error', error.message, 'API');
@@ -146,9 +121,7 @@ const createApiClient = ({ isMock: defaultIsMock = false } = {}) => {
   return client;
 };
 
-// Create default instance
 const apiClient = createApiClient();
 
-// Export both the factory and default instance
 export { createApiClient };
 export default apiClient;

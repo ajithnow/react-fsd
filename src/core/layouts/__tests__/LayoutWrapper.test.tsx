@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import { LayoutWrapper } from '../LayoutWrapper';
 
 // Mock the GlobalLayout to isolate LayoutWrapper testing
-jest.mock('../GlobalLayout', () => ({
+vi.mock('../GlobalLayout', () => ({
   GlobalLayout: ({ children }: { children: React.ReactNode }) => (
     <div data-testid="mocked-global-layout">{children}</div>
   ),

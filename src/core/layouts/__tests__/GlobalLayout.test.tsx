@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom';
 import React from 'react';
 
 // Mock the GlobalLayout module to avoid router dependencies
-jest.mock('../GlobalLayout', () => ({
+vi.mock('../GlobalLayout', () => ({
   GlobalLayout: ({ children }: { children: React.ReactNode }) => (
     <React.Fragment>{children}</React.Fragment>
   ),

@@ -73,7 +73,7 @@ describe('NotificationItem', () => {
 
   it('should call onMarkAsRead when mark as read button is clicked', async () => {
     const user = userEvent.setup();
-    const onMarkAsRead = jest.fn();
+    const onMarkAsRead = vi.fn();
     render(<NotificationItem notification={mockUnreadNotification} onMarkAsRead={onMarkAsRead} />);
     
     const card = screen.getByText('Test Notification').closest('.group');
@@ -87,7 +87,7 @@ describe('NotificationItem', () => {
 
   it('should call onDismiss when dismiss button is clicked', async () => {
     const user = userEvent.setup();
-    const onDismiss = jest.fn();
+    const onDismiss = vi.fn();
     render(<NotificationItem notification={mockUnreadNotification} onDismiss={onDismiss} />);
     
     const card = screen.getByText('Test Notification').closest('.group');
