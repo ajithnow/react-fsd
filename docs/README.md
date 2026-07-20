@@ -1,5 +1,7 @@
 **FSD Admin Documentation v0.0.1**
 
+> **Agents:** Prefer [`src/`](../src/) and [AGENTS.md](../AGENTS.md) over this tree. Generated TypeDoc may be stale. See [AGENT.md](./AGENT.md). Adapting the boilerplate: [ADAPTING.md](./ADAPTING.md).
+
 ---
 
 # 🚀 React FSD - Feature-Sliced Design Application
