@@ -1,0 +1,16 @@
+---
+description: Core layer — registries, router assembly, store, shell
+globs: src/core/**/*
+alwaysApply: false
+---
+
+# Core layer
+
+Long-form: `.agents/rules/core-layer.md`
+
+- Registries live under `src/core/registry/`; features contribute via `FeatureConfig`.
+- Router layouts: `appLayoutRoute` (auth), `authLayoutRoute`, ungated `/` in `layouts.tsx`.
+- Assembly: `assembleRoutes` after `bootstrapFeatures` — do not register routes ad hoc in App.
+- New Redux slice → wire reducer in `src/core/store/index.ts` (auth is the only slice today).
+- Shell nav (home): `src/core/shell/sidebar.ts` — feature nav stays in feature `sidebar.ts`.
+- Prefer not expanding `core` → `features` imports beyond existing auth coupling.

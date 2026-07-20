@@ -2,6 +2,8 @@
 
 When adding a new domain feature to this Admin UI, follow Feature-Sliced Design and register through the existing bootstrap — do **not** hardcode routes or sidebar into shared hooks.
 
+Skills: `.agents/skills/add-feature/SKILL.md` · CRUD: `.agents/skills/add-crud-page/SKILL.md`
+
 ## Discovery
 
 `src/main.tsx` loads every `src/features/*/config.ts` via `import.meta.glob`.  

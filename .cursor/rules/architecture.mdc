@@ -1,0 +1,31 @@
+---
+description: Core FSD architecture, registry bootstrap, RBAC, and import conventions
+alwaysApply: true
+---
+
+# Architecture
+
+Long-form: `.agents/rules/architecture.md` · Hub: `AGENTS.md`
+
+## Layers
+
+- `features/` — domain modules with `config.ts`
+- `core/` — registry, router, store, api, i18n, shell
+- `shared/` — reusable UI, hooks, RBAC
+- `lib/shadcn/` — primitives
+
+Features register via `import.meta.glob('./features/*/config.ts')` in `src/main.tsx`. Do **not** hardcode routes/sidebar into shared hooks.
+
+## Do
+
+- Own routes, permission strings (`resource:action`), locales, sidebar in the feature
+- Gate with `hasPermission` + redirect to `/`; UI: `<Can>` or `useRBAC()`
+- Queries = network/React Query only; managers = navigate/toast/Redux
+- Imports: `@/…` only
+
+## Don’t
+
+- Edit `main.tsx` for each feature
+- Role-based client maps; invent feature-flag APIs from stale docs
+- Import arbitrary features into `shared` (auth is already privileged)
+- Use Jest/ESLint patterns from old README

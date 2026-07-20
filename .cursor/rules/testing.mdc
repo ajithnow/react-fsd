@@ -1,0 +1,16 @@
+---
+description: Vitest + RTL testing conventions
+globs: "**/__tests__/**/*","**/*.{test,spec}.{ts,tsx}"
+alwaysApply: false
+---
+
+# Testing
+
+Long-form: `.agents/rules/testing.md`
+
+- Runner: **Vitest** (not Jest). Setup: `src/test-setup.ts`.
+- Colocate under `__tests__/` or `*.test.ts(x)` / `*.spec.ts(x)`.
+- RBAC: `setRbacEnabled` from `shared/lib/rbac` when toggling checks in tests.
+- Prefer RTL + user-event; mock network at service/query boundary.
+- Coverage excludes many pages/routes — check `vite.config.ts` before assuming CI thresholds.
+- Do not use `jest.fn`, `--testPathPattern`, or ESLint test scripts from stale docs.

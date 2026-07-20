@@ -1,0 +1,16 @@
+---
+description: Shared layer — reusable UI, RBAC, no domain nav
+globs: src/shared/**/*
+alwaysApply: false
+---
+
+# Shared layer
+
+Long-form: `.agents/rules/shared-layer.md`
+
+- Reusable only: components, hooks, utils, RBAC (`src/shared/lib/rbac/`).
+- Authorization: permission strings from session `/me`. Use `hasPermission`, `<Can>`, `useRBAC()`.
+- `VITE_RBAC_ENABLED=false` bypasses checks.
+- Sidebar assembly filters feature `permission` — do **not** hardcode domain nav lists in `useSidebar`.
+- Shared locales: `common` / `shared` namespaces registered in `main.tsx`.
+- Avoid new imports from `features/*` into shared (auth/users coupling already exists).

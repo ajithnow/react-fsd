@@ -2,6 +2,8 @@
 
 > A modern React application built with Feature-Sliced Design architecture, TypeScript, and cutting-edge tools for scalable frontend development.
 
+**Agents / AI:** start at [AGENTS.md](./AGENTS.md). Adapting this boilerplate: [docs/ADAPTING.md](./docs/ADAPTING.md). Docs authority note: [docs/AGENT.md](./docs/AGENT.md).
+
 [![TypeScript](https://img.shields.io/badge/TypeScript-7.0.2-blue.svg)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.1.0-61dafb.svg)](https://reactjs.org/)
 [![Vite](https://img.shields.io/badge/Vite-7.0.4-646cff.svg)](https://vitejs.dev/)
@@ -217,7 +219,7 @@ npm run test:coverage
 npm test LoginForm.test.tsx
 
 # Run tests for specific feature
-npm test -- --testPathPattern=features/auth
+npm test -- src/features/auth
 ```
 
 ### Test Example
@@ -226,7 +228,7 @@ npm test -- --testPathPattern=features/auth
 describe('LoginForm', () => {
   it('should handle form submission with valid data', async () => {
     const user = userEvent.setup();
-    const mockOnSubmit = jest.fn();
+    const mockOnSubmit = vi.fn();
 
     render(<LoginForm onSubmit={mockOnSubmit} isLoading={false} />);
 
@@ -338,12 +340,10 @@ export const useUsers = () => {
 
 ## 📚 Documentation
 
-- 📖 **[Architecture Guide](./docs/ARCHITECTURE.md)** - Detailed FSD architecture
-- 🛠️ **[Development Guide](./docs/DEVELOPMENT.md)** - Feature development process
-- 🚩 **[Feature Flags Guide](./docs/FEATURE-FLAGS.md)** - Feature flag system usage
-- 🧪 **[Testing Guide](./docs/TESTING.md)** - Testing strategies and examples
-- 🚀 **[Deployment Guide](./docs/DEPLOYMENT.md)** - Deploy to various platforms
-- 🤝 **[Contributing Guide](./docs/CONTRIBUTING.md)** - How to contribute
+- 🤖 **[AGENTS.md](./AGENTS.md)** - Agent entrypoint (architecture, rules, skills)
+- 🧩 **[Adapting the boilerplate](./docs/ADAPTING.md)** - Rename, env, sample features, smoke checks
+- ⚠️ **[docs/AGENT.md](./docs/AGENT.md)** - Prefer `src/` over generated TypeDoc
+- Generated API notes under `docs/` may be stale — see the agent note above
 
 ## 🚀 Deployment
 

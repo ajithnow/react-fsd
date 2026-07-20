@@ -6,9 +6,8 @@ alwaysApply: false
 
 # Add a feature module
 
-When adding a new domain feature, follow Feature-Sliced Design and register through bootstrap — do **not** hardcode routes or sidebar into shared hooks.
-
-Full checklist: `.agents/rules/add-feature.md`
+Full checklist: `.agents/rules/add-feature.md`  
+Skill: `.agents/skills/add-feature/SKILL.md` · CRUD: `.agents/skills/add-crud-page/SKILL.md`
 
 ## Discovery
 
@@ -28,7 +27,7 @@ src/features/<name>/
   index.ts
 ```
 
-Reference: `src/features/bookings/`.
+Reference: `src/features/bookings/` (scaffold) · `src/features/users/` (CRUD).
 
 ## `config.ts`
 
@@ -44,7 +43,7 @@ export default config
 ## Rules
 
 1. Feature owns routes, permission strings, and sidebar.
-2. Session permissions come from `/api/auth/me` only — authorization is permission-based (not roles).
+2. Session permissions from `/api/auth/me` only — permission-based (not roles).
 3. Gate routes with `hasPermission` + redirect to `/`. UI: `<Can>` or `useRBAC()`.
-4. Sidebar `permission` is filtered at assembly; respects `VITE_RBAC_ENABLED=false`.
+4. Sidebar `permission` filtered at assembly; honors `VITE_RBAC_ENABLED=false`.
 5. Locales via `config.locales` with feature `ns`.

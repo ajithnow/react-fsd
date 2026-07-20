@@ -1,0 +1,13 @@
+---
+description: ShadCN and shared component import paths
+globs: src/lib/shadcn/**/*,src/shared/components/**/*
+alwaysApply: false
+---
+
+# UI / ShadCN
+
+- Primitives: `@/lib/shadcn/components/ui/...` (and related utils under `@/lib/shadcn/`).
+- App-level shared components: `@/shared/components/...`.
+- **Ignore** `components.json` aliases like `@/components` / `@/lib/utils` — they do not match this tree.
+- Prefer existing shared wrappers (Button, DataTable, AlertDialog) over re-implementing primitives in features.
+- Colocate component docs/tests next to the component when present.
