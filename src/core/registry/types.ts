@@ -10,10 +10,6 @@ export interface ConstantsConfig {
   [key: string]: unknown
 }
 
-export interface GuardConfig {
-  [key: string]: unknown
-}
-
 /** Single nav link or collapsible parent contributed by a feature. */
 export interface SidebarItemConfig {
   id: string
@@ -46,6 +42,5 @@ export interface FeatureConfig {
   routes?: AnyRoute[]
   locales?: LocaleConfig
   constants?: ConstantsConfig
-  guards?: GuardConfig
   sidebar?: SidebarConfig
 }
