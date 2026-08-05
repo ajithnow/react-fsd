@@ -44,4 +44,7 @@ export const router = new Proxy({} as object, {
 }) as ReturnType<typeof createRouter>;
 
 export { rootRoute };
+export { requireAuth, requireGuest, requirePermission } from './guards';
+export type { RouteLayout } from './route-meta';
+export { getRouteLayout } from './route-meta';
 export default router;

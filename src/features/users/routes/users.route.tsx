@@ -1,22 +1,7 @@
-import {
-  createRoute,
-  lazyRouteComponent,
-  redirect,
-} from '@tanstack/react-router';
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router';
 import { USER_PERMISSIONS, USER_ROUTES } from '../constants';
 import { appLayoutRoute } from '@/core/router/layouts';
-import { store } from '@/core/store/index.ts';
-import { hasPermission } from '@/shared/lib/rbac';
-import ROUTE_CONSTANTS from '@/shared/constants/route.constants';
-
-const checkCreatePermission = (permission: string) => {
-  const user = store.getState().auth.user;
-  if (!hasPermission(user, permission)) {
-    // Never redirect to a route that immediately sends the user back here
-    // (previous `/` → `/users` → `/` loop).
-    throw redirect({ to: ROUTE_CONSTANTS.ROOT, replace: true });
-  }
-};
+import { requirePermission } from '@/core/router/guards';
 
 const usersListRoute = createRoute({
   path: USER_ROUTES.LIST,
@@ -24,9 +9,7 @@ const usersListRoute = createRoute({
   component: lazyRouteComponent(() =>
     import('../pages').then(m => ({ default: m.UsersListPage }))
   ),
-  beforeLoad: async () => {
-    checkCreatePermission(USER_PERMISSIONS.USER_READ);
-  },
+  beforeLoad: requirePermission(USER_PERMISSIONS.USER_READ),
 });
 
 const userCreateRoute = createRoute({
@@ -35,9 +18,7 @@ const userCreateRoute = createRoute({
   component: lazyRouteComponent(() =>
     import('../pages').then(m => ({ default: m.UserCreatePage }))
   ),
-  beforeLoad: async () => {
-    checkCreatePermission(USER_PERMISSIONS.USER_CREATE);
-  },
+  beforeLoad: requirePermission(USER_PERMISSIONS.USER_CREATE),
 });
 
 const userDetailRoute = createRoute({
@@ -46,9 +27,7 @@ const userDetailRoute = createRoute({
   component: lazyRouteComponent(() =>
     import('../pages').then(m => ({ default: m.UserDetailPage }))
   ),
-  beforeLoad: async () => {
-    checkCreatePermission(USER_PERMISSIONS.USER_READ);
-  },
+  beforeLoad: requirePermission(USER_PERMISSIONS.USER_READ),
 });
 
 const userEditRoute = createRoute({
@@ -57,9 +36,7 @@ const userEditRoute = createRoute({
   component: lazyRouteComponent(() =>
     import('../pages').then(m => ({ default: m.UserEditPage }))
   ),
-  beforeLoad: async () => {
-    checkCreatePermission(USER_PERMISSIONS.USER_UPDATE);
-  },
+  beforeLoad: requirePermission(USER_PERMISSIONS.USER_UPDATE),
 });
 
 export const userRoutes = [

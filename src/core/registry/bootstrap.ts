@@ -1,7 +1,6 @@
 import {
   localeRegistry,
   constantsRegistry,
-  guardsRegistry,
   sidebarRegistry,
 } from './index';
 import type { FeatureConfig } from './types';
@@ -19,7 +18,6 @@ export function bootstrapFeatures(modules: Record<string, { default: FeatureConf
       if (config.routes?.length) featureRoutes.push(...config.routes);
       if (config.locales) localeRegistry.register(config.locales);
       if (config.constants) constantsRegistry.register(config.constants);
-      if (config.guards) guardsRegistry.register(config.guards);
       if (config.sidebar) sidebarRegistry.register(config.sidebar);
     } catch (e) {
       console.error(`[FeatureRegistry] Failed to register feature from ${path}`, e);
