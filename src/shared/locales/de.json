@@ -5,7 +5,11 @@
   },
   "auth": {
     "logOut": "Abmelden",
-    "loggingOut": "Abmeldung..."
+    "loggingOut": "Abmeldung...",
+    "confirmLogoutTitle": "Abmelden?",
+    "confirmLogoutDescription": "Sie müssen sich erneut anmelden, um auf Ihr Konto zuzugreifen.",
+    "confirmLogoutButton": "Abmelden",
+    "cancel": "Abbrechen"
   },
   "appName": "Admin Dashboard",
   "unsavedChanges": {

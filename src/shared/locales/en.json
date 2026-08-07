@@ -5,7 +5,11 @@
   },
   "auth": {
     "logOut": "Log out",
-    "loggingOut": "Logging out..."
+    "loggingOut": "Logging out...",
+    "confirmLogoutTitle": "Log out?",
+    "confirmLogoutDescription": "You'll need to sign in again to access your account.",
+    "confirmLogoutButton": "Log out",
+    "cancel": "Cancel"
   },
   "appName": "Admin Dashboard",
   "unsavedChanges": {

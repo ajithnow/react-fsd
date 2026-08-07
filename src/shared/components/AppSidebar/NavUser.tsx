@@ -17,6 +17,8 @@ import {
 import { useLogoutManager } from '../../../features/auth/managers/logout.manager';
 import type { User } from './appSidebar.types';
 import { useTranslation } from 'react-i18next';
+import { SharedAlertDialog } from '../AlertDialog/SharedAlertDialog';
+import { useAlertDialog } from '../AlertDialog/useAlertDialog';
 
 interface NavUserProps {
   user: User;
@@ -26,6 +28,7 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
   const { isMobile } = useSidebar();
   const { logoutUser, isPending } = useLogoutManager();
   const { t } = useTranslation('shared');
+  const logoutDialog = useAlertDialog();
 
   const handleLogout = async () => {
     try {
@@ -72,13 +75,27 @@ export const NavUser: React.FC<NavUserProps> = ({ user }) => {
               </div>
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={handleLogout} disabled={isPending}>
+            <DropdownMenuItem
+              onClick={logoutDialog.showAlert}
+              disabled={isPending}
+            >
               <LogOut />
               {isPending ? t('auth.loggingOut') : t('auth.logOut')}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
+
+      <SharedAlertDialog
+        open={logoutDialog.isOpen}
+        onOpenChange={logoutDialog.setIsOpen}
+        title={t('auth.confirmLogoutTitle')}
+        description={t('auth.confirmLogoutDescription')}
+        confirmText={t('auth.confirmLogoutButton')}
+        cancelText={t('auth.cancel')}
+        variant="destructive"
+        onConfirm={handleLogout}
+      />
     </SidebarMenu>
   );
 };

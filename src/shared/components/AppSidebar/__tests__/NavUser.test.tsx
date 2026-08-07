@@ -252,15 +252,32 @@ describe('NavUser', () => {
     expect(menuGroups).toHaveLength(0);
   });
 
-  it('should handle logout click', async () => {
+  it('should open a confirmation dialog on logout click, and log out on confirm', async () => {
     render(<NavUser user={mockUser} />);
 
     const logoutItem = screen.getByText('auth.logOut');
     fireEvent.click(logoutItem);
 
+    expect(mockLogoutUser).not.toHaveBeenCalled();
+
+    const confirmButton = await screen.findByText('auth.confirmLogoutButton');
+    fireEvent.click(confirmButton);
+
     await waitFor(() => {
       expect(mockLogoutUser).toHaveBeenCalled();
     });
+  });
+
+  it('should not log out when the confirmation dialog is cancelled', async () => {
+    render(<NavUser user={mockUser} />);
+
+    const logoutItem = screen.getByText('auth.logOut');
+    fireEvent.click(logoutItem);
+
+    const cancelButton = await screen.findByText('auth.cancel');
+    fireEvent.click(cancelButton);
+
+    expect(mockLogoutUser).not.toHaveBeenCalled();
   });
 
 
