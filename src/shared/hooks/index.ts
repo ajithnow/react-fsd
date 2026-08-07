@@ -6,3 +6,4 @@ export {
   assembleSidebarItems,
 } from './useSidebar';
 export { useUnsavedChangesBlocker } from './useUnsavedChangesBlocker';
+export { useReportFormDirty } from './useReportFormDirty';

@@ -1,0 +1,103 @@
+import type { PresetVariant, ThemeShadowTokens } from '../tokens.types';
+
+const fontSans = 'Georgia, "Iowan Old Style", "Times New Roman", Times, serif';
+const fontMono =
+  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+
+const lightShadows: ThemeShadowTokens = {
+  sm: '0 1px 3px 0 rgb(0 0 0 / 0.12)',
+  md: '0 4px 8px -1px rgb(0 0 0 / 0.18), 0 2px 6px -2px rgb(0 0 0 / 0.14)',
+  lg: '0 12px 20px -4px rgb(0 0 0 / 0.2), 0 6px 10px -4px rgb(0 0 0 / 0.16)',
+  xl: '0 24px 32px -8px rgb(0 0 0 / 0.22), 0 10px 14px -6px rgb(0 0 0 / 0.18)',
+};
+
+const darkShadows: ThemeShadowTokens = {
+  sm: '0 1px 3px 0 rgb(0 0 0 / 0.3)',
+  md: '0 4px 8px -1px rgb(0 0 0 / 0.36), 0 2px 6px -2px rgb(0 0 0 / 0.3)',
+  lg: '0 12px 20px -4px rgb(0 0 0 / 0.4), 0 6px 10px -4px rgb(0 0 0 / 0.32)',
+  xl: '0 24px 32px -8px rgb(0 0 0 / 0.44), 0 10px 14px -6px rgb(0 0 0 / 0.36)',
+};
+
+// Warmer, more traditional palette: smaller radius, serif type, heavier shadows.
+export const classicTokens: PresetVariant = {
+  light: {
+    colors: {
+      background: 'oklch(0.99 0.005 80)',
+      foreground: 'oklch(0.2 0.02 50)',
+      card: 'oklch(0.99 0.005 80)',
+      cardForeground: 'oklch(0.2 0.02 50)',
+      popover: 'oklch(0.99 0.005 80)',
+      popoverForeground: 'oklch(0.2 0.02 50)',
+      primary: 'oklch(0.35 0.08 40)',
+      primaryForeground: 'oklch(0.98 0.01 80)',
+      secondary: 'oklch(0.94 0.015 70)',
+      secondaryForeground: 'oklch(0.25 0.02 50)',
+      muted: 'oklch(0.94 0.015 70)',
+      mutedForeground: 'oklch(0.45 0.02 50)',
+      accent: 'oklch(0.9 0.03 60)',
+      accentForeground: 'oklch(0.25 0.02 50)',
+      destructive: 'oklch(0.55 0.2 25)',
+      destructiveForeground: 'oklch(0.98 0 0)',
+      border: 'oklch(0.85 0.02 60)',
+      input: 'oklch(0.85 0.02 60)',
+      ring: 'oklch(0.55 0.05 50)',
+      chart1: 'oklch(0.55 0.15 40)',
+      chart2: 'oklch(0.5 0.1 150)',
+      chart3: 'oklch(0.6 0.12 80)',
+      chart4: 'oklch(0.5 0.15 25)',
+      chart5: 'oklch(0.45 0.08 280)',
+      sidebar: 'oklch(0.96 0.01 70)',
+      sidebarForeground: 'oklch(0.2 0.02 50)',
+      sidebarPrimary: 'oklch(0.35 0.08 40)',
+      sidebarPrimaryForeground: 'oklch(0.98 0.01 80)',
+      sidebarAccent: 'oklch(0.9 0.03 60)',
+      sidebarAccentForeground: 'oklch(0.25 0.02 50)',
+      sidebarBorder: 'oklch(0.85 0.02 60)',
+      sidebarRing: 'oklch(0.55 0.05 50)',
+    },
+    radius: '0.25rem',
+    fontSans,
+    fontMono,
+    shadows: lightShadows,
+  },
+  dark: {
+    colors: {
+      background: 'oklch(0.16 0.015 50)',
+      foreground: 'oklch(0.95 0.01 70)',
+      card: 'oklch(0.2 0.02 50)',
+      cardForeground: 'oklch(0.95 0.01 70)',
+      popover: 'oklch(0.2 0.02 50)',
+      popoverForeground: 'oklch(0.95 0.01 70)',
+      primary: 'oklch(0.65 0.12 45)',
+      primaryForeground: 'oklch(0.15 0.02 50)',
+      secondary: 'oklch(0.26 0.02 50)',
+      secondaryForeground: 'oklch(0.95 0.01 70)',
+      muted: 'oklch(0.26 0.02 50)',
+      mutedForeground: 'oklch(0.65 0.02 60)',
+      accent: 'oklch(0.3 0.03 55)',
+      accentForeground: 'oklch(0.95 0.01 70)',
+      destructive: 'oklch(0.65 0.2 25)',
+      destructiveForeground: 'oklch(0.98 0 0)',
+      border: 'oklch(1 0 0 / 12%)',
+      input: 'oklch(1 0 0 / 16%)',
+      ring: 'oklch(0.6 0.05 50)',
+      chart1: 'oklch(0.65 0.15 45)',
+      chart2: 'oklch(0.6 0.1 150)',
+      chart3: 'oklch(0.7 0.12 80)',
+      chart4: 'oklch(0.6 0.15 25)',
+      chart5: 'oklch(0.55 0.08 280)',
+      sidebar: 'oklch(0.19 0.018 50)',
+      sidebarForeground: 'oklch(0.95 0.01 70)',
+      sidebarPrimary: 'oklch(0.65 0.12 45)',
+      sidebarPrimaryForeground: 'oklch(0.15 0.02 50)',
+      sidebarAccent: 'oklch(0.3 0.03 55)',
+      sidebarAccentForeground: 'oklch(0.95 0.01 70)',
+      sidebarBorder: 'oklch(1 0 0 / 12%)',
+      sidebarRing: 'oklch(0.6 0.05 50)',
+    },
+    radius: '0.25rem',
+    fontSans,
+    fontMono,
+    shadows: darkShadows,
+  },
+};

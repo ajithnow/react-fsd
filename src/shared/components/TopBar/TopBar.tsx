@@ -2,6 +2,7 @@ import React from 'react';
 import { SidebarTrigger } from '@/lib/shadcn/components/ui/sidebar';
 import { Separator } from '@/lib/shadcn/components/ui/separator';
 import { LanguageSwitcher } from '../LanguageSwitcher';
+import { ThemeSwitcher } from '../ThemeSwitcher';
 
 export const TopBar: React.FC = () => {
   return (
@@ -12,6 +13,7 @@ export const TopBar: React.FC = () => {
       <div className="flex flex-1 items-center gap-2" />
 
       <div className="flex items-center gap-2">
+        <ThemeSwitcher />
         <LanguageSwitcher />
       </div>
     </header>

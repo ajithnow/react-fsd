@@ -20,12 +20,13 @@ See `constants/permissions.constants.ts`.
 
 ## Key paths
 
-| Area | Path |
-|------|------|
-| Routes | `routes/users.route.tsx` |
-| Queries / managers | `queries/`, `managers/` |
-| Table / form | `components/UserDataTable`, `components/UserForm` |
-| Sidebar | `sidebar.ts` (`users:read`) |
+| Area               | Path                                                                                |
+| ------------------ | ----------------------------------------------------------------------------------- |
+| Routes             | `routes/users.route.tsx`                                                            |
+| Queries / managers | `queries/`, `managers/`                                                             |
+| Table / form       | `components/UserDataTable`, `components/UserForm`                                   |
+| Sidebar            | `sidebar.ts` (`users:read`)                                                         |
+| Dev-only API mocks | `mocks/handlers.ts` (in-memory seed data, picked up by `src/core/mocks/browser.ts`) |
 
 ## Skills
 

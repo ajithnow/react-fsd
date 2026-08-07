@@ -8,6 +8,12 @@
     "loggingOut": "Abmeldung..."
   },
   "appName": "Admin Dashboard",
+  "unsavedChanges": {
+    "title": "Änderungen verwerfen?",
+    "description": "Sie haben nicht gespeicherte Änderungen. Wenn Sie jetzt gehen, gehen diese verloren.",
+    "confirm": "Verwerfen",
+    "cancel": "Abbrechen"
+  },
   "required": "{{fieldName}} ist erforderlich",
   "role": "Rolle",
   "save": "Speichern",

@@ -1,0 +1,102 @@
+import type { PresetVariant, ThemeShadowTokens } from '../tokens.types';
+
+/**
+ * Customize this file for white-label branding. Every value below is a
+ * standalone design token — edit colors, radius, fonts, and shadows freely;
+ * nothing else in the app needs to change for it to take effect.
+ */
+
+const fontSans =
+  'ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif';
+const fontMono =
+  'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace';
+
+const shadows: ThemeShadowTokens = {
+  sm: '0 1px 2px 0 rgb(0 0 0 / 0.05)',
+  md: '0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1)',
+  lg: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
+  xl: '0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)',
+};
+
+export const brandTokens: PresetVariant = {
+  light: {
+    colors: {
+      background: 'oklch(1 0 0)',
+      foreground: 'oklch(0.13 0.028 261.692)',
+      card: 'oklch(1 0 0)',
+      cardForeground: 'oklch(0.13 0.028 261.692)',
+      popover: 'oklch(1 0 0)',
+      popoverForeground: 'oklch(0.13 0.028 261.692)',
+      primary: '#00536c',
+      primaryForeground: 'oklch(0.98 0.01 220)',
+      secondary: 'oklch(0.967 0.003 264.542)',
+      secondaryForeground: 'oklch(0.21 0.034 264.665)',
+      muted: 'oklch(0.967 0.003 264.542)',
+      mutedForeground: 'oklch(0.551 0.027 264.364)',
+      accent: 'oklch(0.967 0.003 264.542)',
+      accentForeground: 'oklch(0.21 0.034 264.665)',
+      destructive: 'oklch(0.577 0.245 27.325)',
+      destructiveForeground: 'oklch(0.985 0 0)',
+      border: 'oklch(0.928 0.006 264.531)',
+      input: 'oklch(0.928 0.006 264.531)',
+      ring: 'oklch(0.707 0.022 261.325)',
+      chart1: 'oklch(0.646 0.222 41.116)',
+      chart2: 'oklch(0.6 0.118 184.704)',
+      chart3: 'oklch(0.398 0.07 227.392)',
+      chart4: 'oklch(0.828 0.189 84.429)',
+      chart5: 'oklch(0.769 0.188 70.08)',
+      sidebar: 'oklch(0.985 0.002 247.839)',
+      sidebarForeground: 'oklch(0.13 0.028 261.692)',
+      sidebarPrimary: 'oklch(0.21 0.034 264.665)',
+      sidebarPrimaryForeground: 'oklch(0.985 0.002 247.839)',
+      sidebarAccent: 'oklch(0.967 0.003 264.542)',
+      sidebarAccentForeground: 'oklch(0.21 0.034 264.665)',
+      sidebarBorder: 'oklch(0.928 0.006 264.531)',
+      sidebarRing: 'oklch(0.707 0.022 261.325)',
+    },
+    radius: '0.625rem',
+    fontSans,
+    fontMono,
+    shadows,
+  },
+  dark: {
+    colors: {
+      background: 'oklch(0.13 0.028 261.692)',
+      foreground: 'oklch(0.985 0.002 247.839)',
+      card: 'oklch(0.21 0.034 264.665)',
+      cardForeground: 'oklch(0.985 0.002 247.839)',
+      popover: 'oklch(0.21 0.034 264.665)',
+      popoverForeground: 'oklch(0.985 0.002 247.839)',
+      primary: 'oklch(0.55 0.18 220)',
+      primaryForeground: 'oklch(0.98 0.01 220)',
+      secondary: 'oklch(0.278 0.033 256.848)',
+      secondaryForeground: 'oklch(0.985 0.002 247.839)',
+      muted: 'oklch(0.278 0.033 256.848)',
+      mutedForeground: 'oklch(0.707 0.022 261.325)',
+      accent: 'oklch(0.278 0.033 256.848)',
+      accentForeground: 'oklch(0.985 0.002 247.839)',
+      destructive: 'oklch(0.704 0.191 22.216)',
+      destructiveForeground: 'oklch(0.985 0 0)',
+      border: 'oklch(1 0 0 / 10%)',
+      input: 'oklch(1 0 0 / 15%)',
+      ring: 'oklch(0.551 0.027 264.364)',
+      chart1: 'oklch(0.488 0.243 264.376)',
+      chart2: 'oklch(0.696 0.17 162.48)',
+      chart3: 'oklch(0.769 0.188 70.08)',
+      chart4: 'oklch(0.627 0.265 303.9)',
+      chart5: 'oklch(0.645 0.246 16.439)',
+      sidebar: 'oklch(0.21 0.034 264.665)',
+      sidebarForeground: 'oklch(0.985 0.002 247.839)',
+      sidebarPrimary: 'oklch(0.488 0.243 264.376)',
+      sidebarPrimaryForeground: 'oklch(0.985 0.002 247.839)',
+      sidebarAccent: 'oklch(0.278 0.033 256.848)',
+      sidebarAccentForeground: 'oklch(0.985 0.002 247.839)',
+      sidebarBorder: 'oklch(1 0 0 / 10%)',
+      sidebarRing: 'oklch(0.551 0.027 264.364)',
+    },
+    radius: '0.625rem',
+    fontSans,
+    fontMono,
+    shadows,
+  },
+};

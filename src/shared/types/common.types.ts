@@ -24,8 +24,3 @@ export type GenerateGuardsOptions = {
 };
 
 export type UseAlertDialogReturn = ReturnType<typeof useAlertDialog>;
-
-export type UseUnsavedChangesBlockerProps = {
-  isDirty: boolean;
-  confirmDialog: UseAlertDialogReturn;
-};

@@ -8,6 +8,12 @@
     "loggingOut": "Logging out..."
   },
   "appName": "Admin Dashboard",
+  "unsavedChanges": {
+    "title": "Discard changes?",
+    "description": "You have unsaved changes. If you leave now, they will be lost.",
+    "confirm": "Discard",
+    "cancel": "Cancel"
+  },
   "required": "{{fieldName}} is required",
   "role": "Role",
   "save": "Save",

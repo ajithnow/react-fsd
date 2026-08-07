@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
@@ -24,17 +24,15 @@ import { SharedAlertDialog, useAlertDialog } from '@/shared/components';
 import { selectAuthUser } from '@/features/auth/stores/auth.slice';
 import { USER_TYPES } from '@/features/users/constants/users.constants';
 import { useSelector } from 'react-redux';
+import { useReportFormDirty } from '@/shared/hooks';
 
-export const UserForm: React.FC<
-  UserFormProps & { onDirtyChange?: (dirty: boolean) => void }
-> = ({
+export const UserForm: React.FC<UserFormProps> = ({
   user,
   onSubmit,
   isLoading = false,
   error,
   className,
   translate,
-  onDirtyChange,
 }) => {
   const { userSchema } = UserFormSchema();
   const { isOpen, showAlert, hideAlert } = useAlertDialog();
@@ -72,9 +70,7 @@ export const UserForm: React.FC<
     return translate('users.form.createUser');
   }, [isLoading, isEditing, translate]);
 
-useEffect(() => {
-  onDirtyChange?.(form.formState.isDirty);
-}, [form.formState.isDirty, onDirtyChange]);
+  useReportFormDirty(form.formState.isDirty);
 
   return (
     <>

@@ -18,12 +18,16 @@ bookings:read | bookings:manage
 
 ## Key paths
 
-| Area | Path |
-|------|------|
-| Routes | `routes/bookings.route.tsx` |
+| Area      | Path                                                        |
+| --------- | ----------------------------------------------------------- |
+| Routes    | `routes/bookings.route.tsx`                                 |
 | Constants | `constants/routes.constants.ts`, `permissions.constants.ts` |
-| Sidebar | `sidebar.ts` |
-| Locales | `locales/en.json`, `de.json` |
+| Sidebar   | `sidebar.ts`                                                |
+| Locales   | `locales/en.json`, `de.json`                                |
+
+## Notes
+
+- Pure UI scaffold — no service/query layer or API calls yet, so there's nothing to add a `mocks/handlers.ts` for. Add one (see `users`/`settings` for the pattern) once this feature gets a real endpoint.
 
 ## Skills
 

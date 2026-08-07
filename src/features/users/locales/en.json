@@ -3,6 +3,7 @@
     "users": "User Management"
   },
   "users": {
+    "admin": "Admin",
     "title": "Create New User",
     "subtitle": "Add a new user to the system",
     "backToUser": "Back to Users",
@@ -38,9 +39,6 @@
     "superAdmin": "Super Admin",
     "inactive": "Suspended",
     "filterStatus": "Filter by status",
-    "discardChange": "Discard changes?",
-    "discardChangeDesc": "You have unsaved changes. If you leave now, they will be lost.",
-    "discard": "Discard",
 
     "detail": {
       "basicInformation": "Basic Information",
@@ -86,7 +84,9 @@
       "superUser": "Super Admin",
       "saving": "Saving...",
       "updateUser": "Update User",
-      "createUser": "Create User"
+      "createUser": "Create User",
+      "editor": "Editor",
+      "viewer": "Viewer"
     },
     "managementTitle": "User Management",
     "managementDescription": "Manage admin users and their roles",

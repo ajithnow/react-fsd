@@ -1,10 +1,14 @@
 import { useCallback } from 'react';
 import { useNavigate, useParams } from '@tanstack/react-router';
+import { useDispatch } from 'react-redux';
 import { useUserMutations } from '../queries/users.query';
 import type { FormData, UpdateUserRequest } from '../types';
+import { setFormDirty } from '@/shared/store/navigationGuard.slice';
+import type { AppDispatch } from '@/core/store';
 
 export function useUserFormManager(id?: string) {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
 
   const params = useParams({ strict: false });
   const resolvedId = id ?? (params.id as string);
@@ -25,15 +29,16 @@ export function useUserFormManager(id?: string) {
   } = useGetUserByIdQuery(resolvedId);
 
   const goBackToList = useCallback(() => {
-    navigate({ to: '/users' });
+    void navigate({ to: '/users' });
   }, [navigate]);
 
   const handleCreate = useCallback(
     async (data: FormData) => {
       await createUser.mutateAsync(data);
+      dispatch(setFormDirty(false));
       goBackToList();
     },
-    [createUser, goBackToList]
+    [createUser, goBackToList, dispatch]
   );
 
   const handleUpdate = useCallback(
@@ -51,13 +56,14 @@ export function useUserFormManager(id?: string) {
         } as UpdateUserRequest;
 
         await updateUser.mutateAsync(payload);
-        refetchUser();
-        navigate({ to: '/users/$id', params: { id: resolvedId } });
+        dispatch(setFormDirty(false));
+        void refetchUser();
+        void navigate({ to: '/users/$id', params: { id: resolvedId } });
       } catch (error) {
         console.error('Failed to update user:', error);
       }
     },
-    [resolvedId, updateUser, navigate]
+    [resolvedId, updateUser, navigate, dispatch, refetchUser]
   );
 
   const handleDelete = useCallback(async () => {
@@ -87,7 +93,7 @@ export function useUserFormManager(id?: string) {
         userId: user.UserId,
         status: !user.Status,
       });
-      refetchUser();
+      void refetchUser();
     } catch (err) {
       console.error('Failed to toggle suspend:', err);
     }

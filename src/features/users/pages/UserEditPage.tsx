@@ -1,17 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useCanGoBack, useParams, useRouter } from '@tanstack/react-router';
 import { useTranslation } from 'react-i18next';
 import { ArrowLeft } from 'lucide-react';
 import { UserForm } from '../components';
 import { UserActionDialog } from '@/features/users/components/UserActionDialogs/UserActionDialogs';
-import {
-  useAlertDialog,
-  PageHeader,
-  SharedAlertDialog,
-} from '@/shared/components';
+import { useAlertDialog, PageHeader } from '@/shared/components';
 import { useUserFormManager } from '@/features/users/managers/userform.manager';
-import type { FormData } from '../types';
-import { useUnsavedChangesBlocker } from '@/shared';
 
 export const UserEditPage: React.FC = () => {
   const params = useParams({ strict: false });
@@ -23,20 +17,11 @@ export const UserEditPage: React.FC = () => {
   const resetDialog = useAlertDialog();
   const suspendDialog = useAlertDialog();
 
-  const confirmDialog = useAlertDialog();
-  const [isDirty, setIsDirty] = useState(false);
-
-  const { handleConfirmLeave, handleCancelLeave } = useUnsavedChangesBlocker({
-    isDirty: isDirty,
-    confirmDialog,
-  });
-  const { isOpen: isAlertOpen, hideAlert } = confirmDialog;
-
   const handleGoBack = () => {
     if (canGoBack) {
       router.history.back();
     } else {
-      router.navigate({ to: '/users' });
+      void router.navigate({ to: '/users' });
     }
   };
 
@@ -49,11 +34,6 @@ export const UserEditPage: React.FC = () => {
     handleResetPassword,
     handleToggleSuspend,
   } = useUserFormManager(id);
-
-  const handleSubmit = async (data: FormData) => {
-    handleConfirmLeave();
-    await handleUpdate(data);
-  };
 
   if (isLoading) {
     return (
@@ -99,24 +79,12 @@ export const UserEditPage: React.FC = () => {
       <div>
         <UserForm
           user={user}
-          onSubmit={handleSubmit}
+          onSubmit={handleUpdate}
           isLoading={false}
           error={undefined}
           translate={t}
-          onDirtyChange={setIsDirty}
         />
       </div>
-
-      <SharedAlertDialog
-        open={isAlertOpen}
-        onOpenChange={hideAlert}
-        title={t('users.discardChange')}
-        description={t('users.discardChangeDesc')}
-        onConfirm={handleConfirmLeave}
-        onCancel={handleCancelLeave}
-        variant="destructive"
-        confirmText={t('users.discard')}
-      />
 
       {/* Action Dialogs */}
       <UserActionDialog

@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm audit *)",
+      "Bash(command -v chromium-cli)",
+      "Bash(lsof -ti:3000 -sTCP:LISTEN)",
+      "Bash(xargs -r kill)",
+      "Bash(npm uninstall *)",
+      "Bash(cat /tmp/dev-server3.log)",
+      "Read(//tmp/**)",
+      "PowerShell(Get-NetTCPConnection -LocalPort 3000,3001,3002,3003 -State Listen -ErrorAction SilentlyContinue | Select-Object LocalPort,OwningProcess | ForEach-Object { $_; Get-Process -Id $_.OwningProcess -ErrorAction SilentlyContinue | Select-Object Id,ProcessName,Path,StartTime })",
+      "PowerShell(Get-Process node -ErrorAction SilentlyContinue)",
+      "Bash(npx tsc *)",
+      "Bash(npx oxlint *)",
+      "Bash(echo \"EXIT: $?\")",
+      "Bash(npx vitest *)",
+      "Bash(git stash *)",
+      "Bash(git restore *)"
+    ]
+  }
+}

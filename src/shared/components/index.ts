@@ -23,6 +23,7 @@ export { TopBar } from './TopBar';
 export { TopLoader, ProgressBar } from './TopLoader';
 export { NavigationProgress } from './NavigationProgress';
 export { LanguageSwitcher } from './LanguageSwitcher';
+export { ThemeSwitcher } from './ThemeSwitcher';
 
 export {
   createSidebarData,
@@ -39,3 +40,4 @@ export { PageHeader } from './PageHeader';
 export { SharedPopover, SharedPopoverTrigger, SharedPopoverContent } from './Popover';
 export { TextCell } from './TextCell/TextCell';
 export type { TextCellProps } from './TextCell/textCell.types';
+export { UnsavedChangesGuard } from './UnsavedChangesGuard';

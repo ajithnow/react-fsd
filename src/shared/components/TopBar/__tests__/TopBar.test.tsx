@@ -10,6 +10,10 @@ vi.mock('../../LanguageSwitcher', () => ({
   LanguageSwitcher: () => <div data-testid="language-switcher">Language Switcher</div>,
 }));
 
+vi.mock('../../ThemeSwitcher', () => ({
+  ThemeSwitcher: () => <div data-testid="theme-switcher">Theme Switcher</div>,
+}));
+
 describe('TopBar', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -19,6 +23,7 @@ describe('TopBar', () => {
     render(<TopBar />);
 
     expect(screen.getByTestId('sidebar-trigger')).toBeInTheDocument();
+    expect(screen.getByTestId('theme-switcher')).toBeInTheDocument();
     expect(screen.getByTestId('language-switcher')).toBeInTheDocument();
   });
 });

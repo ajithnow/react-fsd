@@ -1,14 +1,20 @@
 import { useCallback, useEffect, useRef } from 'react';
 import { useBlocker, useNavigate } from '@tanstack/react-router';
-import { UseUnsavedChangesBlockerProps } from '../types';
+import { useSelector } from 'react-redux';
+import { useAlertDialog } from '@/shared/components';
+import { selectIsFormDirty } from '@/shared/store/navigationGuard.slice';
+import { store } from '@/core/store';
 
-
-
-export function useUnsavedChangesBlocker({
-  isDirty,
-  confirmDialog,
-}: UseUnsavedChangesBlockerProps) {
+/**
+ * App-wide unsaved-changes guard. Reads dirty state from Redux (set by any
+ * form via `useReportFormDirty`), blocks in-app navigation and browser
+ * unload while dirty, and owns its own confirm dialog state. Mounted once by
+ * `UnsavedChangesGuard` — do not call this per-page.
+ */
+export function useUnsavedChangesBlocker() {
+  const isDirty = useSelector(selectIsFormDirty);
   const navigate = useNavigate();
+  const confirmDialog = useAlertDialog();
   const forceNavigateRef = useRef(false);
   const pendingNextPathRef = useRef<string | null>(null);
 
@@ -28,20 +34,15 @@ export function useUnsavedChangesBlocker({
     confirmDialog.setIsOpen(false);
 
     if (pendingNextPathRef.current) {
-      navigate({ to: pendingNextPathRef.current });
+      void navigate({ to: pendingNextPathRef.current });
       pendingNextPathRef.current = null;
     }
   }, [confirmDialog, navigate]);
 
-  // Cancel leave
   const handleCancelLeave = useCallback(() => {
     pendingNextPathRef.current = null;
     confirmDialog.setIsOpen(false);
   }, [confirmDialog]);
-
-  const setPendingNextPath = (path: string) => {
-    pendingNextPathRef.current = path;
-  };
 
   // Intercept route transitions
   useBlocker({
@@ -51,10 +52,13 @@ export function useUnsavedChangesBlocker({
         return false;
       }
 
+      // Read the store directly rather than the closed-over `isDirty`: a
+      // caller may dispatch `setFormDirty(false)` and navigate in the same
+      // tick (e.g. after a successful save), before this hook re-renders.
+      if (!selectIsFormDirty(store.getState())) return false;
+
       const currentPath = ctx.current?.pathname || ctx.current?.fullPath;
       const nextPath = ctx.next?.pathname || ctx.next?.fullPath;
-
-      if (!isDirty) return false;
 
       if (currentPath && nextPath && currentPath !== nextPath) {
         if (!pendingNextPathRef.current) {
@@ -70,8 +74,9 @@ export function useUnsavedChangesBlocker({
   });
 
   return {
+    isOpen: confirmDialog.isOpen,
+    hideAlert: confirmDialog.hideAlert,
     handleConfirmLeave,
     handleCancelLeave,
-    setPendingNextPath,
   };
 }

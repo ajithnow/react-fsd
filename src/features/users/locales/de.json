@@ -38,9 +38,6 @@
     "normalUser": "Admin",
     "powerAdmin": "Power-Admin",
     "superAdmin": "Super-Admin",
-    "discardChange": "Änderungen verwerfen?",
-    "discardChangeDesc": "Sie haben noch nicht gespeicherte Änderungen. Wenn Sie jetzt gehen, gehen diese verloren.",
-    "discard": "Verwerfen",
 
     "detail": {
       "basicInformation": "Basisinformationen",

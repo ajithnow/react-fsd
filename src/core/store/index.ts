@@ -11,9 +11,11 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import authReducer from '@/features/auth/stores/auth.slice.ts';
+import navigationGuardReducer from '@/shared/store/navigationGuard.slice';
 
 const rootReducer = combineReducers({
   auth: authReducer,
+  navigationGuard: navigationGuardReducer,
   // Add other slices here
 });
 
